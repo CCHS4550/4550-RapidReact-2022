@@ -87,7 +87,7 @@ public class Robot extends TimedRobot implements ControMap{
     else 
       c.stop();
   }
-
+//stage deez
   /**
    * This autonomous (along with the chooser code above) shows how to select
    * between different autonomous modes using the dashboard. The sendable
