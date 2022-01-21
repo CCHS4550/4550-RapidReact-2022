@@ -83,9 +83,9 @@ public class Robot extends TimedRobot implements ControMap{
     
     
     if(RobotMap.COMPRESSOR_ENABLE)
-      c.start();
+      c.enableDigital();
     else 
-      c.stop();
+      c.disable();
   }
 //stage deez
   /**
