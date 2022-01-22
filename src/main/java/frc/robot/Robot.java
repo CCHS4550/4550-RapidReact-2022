@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControMap;
 import frc.parent.RobotMap;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,7 +30,7 @@ public class Robot extends TimedRobot implements ControMap{
   private static final String kResetPIDs = "Reset PIDs";
   private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  private Compressor c = new Compressor(null);
+  private Compressor c = new Compressor(PneumaticsModuleType.REVPH);
 
 
   int alliance;
