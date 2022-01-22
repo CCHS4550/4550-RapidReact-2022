@@ -50,7 +50,7 @@ public class Robot extends TimedRobot implements ControMap{
     // SmartDashboard.putNumber("Distance", 0.0);
     // SmartDashboard.putNumber("Angle", 0.0);
     // SmartDashboard.putData("Auto choices", m_chooser);
-    // Chassis.reset();
+    Chassis.reset();
 
     switch(DriverStation.getAlliance()){
       case Blue:
