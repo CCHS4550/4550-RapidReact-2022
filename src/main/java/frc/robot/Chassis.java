@@ -1,6 +1,8 @@
 package frc.robot;
 
 import frc.parent.*;
+import frc.raspi.Vision;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
