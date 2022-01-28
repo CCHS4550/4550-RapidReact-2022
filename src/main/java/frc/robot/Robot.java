@@ -11,10 +11,13 @@ import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControMap;
 import frc.parent.RobotMap;
+import frc.raspi.Vision;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,8 +32,8 @@ public class Robot extends TimedRobot implements ControMap{
   private static final String kResetPIDs = "Reset PIDs";
   private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  private Compressor c = new Compressor(null);
-
+  private Compressor c = new Compressor(PneumaticsModuleType.REVPH);
+  Vision vision = new Vision("Camera 1");
 
   int alliance;
   double spdmlt = 1;
@@ -49,7 +52,7 @@ public class Robot extends TimedRobot implements ControMap{
     // SmartDashboard.putNumber("Distance", 0.0);
     // SmartDashboard.putNumber("Angle", 0.0);
     // SmartDashboard.putData("Auto choices", m_chooser);
-    // Chassis.reset();
+    Chassis.reset();
 
     switch(DriverStation.getAlliance()){
       case Blue:
@@ -130,6 +133,7 @@ public class Robot extends TimedRobot implements ControMap{
 
   @Override
   public void teleopInit() {
+    
   }
 
   /**
@@ -163,6 +167,8 @@ if(Arms.climberCont){
       BallDumpy.dumpy.set(true);
     else
       BallDumpy.dumpy.set(false);
+    if(OI.button(X_BUTTON))
+      vision.aim();
 
 
 
