@@ -12,7 +12,7 @@ public class CCSparkMax extends CANSparkMax{
 
     private String name;
     private String shortName;
-    private SparkMaxPIDController pidController;
+    public  SparkMaxPIDController pidController;
     private RelativeEncoder encoder;
 
     /**

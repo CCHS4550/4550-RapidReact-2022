@@ -142,32 +142,32 @@ public class Robot extends TimedRobot implements ControMap{
   @Override
   public void teleopPeriodic() {
     // System.out.println("method teleopPeriodic() entry");
-    Chassis.axisDrive(OI.axis(ControMap.L_JOYSTICK_VERTICAL),
-                      OI.axis(ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
+    Chassis.axisDrive(OI.axis(0, ControMap.L_JOYSTICK_VERTICAL),
+                      OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
 if(Arms.climberCont){
-      if (OI.axis(LT) > 0){
+      if (OI.axis(1, LT) > 0){
         Arms.climberLeftDown();
       }
-      else if (OI.button(LB_BUTTON)){
+      else if (OI.button(1, LB_BUTTON)){
         Arms.climberLeftUp();
       }
-      if(OI.axis(RT) > 0){
+      if(OI.axis(1, RT) > 0){
         Arms.climberRightDown();
-      } else if(OI.button(RB_BUTTON)){
+      } else if(OI.button(1, RB_BUTTON)){
         Arms.climberRightUp();
       } 
     }
     
-    if(OI.button(B_BUTTON)){
+    if(OI.button(1, B_BUTTON)){
       Arms.toggleCont();
       Arms.climbMonkeyBars();
     }
 
-    if(OI.button(A_BUTTON))
+    if(OI.button(1, A_BUTTON))
       BallDumpy.dumpy.set(true);
     else
       BallDumpy.dumpy.set(false);
-    if(OI.button(X_BUTTON))
+    if(OI.button(1, X_BUTTON))
       vision.aim();
 
 

@@ -10,21 +10,23 @@ import frc.parent.ControMap;
 //  2. Change "contOne" to "contTwo"
 //  3. Change "Joystick(0)" to "Joystick(1)"
 public class OI {
+    public static Joystick[] joystickArray = {new Joystick(0), new Joystick(1)};
 
-    private static Joystick contOne = new Joystick(0);
+   
 
     //Returns whether or not the button is being pressed
     //The method takes in the RobotMap button
     //i.e "RobotMap.A_BUTTON"
-    public static boolean button(int button){
-        return contOne.getRawButton(button);
+    public static boolean button(int index, int button){
+        return joystickArray[index].getRawButton(button);
     }
+    
 
     //Returns how much the axises is being pushed or pulled down
     //The method takes in RobotMap axis
     //i.e. "RobotMap.LT"
-    public static double axis(int axis){
-        double axisVal = contOne.getRawAxis(axis);
+    public static double axis(int index, int axis){
+        double axisVal = joystickArray[index].getRawAxis(axis);
         if(axisVal < ControMap.ZERO && axisVal > -ControMap.ZERO)
             return 0;
         else 

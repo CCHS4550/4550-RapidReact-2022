@@ -3,16 +3,68 @@ package frc.raspi;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.revrobotics.CANSparkMax;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+import frc.parent.ControMap;
+import frc.robot.CCSparkMax;
+import frc.robot.Chassis;
+import frc.robot.OI;
+import frc.robot.Robot;
 
-public class Vision{
+public class Vision extends OI{
+    final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
+
+    final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+
+    // Angle between horizontal and the camera.
+
+    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+
+
+    // How far from the target we want to be
+
+    final double GOAL_RANGE_METERS = Units.feetToMeters(3);
+
+
+    // Change this to match the name of your camera
+
+    PhotonCamera camera = new PhotonCamera("photonvision");
+
+
+    // PID constants should be tuned per robot
+    public static final double LINEAR_P = 0.1;
+    public static final double LINEAR_D = 0;
+   
+
+    PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
+    public static final double ANGULAR_P = 0.1;
+    public static final double ANGULAR_D = 0;
+
+
+
+    PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+
+
+    XboxController xboxController = new XboxController(0);
+
+
+    // Drive motors
+
+
+
+
     PhotonTrackedTarget bestTarget;
-    PhotonCamera camera;
+
     public Vision(String camName){
         camera = new PhotonCamera(camName);
         PhotonPipelineResult result = camera.getLatestResult();
@@ -46,28 +98,41 @@ public class Vision{
         return bestTarget.getYaw();
     }
     public void aim(){
-        var result = camera.getLatestResult();
-        double rotationSpeed;
         double forwardSpeed;
+        double rotationSpeed;
         
+        double linearP = 0.1;
+        double linearI = 0;
+        double linearD = 0;
+        PIDController linPID = new PIDController(linearP, linearI, linearD);
 
-        
-       /* if (result.hasTargets()) {
-            // Calculate angular turn power
-            // -1.0 required to ensure positive PID controller effort _increases_ yaw
-            rotationSpeed = -1 * turn nController.calculate(result.getBestTarget().getYaw(), 0);
+        double angularP = 0.1;
+        double angularI = 0.0;
+        double angularD = 0.0;
+        PIDController angPID = new PIDController(angularP, angularI, angularD);
+//NOTE FOR DHRUV: CHK DOCU FOR AXIS CONT
+        forwardSpeed = -joystickArray[0].getAxisCount();
+
+        if (OI.button(1, ControMap.A_BUTTON)) {
+            // Vision-alignment mode
+            // Query the latest result from PhotonVision
+            var result = camera.getLatestResult();
+            
+            if (result.hasTargets()) {
+                
+                rotationSpeed = linPID .calculate(result.getBestTarget().getYaw(), 0);
+            } else {
+                // If we have no targets, stay still.
+                rotationSpeed = 0;
+            }
         } else {
-            // If we have no targets, stay still.
-            rotationSpeed = 0;
+            // Manual Driver Mode
+            rotationSpeed = OI.joystickArray[0].getAxisCount();
         }
-    } else {
-        // Manual Driver Mode
-        rotationSpeed = xboxController.getLeftX();
-    }
 
-    // Use our forward/turn speeds to control the drivetrain
-    drive.arcadeDrive(forwardSpeed, rotationSpeed);
-    */
-    }
+        // Use our forward/turn speeds to control the drivetrain
+        //!!!!!DOUBLECHK LOGIC HERE
+       // Chassis.axisDrive(0, forwardSpeed, rotationSpeed);
+    }  
     
 }
