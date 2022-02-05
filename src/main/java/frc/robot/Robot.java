@@ -18,6 +18,7 @@ import frc.parent.ControMap;
 import frc.parent.RobotMap;
 import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+//import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,8 +33,13 @@ public class Robot extends TimedRobot implements ControMap{
   private static final String kResetPIDs = "Reset PIDs";
   private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
+<<<<<<< Updated upstream
   private Compressor c = new Compressor(PneumaticsModuleType.REVPH);
   Vision vision = new Vision("Camera 1");
+=======
+  private Compressor c = new Compressor(PneumaticsModuleType.CTREPCM);
+  //Vision vision = new Vision("Camera 1");
+>>>>>>> Stashed changes
 
   int alliance;
   double spdmlt = 1;
@@ -135,14 +141,14 @@ public class Robot extends TimedRobot implements ControMap{
   public void teleopInit() {
     
   }
-
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
-    // System.out.println("method teleopPeriodic() entry");
+    //System.out.println("method teleopPeriodic() entry");
     Chassis.axisDrive(OI.axis(0, ControMap.L_JOYSTICK_VERTICAL),
+<<<<<<< Updated upstream
                       OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
 if(Arms.climberCont){
       if (OI.axis(1, LT) > 0){
@@ -155,6 +161,26 @@ if(Arms.climberCont){
         Arms.climberRightDown();
       } else if(OI.button(1, RB_BUTTON)){
         Arms.climberRightUp();
+=======
+    OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
+    if(true /*Arms.climberCont*/){
+      // if (OI.button(0, A_BUTTON)){
+      //   System.out.println("Elevator down");
+      //   Arms.climberDown();
+      // }
+      // else if (OI.button(0, B_BUTTON)){
+      //   System.out.println("Elevator up");
+      //   Arms.climberUp();
+      // } else {
+      //   Arms.climberStop();
+      // }
+      if(OI.button(0, Y_BUTTON)){
+        System.out.println("arms in");
+        Arms.setArms(true);
+      } else if(OI.button(0, X_BUTTON)){
+        System.out.println("arms out");
+        Arms.setArms(false);
+>>>>>>> Stashed changes
       } 
     }
     
@@ -174,21 +200,17 @@ if(Arms.climberCont){
 
 
 
-   /* //shoot slow with A
-    if(OI.button(ControMap.A_BUTTON)){
+    //shoot slow with A
+    if(OI.button(1, ControMap.A_BUTTON)){
       Chassis.setFastMode(true);
       Chassis.setFactor(0.048);
     }
     //shoot fast with B
-    if (OI.button(ControMap.B_BUTTON)){  
+    if (OI.button(1, ControMap.B_BUTTON)){  
       Chassis.setFastMode(false);
       Chassis.setFactor(0.109);
     }
     //climb with DPad
-*/
-   
-
-    
 
   }
 

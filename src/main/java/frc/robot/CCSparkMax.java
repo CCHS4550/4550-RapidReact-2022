@@ -36,6 +36,18 @@ public class CCSparkMax extends CANSparkMax{
         encoder = super.getEncoder();
     }
 
+    public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
+     boolean reverse, float f){
+        super(deviceID, controlMode);
+        this.name = name;
+        this.shortName = shortName;
+        
+        super.setInverted(reverse);
+        
+
+        pidController = super.getPIDController();
+    }
+
     public void reset(){
         encoder.setPosition(0);
     }
