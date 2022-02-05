@@ -1,9 +1,9 @@
 package frc.parent;
 
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+//import com.revrobotics.CANSparkMax.IdleMode;
+//import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.robot.CCSparkMax;
+//import frc.robot.CCSparkMax;
 
 /*
     RobotMap holds all the ports involved in the robot.
@@ -28,8 +28,7 @@ public interface RobotMap {
     public static final int FORWARD_RIGHT = 1;
     public static final int BACK_LEFT = 4;
     public static final int BACK_RIGHT = 2;
-    public static final int CLIMBER_LEFT = 5;
-    public static final int CLIMBER_RIGHT = 6;
+    public static final int CLIMBER = 5;
 
 
     //Wheel Polarities
@@ -42,8 +41,9 @@ public interface RobotMap {
     
     //Pneumatic Stuff 
     public static final boolean COMPRESSOR_ENABLE = true;
-    public static final int SHIFT_SOLENOID_ONE = 0;
-    public static final int SHIFT_SOLENOID_TWO = 7;
+    public static final int ARM_SOLENOID = 0;
+    //public static final int SHIFT_SOLENOID_ONE = 0;
+    // public static final int SHIFT_SOLENOID_TWO = 7;
 
     //Other Constancts 
     public static final int ROBOT_Y_DIR_SIGN = 1;
