@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControMap;
 import frc.parent.RobotMap;
-import frc.raspi.Vision;
+//import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 //import edu.wpi.first.wpilibj.Solenoid;
 
@@ -33,13 +33,10 @@ public class Robot extends TimedRobot implements ControMap{
   private static final String kResetPIDs = "Reset PIDs";
   private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
-<<<<<<< Updated upstream
-  private Compressor c = new Compressor(PneumaticsModuleType.REVPH);
-  Vision vision = new Vision("Camera 1");
-=======
   private Compressor c = new Compressor(PneumaticsModuleType.CTREPCM);
+  public Boolean armExtended = false;
+  public Boolean armPressed = false;
   //Vision vision = new Vision("Camera 1");
->>>>>>> Stashed changes
 
   int alliance;
   double spdmlt = 1;
@@ -148,20 +145,6 @@ public class Robot extends TimedRobot implements ControMap{
   public void teleopPeriodic() {
     //System.out.println("method teleopPeriodic() entry");
     Chassis.axisDrive(OI.axis(0, ControMap.L_JOYSTICK_VERTICAL),
-<<<<<<< Updated upstream
-                      OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
-if(Arms.climberCont){
-      if (OI.axis(1, LT) > 0){
-        Arms.climberLeftDown();
-      }
-      else if (OI.button(1, LB_BUTTON)){
-        Arms.climberLeftUp();
-      }
-      if(OI.axis(1, RT) > 0){
-        Arms.climberRightDown();
-      } else if(OI.button(1, RB_BUTTON)){
-        Arms.climberRightUp();
-=======
     OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
     if(true /*Arms.climberCont*/){
       // if (OI.button(0, A_BUTTON)){
@@ -175,40 +158,45 @@ if(Arms.climberCont){
       //   Arms.climberStop();
       // }
       if(OI.button(0, Y_BUTTON)){
-        System.out.println("arms in");
-        Arms.setArms(true);
-      } else if(OI.button(0, X_BUTTON)){
-        System.out.println("arms out");
-        Arms.setArms(false);
->>>>>>> Stashed changes
-      } 
-    }
+        // Button pressed for first time
+        if (!armPressed) {
+          armPressed = true;
+          armExtended = !armExtended;
+          Arms.setArms(armExtended);
+          System.out.println("Arms up");
+        }
+      } else if (armPressed) {
+        // Button released
+        armPressed = false;
+      }
+
     
-    if(OI.button(1, B_BUTTON)){
-      Arms.toggleCont();
-      Arms.climbMonkeyBars();
-    }
+    // if(OI.button(1, B_BUTTON)){
+    //   Arms.toggleCont();
+    //   Arms.climbMonkeyBars();
+    // }
 
-    if(OI.button(1, A_BUTTON))
-      BallDumpy.dumpy.set(true);
-    else
-      BallDumpy.dumpy.set(false);
-    if(OI.button(1, X_BUTTON))
-      vision.aim();
-
-
+    // if(OI.button(1, A_BUTTON))
+    //   BallDumpy.dumpy.set(true);
+    // else
+    //   BallDumpy.dumpy.set(false);
+    // if(OI.button(1, X_BUTTON))
+    //   vision.aim();
 
 
 
-    //shoot slow with A
-    if(OI.button(1, ControMap.A_BUTTON)){
-      Chassis.setFastMode(true);
-      Chassis.setFactor(0.048);
-    }
-    //shoot fast with B
-    if (OI.button(1, ControMap.B_BUTTON)){  
-      Chassis.setFastMode(false);
-      Chassis.setFactor(0.109);
+
+
+      //shoot slow with A
+      if(OI.button(1, ControMap.A_BUTTON)){
+        Chassis.setFastMode(true);
+        Chassis.setFactor(0.048);
+      }
+      //shoot fast with B
+      if (OI.button(1, ControMap.B_BUTTON)){  
+        Chassis.setFastMode(false);
+        Chassis.setFactor(0.109);
+      }
     }
     //climb with DPad
 

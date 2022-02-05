@@ -21,7 +21,6 @@ package frc.parent;
 
 */
 public interface RobotMap {
-   
 
     // Wheel Talons
     public static final int FORWARD_LEFT = 3;
