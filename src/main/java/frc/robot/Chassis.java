@@ -1,7 +1,7 @@
 package frc.robot;
 
 import frc.parent.*;
-import frc.raspi.Vision;
+// import frc.raspi.Vision;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -10,7 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Chassis extends BallDumpy implements RobotMap{
+public class Chassis implements RobotMap{
 
     //Talon objects for the wheels
     //These control the main 4 motors on the robot
