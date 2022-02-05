@@ -25,7 +25,7 @@ public class Arms implements RobotMap {
     }
     /*
     public static void armsOut(){
-        arms.set(true);
+        armsOne.set(true);
     }
     public static void armsIn(){
         arms.set(false);
