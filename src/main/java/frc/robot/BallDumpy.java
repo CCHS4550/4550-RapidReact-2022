@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+//import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.parent.RobotMap;
 
 public class BallDumpy implements RobotMap{
