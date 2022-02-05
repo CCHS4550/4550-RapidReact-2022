@@ -1,10 +1,10 @@
 package frc.robot;
 
 import com.revrobotics.RelativeEncoder;
-//import com.revrobotics.*;
+import com.revrobotics.*;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
-//import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.ControlType;
 
 //Documention: http://www.revrobotics.com/content/sw/max/sw-docs/java/com/revrobotics/CANSparkMax.html#%3Cinit%3E(int,com.revrobotics.CANSparkMaxLowLevel.MotorType)
 

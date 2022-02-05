@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControMap;
 import frc.parent.RobotMap;
-//import frc.raspi.Vision;
+import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
@@ -33,7 +33,7 @@ public class Robot extends TimedRobot implements ControMap{
   private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private Compressor c = new Compressor(PneumaticsModuleType.REVPH);
-  //Vision vision = new Vision("Camera 1");
+  Vision vision = new Vision("Camera 1");
 
   int alliance;
   double spdmlt = 1;
@@ -144,34 +144,31 @@ public class Robot extends TimedRobot implements ControMap{
     // System.out.println("method teleopPeriodic() entry");
     Chassis.axisDrive(OI.axis(0, ControMap.L_JOYSTICK_VERTICAL),
                       OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
-if(true /*Arms.climberCont*/){
+if(Arms.climberCont){
       if (OI.axis(1, LT) > 0){
-        Arms.climberDown();
+        Arms.climberLeftDown();
       }
       else if (OI.button(1, LB_BUTTON)){
-        Arms.climberUp();
-      } else {
-        Arms.climberStop();
+        Arms.climberLeftUp();
       }
       if(OI.axis(1, RT) > 0){
-        Arms.armsIn();
+        Arms.climberRightDown();
       } else if(OI.button(1, RB_BUTTON)){
-        Arms.armsOut();
+        Arms.climberRightUp();
       } 
-      
     }
     
-    // if(OI.button(1, B_BUTTON)){
-    //   Arms.toggleCont();
-    //   Arms.climbMonkeyBars();
-    // }
+    if(OI.button(1, B_BUTTON)){
+      Arms.toggleCont();
+      Arms.climbMonkeyBars();
+    }
 
-    // if(OI.button(1, A_BUTTON))
-    //   BallDumpy.dumpy.set(true);
-    // else
-    //   BallDumpy.dumpy.set(false);
-    // if(OI.button(1, X_BUTTON))
-    //   vision.aim();
+    if(OI.button(1, A_BUTTON))
+      BallDumpy.dumpy.set(true);
+    else
+      BallDumpy.dumpy.set(false);
+    if(OI.button(1, X_BUTTON))
+      vision.aim();
 
 
 
