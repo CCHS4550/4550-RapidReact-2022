@@ -13,7 +13,7 @@
         {
             "groupId": "org.photonvision",
             "artifactId": "PhotonLib-cpp",
-            "version": "v2022.1.4",
+            "version": "v2022.1.3",
             "libName": "Photon",
             "headerClassifier": "headers",
             "sharedLibrary": true,

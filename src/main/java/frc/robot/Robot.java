@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControMap;
 import frc.parent.RobotMap;
+import frc.raspi.Vision;
 //import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 //import edu.wpi.first.wpilibj.Solenoid;
@@ -108,22 +109,22 @@ public class Robot extends TimedRobot implements ControMap{
   @Override
   public void autonomousInit() {
     Chassis.reset();
-    System.out.println("Auto selected: " + m_autoSelected);
+    // System.out.println("Auto selected: " + m_autoSelected);
     
-    double dist = SmartDashboard.getNumber("Distance", 0);
-    double angl = SmartDashboard.getNumber("Angle", 0);
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        break;
-      case kDefaultAuto:
-        Chassis.driveDist(dist, 0.05, 0.04, 0.25, false);
-        Chassis.turnToAngle(angl, 0.005, 0.5, 0.25, false);
-        break;
-      case kResetPIDs:
-        break;
-      default:
-        break;
-    }
+    // double dist = SmartDashboard.getNumber("Distance", 0);
+    // double angl = SmartDashboard.getNumber("Angle", 0);
+    // switch (m_autoSelected) {
+    //   case kCustomAuto:
+    //     break;
+    //   case kDefaultAuto:
+    //     Chassis.driveDist(dist, 0.05, 0.04, 0.25, false);
+    //     Chassis.turnToAngle(angl, 0.005, 0.5, 0.25, false);
+    //     break;
+    //   case kResetPIDs:
+    //     break;
+    //   default:
+    //     break;
+    // }
 
   }
 
@@ -132,6 +133,7 @@ public class Robot extends TimedRobot implements ControMap{
    */
   @Override
   public void autonomousPeriodic() {
+    Chassis.axisDrive(0.3, 0, 0.3);
   }
 
   @Override
@@ -141,11 +143,19 @@ public class Robot extends TimedRobot implements ControMap{
   /**
    * This function is called periodically during operator control.
    */
+  public double deltaTime = 0.02;
+  public double decelTime = 0.5;
+  public double velocity = 0;
   @Override
   public void teleopPeriodic() {
+    if(OI.button(0, ControMap.Y_BUTTON)){
+      Chassis.axisDrive(0, Vision.aim(), 0.3);
+      return;
+    }
     //System.out.println("method teleopPeriodic() entry");
-    Chassis.axisDrive(OI.axis(0, ControMap.L_JOYSTICK_VERTICAL),
-    OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
+    double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
+    if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime * decelTime;
+    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 1);
     if(true /*Arms.climberCont*/){
       // if (OI.button(0, A_BUTTON)){
       //   System.out.println("Elevator down");
@@ -157,7 +167,7 @@ public class Robot extends TimedRobot implements ControMap{
       // } else {
       //   Arms.climberStop();
       // }
-      if(OI.button(0, Y_BUTTON)){
+      if(OI.button(1, Y_BUTTON)){
         // Button pressed for first time
         if (!armPressed) {
           armPressed = true;
