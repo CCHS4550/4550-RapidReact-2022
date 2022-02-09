@@ -37,7 +37,7 @@ public class Vision extends OI{
 
     // Change this to match the name of your camera
 
-    public static PhotonCamera camera = new PhotonCamera("photonvision");
+    public static PhotonCamera camera = new PhotonCamera("ballscam");
 
 
     // PID constants should be tuned per robot
@@ -104,7 +104,7 @@ public class Vision extends OI{
 
         var result = camera.getLatestResult();
         if (result.hasTargets()) {
-
+            camera.setPipelineIndex(1);
             // Calculate angular turn power
 
             // -1.0 required to ensure positive PID controller effort _increases_ yaw

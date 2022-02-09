@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControMap;
 import frc.parent.RobotMap;
 import frc.raspi.Vision;
@@ -29,10 +29,10 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  * project.
  */
 public class Robot extends TimedRobot implements ControMap{
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private static final String kResetPIDs = "Reset PIDs";
-  private String m_autoSelected;
+  // private static final String kDefaultAuto = "Default";
+  // private static final String kCustomAuto = "My Auto";
+  // private static final String kResetPIDs = "Reset PIDs";
+  // private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private Compressor c = new Compressor(PneumaticsModuleType.CTREPCM);
   public Boolean armExtended = false;
@@ -144,18 +144,18 @@ public class Robot extends TimedRobot implements ControMap{
    * This function is called periodically during operator control.
    */
   public double deltaTime = 0.02;
-  public double decelTime = 0.5;
+  public double decelTime = 0.25;
   public double velocity = 0;
   @Override
   public void teleopPeriodic() {
     if(OI.button(0, ControMap.Y_BUTTON)){
-      Chassis.axisDrive(0, Vision.aim(), 0.3);
+      Chassis.axisDrive(0, Vision.aim(), 0.05);
       return;
     }
     //System.out.println("method teleopPeriodic() entry");
     double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime * decelTime;
-    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 1);
+    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     if(true /*Arms.climberCont*/){
       // if (OI.button(0, A_BUTTON)){
       //   System.out.println("Elevator down");
