@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControMap;
 import frc.parent.RobotMap;
-import frc.raspi.Vision;
+//import frc.raspi.Vision;
 //import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 //import edu.wpi.first.wpilibj.Solenoid;
@@ -146,16 +146,19 @@ public class Robot extends TimedRobot implements ControMap{
   public double deltaTime = 0.02;
   public double decelTime = 0.25;
   public double velocity = 0;
+  public float indexSpeed = 1;
   @Override
   public void teleopPeriodic() {
-    if(OI.button(0, ControMap.Y_BUTTON)){
-      Chassis.axisDrive(0, Vision.aim(), 0.05);
-      return;
-    }
+    // if(OI.button(0, ControMap.Y_BUTTON)){
+    //   Chassis.axisDrive(0, Vision.aim(), 0.05);
+    //   return;
+    // }
     //System.out.println("method teleopPeriodic() entry");
     double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime * decelTime;
     Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
+    Shoot.setIndexer(OI.button(1, ControMap.X_BUTTON) ? indexSpeed : OI.button(1, ControMap.Y_BUTTON) ? -indexSpeed : 0);
+    Shoot.setIntake(OI.button(1, ControMap.A_BUTTON) ? indexSpeed : OI.button(1, ControMap.B_BUTTON) ? -indexSpeed : 0);
     if(true /*Arms.climberCont*/){
       // if (OI.button(0, A_BUTTON)){
       //   System.out.println("Elevator down");
@@ -167,18 +170,18 @@ public class Robot extends TimedRobot implements ControMap{
       // } else {
       //   Arms.climberStop();
       // }
-      if(OI.button(1, Y_BUTTON)){
-        // Button pressed for first time
-        if (!armPressed) {
-          armPressed = true;
-          armExtended = !armExtended;
-          Arms.setArms(armExtended);
-          System.out.println("Arms up");
-        }
-      } else if (armPressed) {
-        // Button released
-        armPressed = false;
-      }
+      // if(OI.button(1, Y_BUTTON)){
+      //   // Button pressed for first time
+      //   if (!armPressed) {
+      //     armPressed = true;
+      //     armExtended = !armExtended;
+      //     Arms.setArms(armExtended);
+      //     System.out.println("Arms up");
+      //   }
+      // } else if (armPressed) {
+      //   // Button released
+      //   armPressed = false;
+      // }
 
     
     //   if(OI.button(1, B_BUTTON)){
@@ -198,15 +201,15 @@ public class Robot extends TimedRobot implements ControMap{
 
 
       //shoot slow with A
-      if(OI.button(1, ControMap.A_BUTTON)){
-        Chassis.setFastMode(true);
-        Chassis.setFactor(0.048);
-      }
-      //shoot fast with B
-      if (OI.button(1, ControMap.B_BUTTON)){  
-        Chassis.setFastMode(false);
-        Chassis.setFactor(0.109);
-      }
+      // if(OI.button(1, ControMap.A_BUTTON)){
+      //   Chassis.setFastMode(true);
+      //   Chassis.setFactor(0.048);
+      // }
+      // //shoot fast with B
+      // if (OI.button(1, ControMap.B_BUTTON)){  
+      //   Chassis.setFastMode(false);
+      //   Chassis.setFactor(0.109);
+      // }
     }
     //climb with DPad
 
