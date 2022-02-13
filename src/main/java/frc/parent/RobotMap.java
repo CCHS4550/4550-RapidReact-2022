@@ -23,12 +23,11 @@ package frc.parent;
 public interface RobotMap {
 
     // Wheel Talons
-    public static final int FORWARD_LEFT = 4;
-    public static final int FORWARD_RIGHT = 2;
-    public static final int BACK_LEFT = 5;
-    public static final int BACK_RIGHT = 1;
-    public static final int INTAKE = 3; //brushed
-    public static final int INDEXER = 7;
+    public static final int FORWARD_LEFT = 3;
+    public static final int FORWARD_RIGHT = 1;
+    public static final int BACK_LEFT = 4;
+    public static final int BACK_RIGHT = 2;
+    public static final int CLIMBER = 5;
 
 
     //Wheel Polarities
