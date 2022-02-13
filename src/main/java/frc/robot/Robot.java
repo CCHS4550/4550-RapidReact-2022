@@ -34,7 +34,7 @@ public class Robot extends TimedRobot implements ControMap{
   // private static final String kResetPIDs = "Reset PIDs";
   // private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  private Compressor c = new Compressor(PneumaticsModuleType.CTREPCM);
+  //private Compressor c = new Compressor(PneumaticsModuleType.CTREPCM);
   public Boolean armExtended = false;
   public Boolean armPressed = false;
   //Vision vision = new Vision("Camera 1");
@@ -89,10 +89,10 @@ public class Robot extends TimedRobot implements ControMap{
   public void robotPeriodic() {
     
     
-    if(RobotMap.COMPRESSOR_ENABLE)
-      c.enableDigital();
-    else 
-      c.disable();
+    //if(RobotMap.COMPRESSOR_ENABLE)
+      //c.enableDigital();
+    //else 
+      //c.disable();
   }
 //stage deez
   /**
@@ -138,7 +138,8 @@ public class Robot extends TimedRobot implements ControMap{
 
   @Override
   public void teleopInit() {
-    
+    Chassis.reset();
+    Shoot.start();
   }
   /**
    * This function is called periodically during operator control.
@@ -157,8 +158,20 @@ public class Robot extends TimedRobot implements ControMap{
     double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime * decelTime;
     Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
-    Shoot.setIndexer(OI.button(1, ControMap.X_BUTTON) ? indexSpeed : OI.button(1, ControMap.Y_BUTTON) ? -indexSpeed : 0);
-    Shoot.setIntake(OI.button(1, ControMap.A_BUTTON) ? indexSpeed : OI.button(1, ControMap.B_BUTTON) ? -indexSpeed : 0);
+    if(OI.button(1, ControMap.X_BUTTON)){
+      Shoot.setIndexer(indexSpeed);
+    } else if(OI.button(1, ControMap.Y_BUTTON)) {
+      Shoot.setIndexer(-indexSpeed);
+    } else {
+      Shoot.setIndexer(0);
+    }
+    if(OI.button(1, ControMap.A_BUTTON)){
+      Shoot.setIntake(indexSpeed);
+    } else if(OI.button(1, ControMap.B_BUTTON)) {
+      Shoot.setIntake(-indexSpeed);
+    } else {
+      Shoot.setIntake(0);
+    }
     if(true /*Arms.climberCont*/){
       // if (OI.button(0, A_BUTTON)){
       //   System.out.println("Elevator down");
@@ -170,18 +183,18 @@ public class Robot extends TimedRobot implements ControMap{
       // } else {
       //   Arms.climberStop();
       // }
-      // if(OI.button(1, Y_BUTTON)){
-      //   // Button pressed for first time
-      //   if (!armPressed) {
-      //     armPressed = true;
-      //     armExtended = !armExtended;
-      //     Arms.setArms(armExtended);
-      //     System.out.println("Arms up");
-      //   }
-      // } else if (armPressed) {
-      //   // Button released
-      //   armPressed = false;
-      // }
+      if(OI.button(1, Y_BUTTON)){
+        // Button pressed for first time
+        if (!armPressed) {
+          armPressed = true;
+          armExtended = !armExtended;
+          Shoot.setSol(armExtended);
+          System.out.println("Arms up");
+        }
+      } else if (armPressed) {
+        // Button released
+        armPressed = false;
+      }
 
     
     //   if(OI.button(1, B_BUTTON)){
