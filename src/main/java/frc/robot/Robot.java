@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.Timer;
+import java.util.ArrayList;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -106,8 +107,10 @@ public class Robot extends TimedRobot implements ControMap{
    * the switch structure below with additional strings. If using the
    * SendableChooser make sure to add them to the chooser code above as well.
    */
+  public double startAng = 0;
   @Override
   public void autonomousInit() {
+    Chassis.setGyroAdj(startAng);
     Chassis.reset();
     // System.out.println("Auto selected: " + m_autoSelected);
     
@@ -131,9 +134,103 @@ public class Robot extends TimedRobot implements ControMap{
   /**
    * This function is called periodically during autonomous.
    */
+  public ArrayList<Double> moves = new ArrayList<Double>();
+  public double angAccepted = 0.05;
+  public double driveAccepted = 0.1;
+  public boolean aiming = false;
+  public boolean driving = false;
+  public Double encoderEnd = null;
+  public final double CAM_DIST = 5; //measure distance between where cam can't see ball anymore and intake
+  public double ballsIn = 2;
+  public double x = 0;
+  public double y = 0;
+  double[] center = {0, 0};
+  Double target = null;
   @Override
   public void autonomousPeriodic() {
-    Chassis.axisDrive(0.3, 0, 0.3);
+    if(ballsIn >= 2){
+      for(int i = 0; i < moves.size(); i += 2){
+        double ang = moves.get(i);
+        double dist = moves.get(i + 1);
+        x += Math.cos(Math.toRadians(ang)) * dist;
+        y += Math.sin(Math.toRadians(ang)) * dist;
+      }
+      int quadrant;
+      double ang = Chassis.getAngle();
+      double yDist = center[1] - y;
+      double xDist = center[0] - x;
+      double dist = Math.pow(xDist * xDist + yDist * yDist, 0.5);
+      double targ = Math.toDegrees(Math.asin(yDist = dist));
+      while(ang >= 360) ang -= 360;
+      if(ang >= 0 && ang < 90){
+        quadrant = 1;
+      } else if(ang >= 90 && ang < 180){
+        quadrant = 2;
+      } else if(ang >= 180 && ang < 270){
+        quadrant = 3;
+      } else {
+        quadrant = 4;
+      }
+      if(quadrant == 2){
+        targ = 180 - targ;
+      }
+      if(quadrant == 3){
+        targ = 180 + targ;
+      }
+      if(quadrant == 4){
+        targ = 360 - targ;
+      }
+      target = targ;
+      return;
+    }
+    Double aim = Vision.aim();
+    if(aim == null){ //no target
+
+      if(driving){ // check driving stuff
+
+        if(encoderEnd == null){ //once ball isn't visible, go for another camdist
+          encoderEnd = Chassis.getLDist() + CAM_DIST;
+          return;
+        }
+        
+        if(Chassis.getLDist() - encoderEnd > driveAccepted){
+          Chassis.axisDrive(1, 0, 0.05);
+          return;
+        }
+        
+        moves.add(Chassis.getLDist());
+        Chassis.reset();
+        driving = false;
+        ballsIn++;
+        return;
+      }
+
+      //turn until you see target
+      Chassis.axisDrive(0, 1, 0.05);
+      aiming = true;
+      return;
+    }
+
+    if(aim > angAccepted){ // have target but still aiming
+      Chassis.axisDrive(0, aim, 0.05);
+      aiming = true;
+      return;
+    }
+
+    if(aiming) { // finished aiming at ball
+      moves.add(Chassis.getAngle());
+      aiming = false;
+      driving = true;
+      encoderEnd = null;
+      //Chassis.reset();
+      Chassis.setGyroAdj(0);
+      return;
+    }
+
+    if(driving){
+      Chassis.axisDrive(1, 0, 0.05);
+    }
+
   }
 
   @Override
@@ -146,6 +243,7 @@ public class Robot extends TimedRobot implements ControMap{
   public double deltaTime = 0.02;
   public double decelTime = 0.25;
   public double velocity = 0;
+  public float indexSpeed = 1;
   @Override
   public void teleopPeriodic() {
     if(OI.button(0, ControMap.Y_BUTTON)){
@@ -157,16 +255,16 @@ public class Robot extends TimedRobot implements ControMap{
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime * decelTime;
     Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     if(true /*Arms.climberCont*/){
-      // if (OI.button(0, A_BUTTON)){
-      //   System.out.println("Elevator down");
-      //   Arms.climberDown();
-      // }
-      // else if (OI.button(0, B_BUTTON)){
-      //   System.out.println("Elevator up");
-      //   Arms.climberUp();
-      // } else {
-      //   Arms.climberStop();
-      // }
+      if (OI.button(0, A_BUTTON)){
+        System.out.println("Elevator down");
+        Arms.climberDown();
+      }
+      else if (OI.button(0, B_BUTTON)){
+        System.out.println("Elevator up");
+        Arms.climberUp();
+      } else {
+        Arms.climberStop();
+      }
       if(OI.button(1, Y_BUTTON)){
         // Button pressed for first time
         if (!armPressed) {
@@ -179,34 +277,16 @@ public class Robot extends TimedRobot implements ControMap{
         // Button released
         armPressed = false;
       }
-
-    
-    //   if(OI.button(1, B_BUTTON)){
-    //   Arms.toggleCont();
-    //   Arms.climbMonkeyBars();
-    // }
-
-    // if(OI.button(1, A_BUTTON))
-    //   BallDumpy.dumpy.set(true);
-    // else
-    //   BallDumpy.dumpy.set(false);
-    // if(OI.button(1, X_BUTTON))
-    //   vision.aim();
-
-
-
-
-
-      //shoot slow with A
-      if(OI.button(1, ControMap.A_BUTTON)){
-        Chassis.setFastMode(true);
-        Chassis.setFactor(0.048);
-      }
-      //shoot fast with B
-      if (OI.button(1, ControMap.B_BUTTON)){  
-        Chassis.setFastMode(false);
-        Chassis.setFactor(0.109);
-      }
+    }
+    //shoot slow with A
+    if(OI.button(1, ControMap.A_BUTTON)){
+      Chassis.setFastMode(true);
+      Chassis.setFactor(0.048);
+    }
+    //shoot fast with B
+    if (OI.button(1, ControMap.B_BUTTON)){  
+      Chassis.setFastMode(false);
+      Chassis.setFactor(0.109);
     }
     //climb with DPad
 

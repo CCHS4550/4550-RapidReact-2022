@@ -32,7 +32,7 @@ public class Chassis extends BallDumpy{
 
     //AHRS gyro measures the angle of the bot
     public static AHRS gyro = new AHRS(SPI.Port.kMXP);
-
+    
     
 
     //To be used in TeleOP
@@ -89,6 +89,10 @@ public class Chassis extends BallDumpy{
 
     public static double getAngle(){
         return gyro.getAngle();
+    }
+
+    public static void setGyroAdj(double adj){
+        gyro.setAngleAdjustment(adj);
     }
 
     /*

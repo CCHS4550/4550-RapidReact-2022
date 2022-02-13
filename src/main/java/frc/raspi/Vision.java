@@ -96,8 +96,8 @@ public class Vision extends OI{
     public double getYaw(){
         return bestTarget.getYaw();
     }
-    public static double aim(){
-        double rotationSpeed;
+    public static Double aim(){
+        Double rotationSpeed;
         // Vision-alignment mode
 
         // Query the latest result from PhotonVision
@@ -115,7 +115,7 @@ public class Vision extends OI{
 
             // If we have no targets, stay still.
             System.out.println("No Targets");
-            rotationSpeed = 0;
+            rotationSpeed = null;
 
         }
         return rotationSpeed;
