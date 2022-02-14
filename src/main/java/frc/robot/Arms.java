@@ -23,6 +23,9 @@ public class Arms implements RobotMap {
     public static void climberUp(){
         climber.set(-0.1);
     }
+    public static void climberStop(){
+        climber.set(0);
+    }
     /*
     public static void armsOut(){
         armsOne.set(true);
