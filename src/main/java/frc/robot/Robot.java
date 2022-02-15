@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 //testing
 package frc.robot;
-
 import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,7 +38,7 @@ public class Robot extends TimedRobot implements ControMap{
   public Boolean armPressed = false;
   //Vision vision = new Vision("Camera 1");
 
-  int alliance;
+  public int alliance;
   double spdmlt = 1;
  
   /**
@@ -71,7 +70,7 @@ public class Robot extends TimedRobot implements ControMap{
         alliance = -1;
       break;
     }
-    
+    Vision.setPipeline(alliance);
     
 
   }
@@ -146,11 +145,24 @@ public class Robot extends TimedRobot implements ControMap{
   public double deltaTime = 0.02;
   public double decelTime = 0.25;
   public double velocity = 0;
+  public boolean aimPressed = false;
+  public double aimAng = 0;
+  public double camWidth = 22;
   @Override
   public void teleopPeriodic() {
     if(OI.button(0, ControMap.Y_BUTTON)){
-      Chassis.axisDrive(0, Vision.aim(), 0.05);
-      return;
+      if(!aimPressed){
+        aimPressed = true;
+        double perc = Vision.getYaw() / camWidth;
+        double ang = perc + 0.0434;
+        ang /= 0.0113;
+        aimAng = Chassis.getAngle() + ang;
+      } else {
+        if(Math.abs(aimAng - Chassis.getAngle()) <= 1) return;
+        Chassis.axisDrive(0, Math.abs(aimAng - Chassis.getAngle()) / (aimAng - Chassis.getAngle()), 0.25);
+      }
+    } else {
+      aimPressed = false;
     }
     //System.out.println("method teleopPeriodic() entry");
     double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);

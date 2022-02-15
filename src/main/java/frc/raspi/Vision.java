@@ -93,8 +93,10 @@ public class Vision extends OI{
        List<TargetCorner> corners = bestTarget.getCorners();
        return corners;
     }
-    public double getYaw(){
-        return bestTarget.getYaw();
+    public static Double getYaw(){
+        var result = camera.getLatestResult();
+        if(!result.hasTargets()) return null;
+        return result.getBestTarget().getYaw();
     }
     public static double aim(){
         double rotationSpeed;
@@ -104,12 +106,13 @@ public class Vision extends OI{
 
         var result = camera.getLatestResult();
         if (result.hasTargets()) {
-            camera.setPipelineIndex(1);
             // Calculate angular turn power
 
             // -1.0 required to ensure positive PID controller effort _increases_ yaw
             System.out.println("Best Target Yaw: " + result.getBestTarget().getYaw());
-            rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+            if(Math.abs(result.getBestTarget().getYaw()) <= 1) return 0;
+            rotationSpeed = 0.5 * result.getBestTarget().getYaw() / Math.abs(result.getBestTarget().getYaw());
+            // rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
 
         } else {
 
@@ -119,6 +122,10 @@ public class Vision extends OI{
 
         }
         return rotationSpeed;
+    }
+
+    public static void setPipeline(int p){
+        camera.setPipelineIndex(p);
     }
 //     public void aim(){
 //         double forwardSpeed;
