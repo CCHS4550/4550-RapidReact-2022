@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.parent.ControMap;
+import frc.parent.ControlMap;
 import frc.parent.RobotMap;
 import frc.raspi.Vision;
 //import frc.raspi.Vision;
@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot implements ControMap{
+public class Robot extends TimedRobot implements ControlMap{
   // private static final String kDefaultAuto = "Default";
   // private static final String kCustomAuto = "My Auto";
   // private static final String kResetPIDs = "Reset PIDs";
@@ -155,7 +155,7 @@ public class Robot extends TimedRobot implements ControMap{
   @Override
   public void teleopPeriodic() {
 
-    if(OI.button(0, ControMap.Y_BUTTON)){
+    if(OI.button(0, ControlMap.Y_BUTTON)){
       //if yaw isn't just angle this might work
       if(amongus){
         //if there's no target, do nothing
@@ -190,12 +190,12 @@ public class Robot extends TimedRobot implements ControMap{
     }
 
     //Emergency brake
-    decelTime = OI.button(0, ControMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
+    decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
 
     //System.out.println("method teleopPeriodic() entry");
-    double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
+    double joystick = OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
     if(joystick - velocity != 0) velocity += (joystick - velocity) * deltaTime / Math.abs(joystick - velocity) / decelTime;
-    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
+    Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     if(true /*Arms.climberCont*/){
       // if (OI.button(0, A_BUTTON)){
       //   System.out.println("Elevator down");
@@ -220,30 +220,13 @@ public class Robot extends TimedRobot implements ControMap{
         armPressed = false;
       }
 
-    
-    //   if(OI.button(1, B_BUTTON)){
-    //   Arms.toggleCont();
-    //   Arms.climbMonkeyBars();
-    // }
-
-    // if(OI.button(1, A_BUTTON))
-    //   BallDumpy.dumpy.set(true);
-    // else
-    //   BallDumpy.dumpy.set(false);
-    // if(OI.button(1, X_BUTTON))
-    //   vision.aim();
-
-
-
-
-
       //shoot slow with A
-      if(OI.button(1, ControMap.A_BUTTON)){
+      if(OI.button(1, ControlMap.A_BUTTON)){
         Chassis.setFastMode(true);
         Chassis.setFactor(0.048);
       }
       //shoot fast with B
-      if (OI.button(1, ControMap.B_BUTTON)){  
+      if (OI.button(1, ControlMap.B_BUTTON)){  
         Chassis.setFastMode(false);
         Chassis.setFactor(0.109);
       }
