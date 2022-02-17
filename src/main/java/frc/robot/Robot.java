@@ -147,19 +147,34 @@ public class Robot extends TimedRobot implements ControMap{
   public double velocity = 0;
   public boolean aimPressed = false;
   public double aimAng = 0;
-  public double camWidth = 22;
+  public double camWidth = 50;
+  public double lastYaw = 100;
+  public boolean amongus = true;
   @Override
   public void teleopPeriodic() {
     if(OI.button(0, ControMap.Y_BUTTON)){
-      if(!aimPressed){
-        aimPressed = true;
-        double perc = Vision.getYaw() / camWidth;
-        double ang = perc + 0.0434;
-        ang /= 0.0113;
-        aimAng = Chassis.getAngle() + ang;
+      //if yaw isn't just angle this might work
+      if(amongus){
+        if(Vision.getYaw() == null) return;
+        if(!aimPressed){
+          aimPressed = true;
+          lastYaw = Vision.getYaw();
+        } else if(Math.abs(Vision.getYaw()) < lastYaw) {
+          Chassis.axisDrive(0, Vision.getYaw() / Math.abs(Vision.getYaw()), 0.25);
+          lastYaw = Math.abs(Vision.getYaw());
+        }
       } else {
-        if(Math.abs(aimAng - Chassis.getAngle()) <= 1) return;
-        Chassis.axisDrive(0, Math.abs(aimAng - Chassis.getAngle()) / (aimAng - Chassis.getAngle()), 0.25);
+        //if yaw is just angle this should work I hope
+        if(!aimPressed){
+          if(Vision.getYaw() == null) return;
+          Chassis.reset();
+          aimAng = Vision.getYaw();
+          aimPressed = true;
+        } else {
+          if(Chassis.getAngle() - aimAng >= 5){
+            Chassis.axisDrive(0, Math.abs(Chassis.getAngle() - aimAng) / (Chassis.getAngle() - aimAng), 0.25);
+          }
+        }
       }
     } else {
       aimPressed = false;
