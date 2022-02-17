@@ -143,7 +143,9 @@ public class Robot extends TimedRobot implements ControMap{
    * This function is called periodically during operator control.
    */
   public double deltaTime = 0.02;
-  public double decelTime = 0.25;
+  public double decelTimeSlow = 4;
+  public double decelTimeFast = 1;
+  public double decelTime = decelTimeSlow;
   public double velocity = 0;
   public boolean aimPressed = false;
   public double aimAng = 0;
@@ -179,9 +181,13 @@ public class Robot extends TimedRobot implements ControMap{
     } else {
       aimPressed = false;
     }
+
+    //Emergency brake
+    decelTime = OI.button(0, ControMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
+
     //System.out.println("method teleopPeriodic() entry");
     double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
-    if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime * decelTime;
+    if(joystick - velocity != 0) velocity += (joystick - velocity) * deltaTime / Math.abs(joystick - velocity) / decelTime;
     Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     if(true /*Arms.climberCont*/){
       // if (OI.button(0, A_BUTTON)){
