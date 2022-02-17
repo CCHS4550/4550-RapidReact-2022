@@ -150,29 +150,36 @@ public class Robot extends TimedRobot implements ControMap{
   public boolean aimPressed = false;
   public double aimAng = 0;
   public double camWidth = 50;
-  public double lastYaw = 100;
+  public double lastYaw = 69;
   public boolean amongus = true;
   @Override
   public void teleopPeriodic() {
+
     if(OI.button(0, ControMap.Y_BUTTON)){
       //if yaw isn't just angle this might work
       if(amongus){
+        //if there's no target, do nothing
         if(Vision.getYaw() == null) return;
         if(!aimPressed){
           aimPressed = true;
           lastYaw = Vision.getYaw();
+          //if it's the first frame, initialize yaw
         } else if(Math.abs(Vision.getYaw()) < lastYaw) {
+          //only turn if the current yaw is closer to 0 than the previous (may have to update this every few frames instead)
           Chassis.axisDrive(0, Vision.getYaw() / Math.abs(Vision.getYaw()), 0.25);
           lastYaw = Math.abs(Vision.getYaw());
         }
       } else {
         //if yaw is just angle this should work I hope
         if(!aimPressed){
+          //if there's no target, do nothing
           if(Vision.getYaw() == null) return;
+          //if there's a target, reset the gyro and get the angle to turn to (depending on how negatives work, may have to add or subtract 360)
           Chassis.reset();
           aimAng = Vision.getYaw();
           aimPressed = true;
         } else {
+          //if we're not within 5 degrees, turn in the directon of the aimed angle
           if(Chassis.getAngle() - aimAng >= 5){
             Chassis.axisDrive(0, Math.abs(Chassis.getAngle() - aimAng) / (Chassis.getAngle() - aimAng), 0.25);
           }
