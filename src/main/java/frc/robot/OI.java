@@ -20,7 +20,6 @@ public class OI {
     //The method takes in the RobotMap button
     //i.e "RobotMap.A_BUTTON"
     public static boolean button(int index, int button){
-        if(button == ControMap.LT) return axis(index, ControMap.LT) > 0.1;
         return joystickArray[index].getRawButton(button);
     }
 

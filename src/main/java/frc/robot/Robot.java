@@ -36,8 +36,6 @@ public class Robot extends TimedRobot implements ControMap{
   // private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private Compressor c = new Compressor(PneumaticsModuleType.CTREPCM);
-  public Boolean armExtended = false;
-  public Boolean armPressed = false;
   //Vision vision = new Vision("Camera 1");
 
   public int alliance;
@@ -144,17 +142,22 @@ public class Robot extends TimedRobot implements ControMap{
   /**
    * This function is called periodically during operator control.
    */
-  public double deltaTime = 0.02;
   public double decelTime = 4;
   public double decelTimeFast = 1;
   public double decelTimeSlow = 4;
+
   public double velocity = 0;
+  public double deltaTime = 0.02;
+
   public boolean aimPressed = false;
   public double aimAng = 0;
   public double camWidth = 22;
 
   public boolean intakePressed = false;
   public boolean intakeExtended = false;
+
+  public Boolean armExtended = false;
+  public Boolean armPressed = false;
   @Override
   public void teleopPeriodic() {
     // if(OI.button(0, ControMap.Y_BUTTON)){
@@ -202,6 +205,19 @@ public class Robot extends TimedRobot implements ControMap{
     } else if (armPressed) {
       // Button released
       armPressed = false;
+    }
+
+    //Intake Arms Toggle (X)
+    if(OI.button(1, X_BUTTON)){
+      // Button pressed for first time
+      if (!intakePressed) {
+        intakePressed = true;
+        intakeExtended = !intakeExtended;
+        Arms.setArms(intakeExtended);
+      }
+    } else if (intakePressed) {
+      // Button released
+      intakePressed = false;
     }
 
     //LB to suck, LT to vom
