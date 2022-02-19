@@ -28,9 +28,11 @@ public interface RobotMap {
     public static final int BACK_LEFT = 2;
     public static final int BACK_RIGHT = 4;
     public static final int CLIMBER = 5;
-    public static final int SHOOTER = 6;
+    public static final int SHOOTER = 9;
+    public static final int SHOOTER2 = 10; // only on 2020 bot
     public static final int LOADER = 7;
-    public static final int SUCKY = 8;
+    public static final int SPINDEXER = 5;
+    public static final int SUCKY = 6;
 
 
     //Wheel Polarities
@@ -51,8 +53,8 @@ public interface RobotMap {
     public static final int ARM_SOLENOID_TWO = 2;
     public static final int SHIFT_SOLENOID_ONE = 0;
     public static final int SHIFT_SOLENOID_TWO = 1;
-    public static final int INTAKE_SOLENOID_ONE = 4;
-    public static final int INTAKE_SOLENOID_TWO = 5;
+    public static final int INTAKE_SOLENOID_ONE = 2;
+    public static final int INTAKE_SOLENOID_TWO = 3;
 
     //Other Constancts 
     public static final int ROBOT_Y_DIR_SIGN = 1;

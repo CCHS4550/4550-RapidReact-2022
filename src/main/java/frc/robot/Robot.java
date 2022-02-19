@@ -180,58 +180,58 @@ public class Robot extends TimedRobot implements ControMap{
     if(OI.button(0, ControMap.LB_BUTTON)) joystick = 0;
 
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
-    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
+    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.5, 1);
     
     //dpad up or down to control elevator
-    if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
-      Arms.climberDown();
-    } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
-      Arms.climberUp();
-    } else {
-      Arms.climberStop();
-    }
+    // if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
+    //   TedBallin.setSpin(1);
+    // } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
+    //   TedBallin.setSpin(-1);
+    // } else {
+    //   TedBallin.setSpin(0);
+    // }
 
-    //Climbing Arms Toggle (Y)
-    if(OI.button(1, Y_BUTTON)){
-      // Button pressed for first time
-      if (!armPressed) {
-        armPressed = true;
-        armExtended = !armExtended;
-        Arms.setArms(armExtended);
-      }
-    } else if (armPressed) {
-      // Button released
-      armPressed = false;
-    }
+    // //Climbing Arms Toggle (Y)
+    // // if(OI.button(1, Y_BUTTON)){
+    // //   // Button pressed for first time
+    // //   if (!armPressed) {
+    // //     armPressed = true;
+    // //     armExtended = !armExtended;
+    // //     Arms.setArms(armExtended);
+    // //   }
+    // // } else if (armPressed) {
+    // //   // Button released
+    // //   armPressed = false;
+    // // }
 
-    //Intake Arms Toggle (X)
-    if(OI.button(1, X_BUTTON)){
-      // Button pressed for first time
-      if (!intakePressed) {
-        intakePressed = true;
-        intakeExtended = !intakeExtended;
-        Arms.setArms(intakeExtended);
-      }
-    } else if (intakePressed) {
-      // Button released
-      intakePressed = false;
-    }
+    // //Intake Arms Toggle (X)
+    // if(OI.button(1, X_BUTTON)){
+    //   // Button pressed for first time
+    //   if (!intakePressed) {
+    //     intakePressed = true;
+    //     intakeExtended = !intakeExtended;
+    //     Intake.intakeArms(intakeExtended);
+    //   }
+    // } else if (intakePressed) {
+    //   // Button released
+    //   intakePressed = false;
+    // }
 
-    //LB to suck, LT to vom
-    if (OI.button(1, LB_BUTTON))
-      Intake.suck();
-    else if(OI.button(1, LT))
-      Intake.vomit();
-    else
-      Intake.stop();
+    // //LB to suck, LT to vom
+    // if (OI.button(1, LB_BUTTON))
+    //   Intake.suck();
+    // else if(OI.axis(1, LT) >= .5)
+    //   Intake.vomit();
+    // else
+    //   Intake.stop();
 
-    //RB for fast shoot, RT for slow shoot
-    if(OI.button(1, RB_BUTTON))
-      TedBallin.shootFast();
-    else if(OI.button(1, RT))
-      TedBallin.shootSlow();
-    else
-      TedBallin.shootStop();
+    // //RB for fast shoot, RT for slow shoot
+    // if(OI.button(1, RB_BUTTON))
+    //   TedBallin.shootFast();
+    // else if(OI.axis(1, RT) >= 0.5)
+    //   TedBallin.shootSlow();
+    // else
+    //   TedBallin.shootStop();
 
   }
 

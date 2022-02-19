@@ -98,8 +98,8 @@ public class Vision extends OI{
         if(!result.hasTargets()) return null;
         return result.getBestTarget().getYaw();
     }
-    public static double aim(){
-        double rotationSpeed;
+    public static Double aim(){
+        Double rotationSpeed;
         // Vision-alignment mode
 
         // Query the latest result from PhotonVision
@@ -110,15 +110,15 @@ public class Vision extends OI{
 
             // -1.0 required to ensure positive PID controller effort _increases_ yaw
             System.out.println("Best Target Yaw: " + result.getBestTarget().getYaw());
-            if(Math.abs(result.getBestTarget().getYaw()) <= 1) return 0;
-            rotationSpeed = 0.5 * result.getBestTarget().getYaw() / Math.abs(result.getBestTarget().getYaw());
-            // rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+            if(Math.abs(result.getBestTarget().getYaw()) <= 1) return 0d;
+            //rotationSpeed = 0.5 * result.getBestTarget().getYaw() / Math.abs(result.getBestTarget().getYaw());
+            rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
 
         } else {
 
             // If we have no targets, stay still.
             System.out.println("No Targets");
-            rotationSpeed = 0;
+            rotationSpeed = null;
 
         }
         return rotationSpeed;
