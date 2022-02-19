@@ -22,7 +22,7 @@ import frc.robot.OI;
 
 public class Vision extends OI{
     final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
-
+    private String name;
     final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
 
     // Angle between horizontal and the camera.
@@ -59,7 +59,9 @@ public class Vision extends OI{
 
     // Drive motors
 
-
+    public Vision (String n){
+        name = n;
+    }
 
 
     PhotonTrackedTarget bestTarget;
