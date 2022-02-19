@@ -22,6 +22,10 @@ import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 //import edu.wpi.first.wpilibj.Solenoid;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -38,6 +42,10 @@ public class Robot extends TimedRobot implements ControMap{
   private Compressor c = new Compressor(PneumaticsModuleType.CTREPCM);
   //Vision vision = new Vision("Camera 1");
 
+  NetworkTableEntry switchEntry;
+  NetworkTableInstance inst;
+  NetworkTable table;
+
   public int alliance;
   double spdmlt = 1;
  
@@ -47,6 +55,9 @@ public class Robot extends TimedRobot implements ControMap{
    */
   @Override
   public void robotInit() {
+
+    inst = NetworkTableInstance.getDefault();
+    table = inst.getTable("switch");
     
    // diagnostics = new Diagnostics2(Chassis.fLeft, Chassis.fRight, Chassis.bLeft, Chassis.bRight, Chassis.climberLeft, Chassis.climberRight);
     // m_chooser.addOption("My Auto", kCustomAuto);
@@ -157,14 +168,19 @@ public class Robot extends TimedRobot implements ControMap{
 
   public Boolean armExtended = false;
   public Boolean armPressed = false;
+
+  public boolean switchPressed = false;
+
   @Override
   public void teleopPeriodic() {
+    switchPressed = table.getEntry("switch").getBoolean(false);
+
     if(OI.button(0, ControMap.Y_BUTTON)){
-      if(Vision.aim() == null){
-        if(!aimPressed) return;
-        Chassis.axisDrive(0, lastAim, 0.25);
-        return;
-      }
+      // if(Vision.aim() == null){
+      //   if(!aimPressed) return;
+      //   Chassis.axisDrive(0, lastAim, 0.25);
+      //   return;
+      // }
       aimPressed = true;
       lastAim = Vision.aim();
       Chassis.axisDrive(0, Vision.aim(), 0.25);
@@ -183,7 +199,7 @@ public class Robot extends TimedRobot implements ControMap{
     Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     
     //dpad up or down to control elevator
-    if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
+    if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT) && !switchPressed){
       Arms.climberDown();
     } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
       Arms.climberUp();
