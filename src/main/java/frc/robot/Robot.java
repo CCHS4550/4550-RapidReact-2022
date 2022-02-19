@@ -6,18 +6,21 @@
 /*----------------------------------------------------------------------------*/
 //testing
 package frc.robot;
+//import javax.lang.model.util.ElementScanner6;
 
 import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControMap;
 import frc.parent.RobotMap;
 import frc.raspi.Vision;
+//import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+//import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,15 +30,15 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  * project.
  */
 public class Robot extends TimedRobot implements ControMap{
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private static final String kResetPIDs = "Reset PIDs";
-  private String m_autoSelected;
+  // private static final String kDefaultAuto = "Default";
+  // private static final String kCustomAuto = "My Auto";
+  // private static final String kResetPIDs = "Reset PIDs";
+  // private String m_autoSelected;
   //private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  private Compressor c = new Compressor(PneumaticsModuleType.REVPH);
-  Vision vision = new Vision("Camera 1");
+  private Compressor c = new Compressor(PneumaticsModuleType.CTREPCM);
+  //Vision vision = new Vision("Camera 1");
 
-  int alliance;
+  public int alliance;
   double spdmlt = 1;
  
   /**
@@ -67,7 +70,7 @@ public class Robot extends TimedRobot implements ControMap{
         alliance = -1;
       break;
     }
-    
+    Vision.setPipeline(alliance);
     
 
   }
@@ -105,23 +108,22 @@ public class Robot extends TimedRobot implements ControMap{
   @Override
   public void autonomousInit() {
     Chassis.reset();
-    Chassis.driveDist(5, 0.1, 0.1, 0.15, false);
-    System.out.println("Auto selected: " + m_autoSelected);
+    // System.out.println("Auto selected: " + m_autoSelected);
     
-    double dist = SmartDashboard.getNumber("Distance", 0);
-    double angl = SmartDashboard.getNumber("Angle", 0);
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        break;
-      case kDefaultAuto:
-        Chassis.driveDist(dist, 0.05, 0.04, 0.25, false);
-        Chassis.turnToAngle(angl, 0.005, 0.5, 0.25, false);
-        break;
-      case kResetPIDs:
-        break;
-      default:
-        break;
-    }
+    // double dist = SmartDashboard.getNumber("Distance", 0);
+    // double angl = SmartDashboard.getNumber("Angle", 0);
+    // switch (m_autoSelected) {
+    //   case kCustomAuto:
+    //     break;
+    //   case kDefaultAuto:
+    //     Chassis.driveDist(dist, 0.05, 0.04, 0.25, false);
+    //     Chassis.turnToAngle(angl, 0.005, 0.5, 0.25, false);
+    //     break;
+    //   case kResetPIDs:
+    //     break;
+    //   default:
+    //     break;
+    // }
 
   }
 
@@ -130,46 +132,106 @@ public class Robot extends TimedRobot implements ControMap{
    */
   @Override
   public void autonomousPeriodic() {
+    Chassis.axisDrive(0.3, 0, 0.3);
   }
 
   @Override
   public void teleopInit() {
     
   }
-
   /**
    * This function is called periodically during operator control.
    */
+  public double decelTime = 4;
+  public double decelTimeFast = 1;
+  public double decelTimeSlow = 4;
+
+  public double velocity = 0;
+  public double deltaTime = 0.02;
+
+  public boolean aimPressed = false;
+  public double lastAim = 0;
+
+  public boolean intakePressed = false;
+  public boolean intakeExtended = false;
+
+  public Boolean armExtended = false;
+  public Boolean armPressed = false;
   @Override
   public void teleopPeriodic() {
-    // System.out.println("method teleopPeriodic() entry");
-    Chassis.axisDrive(OI.axis(0, ControMap.L_JOYSTICK_VERTICAL),
-                      OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL), 0.5);
-if(OI.button(1, Y_BUTTON))
-    Arms.toggleCont();
-   
-if(OI.button(1, X_BUTTON))
-      vision.aim();
-
-
-
-
-
-   /* //shoot slow with A
-    if(OI.button(ControMap.A_BUTTON)){
-      Chassis.setFastMode(true);
-      Chassis.setFactor(0.048);
+    if(OI.button(0, ControMap.Y_BUTTON)){
+      if(Vision.aim() == null){
+        if(!aimPressed) return;
+        Chassis.axisDrive(0, lastAim, 0.25);
+        return;
+      }
+      aimPressed = true;
+      lastAim = Vision.aim();
+      Chassis.axisDrive(0, Vision.aim(), 0.25);
+    } else {
+      aimPressed = false;
     }
-    //shoot fast with B
-    if (OI.button(ControMap.B_BUTTON)){  
-      Chassis.setFastMode(false);
-      Chassis.setFactor(0.109);
-    }
-    //climb with DPad
-*/
-   
 
+    //driving with accel
+    double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
+
+    //Emergency Brake
+    decelTime = OI.button(0, ControMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
+    if(OI.button(0, ControMap.LB_BUTTON)) joystick = 0;
+
+    if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
+    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     
+    //dpad up or down to control elevator
+    if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
+      Arms.climberDown();
+    } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
+      Arms.climberUp();
+    } else {
+      Arms.climberStop();
+    }
+
+    //Climbing Arms Toggle (Y)
+    if(OI.button(1, Y_BUTTON)){
+      // Button pressed for first time
+      if (!armPressed) {
+        armPressed = true;
+        armExtended = !armExtended;
+        Arms.setArms(armExtended);
+      }
+    } else if (armPressed) {
+      // Button released
+      armPressed = false;
+    }
+
+    //Intake Arms Toggle (X)
+    if(OI.button(1, X_BUTTON)){
+      // Button pressed for first time
+      if (!intakePressed) {
+        intakePressed = true;
+        intakeExtended = !intakeExtended;
+        Arms.setArms(intakeExtended);
+      }
+    } else if (intakePressed) {
+      // Button released
+      intakePressed = false;
+    }
+
+    //LB to suck, LT to vom
+    if (OI.button(1, LB_BUTTON))
+      Intake.suck();
+    else if(OI.button(1, LT))
+      Intake.vomit();
+    else
+      Intake.stop();
+
+    //RB for fast shoot, RT for slow shoot
+    if(OI.button(1, RB_BUTTON))
+      TedBallin.shootFast();
+    else if(OI.button(1, RT))
+      TedBallin.shootSlow();
+    else
+      TedBallin.shootStop();
 
   }
 
