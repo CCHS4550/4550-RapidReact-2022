@@ -1,7 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import frc.parent.ControMap;
+import frc.parent.ControlMap;
 
 //This controllers are user input
 //It also has the normalize method cuz IDK where else to put it

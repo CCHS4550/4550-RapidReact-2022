@@ -157,14 +157,14 @@ public class Robot extends TimedRobot implements ControlMap{
 
     if(OI.button(0, ControlMap.Y_BUTTON)){
       //if yaw isn't just angle this might work
-      if(amongus){
+      if(!amongus){
         //if there's no target, do nothing
         if(Vision.getYaw() == null) return;
         if(!aimPressed){
           aimPressed = true;
           lastYaw = Vision.getYaw();
           //if it's the first frame, initialize yaw
-        } else if(Math.abs(Vision.getYaw()) < lastYaw) {
+        } else if(Math.abs(Vision.getYaw()) <= lastYaw) {
           //only turn if the current yaw is closer to 0 than the previous (may have to update this every few frames instead)
           Chassis.axisDrive(0, Vision.getYaw() / Math.abs(Vision.getYaw()), 0.25);
           lastYaw = Math.abs(Vision.getYaw());
@@ -177,10 +177,12 @@ public class Robot extends TimedRobot implements ControlMap{
           //if there's a target, reset the gyro and get the angle to turn to (depending on how negatives work, may have to add or subtract 360)
           Chassis.reset();
           aimAng = Vision.getYaw();
+          if(aimAng < 0) aimAng += 360;
           aimPressed = true;
+          System.out.println(Chassis.getAngle() + " " + aimAng);
         } else {
           //if we're not within 5 degrees, turn in the directon of the aimed angle
-          if(Chassis.getAngle() - aimAng >= 5){
+          if(Chassis.getAngle() - aimAng >= 1){
             Chassis.axisDrive(0, Math.abs(Chassis.getAngle() - aimAng) / (Chassis.getAngle() - aimAng), 0.25);
           }
         }
@@ -194,7 +196,9 @@ public class Robot extends TimedRobot implements ControlMap{
 
     //System.out.println("method teleopPeriodic() entry");
     double joystick = OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
+    if(Math.abs(joystick - velocity) < 0.05) velocity = joystick; 
     if(joystick - velocity != 0) velocity += (joystick - velocity) * deltaTime / Math.abs(joystick - velocity) / decelTime;
+    //System.out.println(OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) + " " + velocity);
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     if(true /*Arms.climberCont*/){
       // if (OI.button(0, A_BUTTON)){
