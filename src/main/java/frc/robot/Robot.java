@@ -150,8 +150,7 @@ public class Robot extends TimedRobot implements ControMap{
   public double deltaTime = 0.02;
 
   public boolean aimPressed = false;
-  public double aimAng = 0;
-  public double camWidth = 22;
+  public double lastAim = 0;
 
   public boolean intakePressed = false;
   public boolean intakeExtended = false;
@@ -160,20 +159,18 @@ public class Robot extends TimedRobot implements ControMap{
   public Boolean armPressed = false;
   @Override
   public void teleopPeriodic() {
-    // if(OI.button(0, ControMap.Y_BUTTON)){
-    //   if(!aimPressed){
-    //     aimPressed = true;
-    //     double perc = Vision.getYaw() / camWidth;
-    //     double ang = perc + 0.0434;
-    //     ang /= 0.0113;
-    //     aimAng = Chassis.getAngle() + ang;
-    //   } else {
-    //     if(Math.abs(aimAng - Chassis.getAngle()) <= 1) return;
-    //     Chassis.axisDrive(0, Math.abs(aimAng - Chassis.getAngle()) / (aimAng - Chassis.getAngle()), 0.25);
-    //   }
-    // } else {
-    //   aimPressed = false;
-    // }
+    if(OI.button(0, ControMap.Y_BUTTON)){
+      if(Vision.aim() == null){
+        if(!aimPressed) return;
+        Chassis.axisDrive(0, lastAim, 0.25);
+        return;
+      }
+      aimPressed = true;
+      lastAim = Vision.aim();
+      Chassis.axisDrive(0, Vision.aim(), 0.25);
+    } else {
+      aimPressed = false;
+    }
 
     //driving with accel
     double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
