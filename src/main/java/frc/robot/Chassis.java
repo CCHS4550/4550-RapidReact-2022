@@ -41,7 +41,7 @@ public class Chassis extends BallDumpy{
     //DO NOT USE THIS FOR SWERV DRIVE 
     public static void axisDrive(double yAxis, double xAxis, double max){
         fLeft.set(-OI.normalize((yAxis - xAxis), -max, max));
-        fRight.set(-OI.normalize((yAxis + xAxis), -max, max));//changed + to - on right, it bwokey
+        fRight.set(-OI.normalize((yAxis + xAxis), -max, max));
         bLeft.set(-OI.normalize((yAxis - xAxis), -max, max));
         bRight.set(-OI.normalize((yAxis + xAxis), -max, max));
     }

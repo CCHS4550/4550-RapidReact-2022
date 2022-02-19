@@ -109,8 +109,9 @@ public class Vision extends OI{
             // Calculate angular turn power
 
             // -1.0 required to ensure positive PID controller effort _increases_ yaw
+            System.out.println("Best Target Yaw: " + result.getBestTarget().getYaw());
             if(Math.abs(result.getBestTarget().getYaw()) <= 1) return 0;
-            rotationSpeed = result.getBestTarget().getYaw() / Math.abs(result.getBestTarget().getYaw());
+            rotationSpeed = 0.5 * result.getBestTarget().getYaw() / Math.abs(result.getBestTarget().getYaw());
             // rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
 
         } else {

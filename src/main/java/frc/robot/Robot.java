@@ -6,6 +6,8 @@
 /*----------------------------------------------------------------------------*/
 //testing
 package frc.robot;
+//import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,7 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.parent.ControlMap;
+import frc.parent.ControMap;
 import frc.parent.RobotMap;
 import frc.raspi.Vision;
 //import frc.raspi.Vision;
@@ -27,7 +29,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot implements ControlMap{
+public class Robot extends TimedRobot implements ControMap{
   // private static final String kDefaultAuto = "Default";
   // private static final String kCustomAuto = "My Auto";
   // private static final String kResetPIDs = "Reset PIDs";
@@ -143,99 +145,80 @@ public class Robot extends TimedRobot implements ControlMap{
    * This function is called periodically during operator control.
    */
   public double deltaTime = 0.02;
-  public double decelTimeSlow = 4;
+  public double decelTime = 4;
   public double decelTimeFast = 1;
-  public double decelTime = decelTimeSlow;
+  public double decelTimeSlow = 4;
   public double velocity = 0;
   public boolean aimPressed = false;
   public double aimAng = 0;
-  public double camWidth = 50;
-  public double lastYaw = 69;
-  public boolean amongus = true;
+  public double camWidth = 22;
+
+  public boolean intakePressed = false;
+  public boolean intakeExtended = false;
   @Override
   public void teleopPeriodic() {
+    // if(OI.button(0, ControMap.Y_BUTTON)){
+    //   if(!aimPressed){
+    //     aimPressed = true;
+    //     double perc = Vision.getYaw() / camWidth;
+    //     double ang = perc + 0.0434;
+    //     ang /= 0.0113;
+    //     aimAng = Chassis.getAngle() + ang;
+    //   } else {
+    //     if(Math.abs(aimAng - Chassis.getAngle()) <= 1) return;
+    //     Chassis.axisDrive(0, Math.abs(aimAng - Chassis.getAngle()) / (aimAng - Chassis.getAngle()), 0.25);
+    //   }
+    // } else {
+    //   aimPressed = false;
+    // }
 
-    if(OI.button(0, ControlMap.Y_BUTTON)){
-      //if yaw isn't just angle this might work
-      if(!amongus){
-        //if there's no target, do nothing
-        if(Vision.getYaw() == null) return;
-        if(!aimPressed){
-          aimPressed = true;
-          lastYaw = Vision.getYaw();
-          //if it's the first frame, initialize yaw
-        } else if(Math.abs(Vision.getYaw()) <= lastYaw) {
-          //only turn if the current yaw is closer to 0 than the previous (may have to update this every few frames instead)
-          Chassis.axisDrive(0, Vision.getYaw() / Math.abs(Vision.getYaw()), 0.25);
-          lastYaw = Math.abs(Vision.getYaw());
-        }
-      } else {
-        //if yaw is just angle this should work I hope
-        if(!aimPressed){
-          //if there's no target, do nothing
-          if(Vision.getYaw() == null) return;
-          //if there's a target, reset the gyro and get the angle to turn to (depending on how negatives work, may have to add or subtract 360)
-          Chassis.reset();
-          aimAng = Vision.getYaw();
-          if(aimAng < 0) aimAng += 360;
-          aimPressed = true;
-          System.out.println(Chassis.getAngle() + " " + aimAng);
-        } else {
-          //if we're not within 5 degrees, turn in the directon of the aimed angle
-          if(Chassis.getAngle() - aimAng >= 1){
-            Chassis.axisDrive(0, Math.abs(Chassis.getAngle() - aimAng) / (Chassis.getAngle() - aimAng), 0.25);
-          }
-        }
-      }
+    //driving with accel
+    double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
+
+    //Emergency Brake
+    decelTime = OI.button(0, ControMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
+    if(OI.button(0, ControMap.LB_BUTTON)) joystick = 0;
+
+    if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
+    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
+    
+    //dpad up or down to control elevator
+    if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
+      Arms.climberDown();
+    } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
+      Arms.climberUp();
     } else {
-      aimPressed = false;
+      Arms.climberStop();
     }
 
-    //Emergency brake
-    decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
-
-    //System.out.println("method teleopPeriodic() entry");
-    double joystick = OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
-    if(Math.abs(joystick - velocity) < 0.05) velocity = joystick; 
-    if(joystick - velocity != 0) velocity += (joystick - velocity) * deltaTime / Math.abs(joystick - velocity) / decelTime;
-    //System.out.println(OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) + " " + velocity);
-    Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
-    if(true /*Arms.climberCont*/){
-      // if (OI.button(0, A_BUTTON)){
-      //   System.out.println("Elevator down");
-      //   Arms.climberDown();
-      // }
-      // else if (OI.button(0, B_BUTTON)){
-      //   System.out.println("Elevator up");
-      //   Arms.climberUp();
-      // } else {
-      //   Arms.climberStop();
-      // }
-      if(OI.button(1, Y_BUTTON)){
-        // Button pressed for first time
-        if (!armPressed) {
-          armPressed = true;
-          armExtended = !armExtended;
-          Arms.setArms(armExtended);
-          System.out.println("Arms up");
-        }
-      } else if (armPressed) {
-        // Button released
-        armPressed = false;
+    //Climbing Arms Toggle (Y)
+    if(OI.button(1, Y_BUTTON)){
+      // Button pressed for first time
+      if (!armPressed) {
+        armPressed = true;
+        armExtended = !armExtended;
+        Arms.setArms(armExtended);
       }
-
-      //shoot slow with A
-      if(OI.button(1, ControlMap.A_BUTTON)){
-        Chassis.setFastMode(true);
-        Chassis.setFactor(0.048);
-      }
-      //shoot fast with B
-      if (OI.button(1, ControlMap.B_BUTTON)){  
-        Chassis.setFastMode(false);
-        Chassis.setFactor(0.109);
-      }
+    } else if (armPressed) {
+      // Button released
+      armPressed = false;
     }
-    //climb with DPad
+
+    //LB to suck, LT to vom
+    if (OI.button(1, LB_BUTTON))
+      Intake.suck();
+    else if(OI.button(1, LT))
+      Intake.vomit();
+    else
+      Intake.stop();
+
+    //RB for fast shoot, RT for slow shoot
+    if(OI.button(1, RB_BUTTON))
+      TedBallin.shootFast();
+    else if(OI.button(1, RT))
+      TedBallin.shootSlow();
+    else
+      TedBallin.shootStop();
 
   }
 
