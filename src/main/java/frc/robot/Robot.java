@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.parent.ControMap;
+import frc.parent.ControlMap;
 import frc.parent.RobotMap;
 import frc.raspi.Vision;
 //import frc.raspi.Vision;
@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot implements ControMap{
+public class Robot extends TimedRobot implements ControlMap{
   // private static final String kDefaultAuto = "Default";
   // private static final String kCustomAuto = "My Auto";
   // private static final String kResetPIDs = "Reset PIDs";
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot implements ControMap{
   @Override
   public void autonomousInit() {
     Chassis.reset();
-    // System.out.println("Auto selected: " + m_autoSelected);
+    //System.out.println("Auto selected: " + m_autoSelected);
     
     // double dist = SmartDashboard.getNumber("Distance", 0);
     // double angl = SmartDashboard.getNumber("Angle", 0);
@@ -132,7 +132,7 @@ public class Robot extends TimedRobot implements ControMap{
    */
   @Override
   public void autonomousPeriodic() {
-    Chassis.axisDrive(0.3, 0, 0.3);
+    if(!Chassis.driveDistPeriodic(5, 0.1, 0.5, 0.5, 0)) return;
   }
 
   @Override
@@ -159,7 +159,8 @@ public class Robot extends TimedRobot implements ControMap{
   public Boolean armPressed = false;
   @Override
   public void teleopPeriodic() {
-    if(OI.button(0, ControMap.Y_BUTTON)){
+    if(OI.button(0, ControlMap.Y_BUTTON)){
+      if(aimPressed && lastAim <= 0.05) return;
       if(Vision.aim() == null){
         if(!aimPressed) return;
         Chassis.axisDrive(0, lastAim, 0.25);
@@ -173,16 +174,16 @@ public class Robot extends TimedRobot implements ControMap{
     }
 
     //driving with accel
-    double joystick = OI.axis(0, ControMap.L_JOYSTICK_VERTICAL);
+    double joystick = OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
 
     //Emergency Brake
-    decelTime = OI.button(0, ControMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
-    if(OI.button(0, ControMap.LB_BUTTON)) joystick = 0;
+    decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
+    if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
 
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
-    Chassis.axisDrive(velocity, OI.axis(0, ControMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
+    Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     
-    //dpad up or down to control elevator
+    // //dpad up or down to control elevator
     if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
       Arms.climberDown();
     } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
@@ -191,7 +192,7 @@ public class Robot extends TimedRobot implements ControMap{
       Arms.climberStop();
     }
 
-    //Climbing Arms Toggle (Y)
+    // //Climbing Arms Toggle (Y)
     if(OI.button(1, Y_BUTTON)){
       // Button pressed for first time
       if (!armPressed) {
@@ -204,7 +205,7 @@ public class Robot extends TimedRobot implements ControMap{
       armPressed = false;
     }
 
-    //Intake Arms Toggle (X)
+    // //Intake Arms Toggle (X)
     if(OI.button(1, X_BUTTON)){
       // Button pressed for first time
       if (!intakePressed) {
@@ -217,7 +218,7 @@ public class Robot extends TimedRobot implements ControMap{
       intakePressed = false;
     }
 
-    //LB to suck, LT to vom
+    // //LB to suck, LT to vom
     if (OI.button(1, LB_BUTTON))
       Intake.suck();
     else if(OI.button(1, LT))
@@ -225,7 +226,7 @@ public class Robot extends TimedRobot implements ControMap{
     else
       Intake.stop();
 
-    //RB for fast shoot, RT for slow shoot
+    // //RB for fast shoot, RT for slow shoot
     if(OI.button(1, RB_BUTTON))
       TedBallin.shootFast();
     else if(OI.button(1, RT))
