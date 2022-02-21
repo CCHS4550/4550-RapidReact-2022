@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControlMap;
 import frc.parent.RobotMap;
-import frc.raspi.Vision;
+//import frc.raspi.Vision;
 //import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 //import edu.wpi.first.wpilibj.Solenoid;
@@ -70,7 +70,7 @@ public class Robot extends TimedRobot implements ControlMap{
         alliance = -1;
       break;
     }
-    Vision.setPipeline(alliance);
+    //Vision.setPipeline(alliance);
     
 
   }
@@ -144,7 +144,7 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   public double decelTime = 4;
   public double decelTimeFast = 1;
-  public double decelTimeSlow = 4;
+  public double decelTimeSlow = 2;
 
   public double velocity = 0;
   public double deltaTime = 0.02;
@@ -159,19 +159,19 @@ public class Robot extends TimedRobot implements ControlMap{
   public Boolean armPressed = false;
   @Override
   public void teleopPeriodic() {
-    if(OI.button(0, ControlMap.Y_BUTTON)){
-      if(aimPressed && lastAim <= 0.05) return;
-      if(Vision.aim() == null){
-        if(!aimPressed) return;
-        Chassis.axisDrive(0, lastAim, 0.25);
-        return;
-      }
-      aimPressed = true;
-      lastAim = Vision.aim();
-      Chassis.axisDrive(0, Vision.aim(), 0.25);
-    } else {
-      aimPressed = false;
-    }
+    // if(OI.button(0, ControlMap.Y_BUTTON)){
+    //   if(aimPressed && lastAim <= 0.05) return;
+    //   if(Vision.aim() == null){
+    //     if(!aimPressed) return;
+    //     Chassis.axisDrive(0, lastAim, 0.25);
+    //     return;
+    //   }
+    //   aimPressed = true;
+    //   lastAim = Vision.aim();
+    //   Chassis.axisDrive(0, Vision.aim(), 0.25);
+    // } else {
+    //   aimPressed = false;
+    // }
 
     //driving with accel
     double joystick = OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
@@ -184,53 +184,53 @@ public class Robot extends TimedRobot implements ControlMap{
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
     
     // //dpad up or down to control elevator
-    if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
-      Arms.climberDown();
-    } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
-      Arms.climberUp();
-    } else {
-      Arms.climberStop();
-    }
+    // if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
+    //   Arms.climberDown();
+    // } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){ 
+    //   Arms.climberUp();
+    // } else {
+    //   Arms.climberStop();
+    // }
 
     // //Climbing Arms Toggle (Y)
-    if(OI.button(1, Y_BUTTON)){
-      // Button pressed for first time
-      if (!armPressed) {
-        armPressed = true;
-        armExtended = !armExtended;
-        Arms.setArms(armExtended);
-      }
-    } else if (armPressed) {
-      // Button released
-      armPressed = false;
-    }
+    // if(OI.button(1, Y_BUTTON)){
+    //   // Button pressed for first time
+    //   if (!armPressed) {
+    //     armPressed = true;
+    //     armExtended = !armExtended;
+    //     Arms.setArms(armExtended);
+    //   }
+    // } else if (armPressed) {
+    //   // Button released
+    //   armPressed = false;
+    // }
 
-    // //Intake Arms Toggle (X)
+    //Intake Arms Toggle (X)
     if(OI.button(1, X_BUTTON)){
       // Button pressed for first time
       if (!intakePressed) {
         intakePressed = true;
         intakeExtended = !intakeExtended;
-        Arms.setArms(intakeExtended);
+        Intake.intakeArms(intakeExtended);
       }
     } else if (intakePressed) {
       // Button released
       intakePressed = false;
     }
 
-    // //LB to suck, LT to vom
+    //LB to suck, LT to vom
     if (OI.button(1, LB_BUTTON))
       Intake.suck();
-    else if(OI.button(1, LT))
+    else if(OI.axis(1, LT) >= 0.1)
       Intake.vomit();
     else
       Intake.stop();
 
     // //RB for fast shoot, RT for slow shoot
     if(OI.button(1, RB_BUTTON))
-      TedBallin.shootFast();
-    else if(OI.button(1, RT))
-      TedBallin.shootSlow();
+      TedBallin.setShoot(0.6);
+    else if(OI.axis(1, RT) >= 0.1)
+      TedBallin.setShoot(-0.6);
     else
       TedBallin.shootStop();
 

@@ -3,7 +3,7 @@ package frc.robot;
 //import javax.naming.directory.DirContext;
 
 import edu.wpi.first.wpilibj.Joystick;
-import frc.parent.ControMap;
+import frc.parent.ControlMap;
 
 //This controllers are user input
 //It also has the normalize method cuz IDK where else to put it
@@ -42,7 +42,7 @@ public class OI {
     //i.e. "RobotMap.LT"
     public static double axis(int index, int axis){
         double axisVal = joystickArray[index].getRawAxis(axis);
-        if(axisVal < ControMap.ZERO && axisVal > -ControMap.ZERO)
+        if(axisVal < ControlMap.ZERO && axisVal > -ControlMap.ZERO)
             return 0;
         else 
             return axisVal;
