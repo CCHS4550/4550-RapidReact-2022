@@ -228,9 +228,9 @@ public class Robot extends TimedRobot implements ControlMap{
 
     // //RB for fast shoot, RT for slow shoot
     if(OI.button(1, RB_BUTTON))
-      TedBallin.shootFast();
+      TedBallin.setShoot(0.6);
     else if(OI.axis(1, RT) >= 0.1)
-      TedBallin.shootFast();
+      TedBallin.setShoot(-0.6);
     else
       TedBallin.shootStop();
 

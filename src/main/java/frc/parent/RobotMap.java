@@ -22,16 +22,15 @@ package frc.parent;
 */
 public interface RobotMap {
 
-    // Wheel Sparks
-    public static final int FORWARD_LEFT = 2;
-    public static final int FORWARD_RIGHT = 5;
-    public static final int BACK_LEFT = 3;
-    public static final int BACK_RIGHT = 6;
-    public static final int CLIMBER = 4;
-    public static final int SHOOTER = 1;
-    public static final int SHOOTER_2 = 7;
-    //public static final int LOADER = 7;
-    //public static final int SUCKY = 8;
+    // Wheel Talons
+    public static final int FORWARD_LEFT = 4;
+    public static final int FORWARD_RIGHT = 1;
+    public static final int BACK_LEFT = 5;
+    public static final int BACK_RIGHT = 2;
+    public static final int CLIMBER = 5;
+    public static final int SHOOTER = 6;
+    public static final int LOADER = 7;
+    public static final int SUCKY = 3;
 
 
     //Wheel Polarities
@@ -42,19 +41,18 @@ public interface RobotMap {
     public static final boolean CLIMBER_LEFT_REVERSE = false;
     public static final boolean CLIMBER_RIGHT_REVERSE = false;
     public static final boolean SHOOTER_REVERSE = false;
-    public static final boolean SHOOTER_2_REVERSE = true;
-    // public static final boolean LOADER_REVERSE = false;
-    // public static final boolean SUCKY_REVERSE = false;
+    public static final boolean LOADER_REVERSE = false;
+    public static final boolean SUCKY_REVERSE = false;
 
     
     //Pneumatic Stuff 
     public static final boolean COMPRESSOR_ENABLE = true;
-    public static final int ARM_SOLENOID_ONE = 0;
-    public static final int ARM_SOLENOID_TWO = 1;
-    public static final int SHIFT_SOLENOID_ONE = 2;
-    public static final int SHIFT_SOLENOID_TWO = 3;
-    public static final int INTAKE_SOLENOID_ONE = 6;
-    public static final int INTAKE_SOLENOID_TWO = 7;
+    public static final int ARM_SOLENOID_ONE = 3;
+    public static final int ARM_SOLENOID_TWO = 2;
+    public static final int SHIFT_SOLENOID_ONE = 0;
+    public static final int SHIFT_SOLENOID_TWO = 1;
+    public static final int INTAKE_SOLENOID_ONE = 1;
+    public static final int INTAKE_SOLENOID_TWO = 6;
 
     //Other Constancts 
     public static final int ROBOT_Y_DIR_SIGN = 1;

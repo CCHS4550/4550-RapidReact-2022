@@ -29,15 +29,12 @@ public class TedBallin implements RobotMap{
 
     public static void shootSlow(){
         shooter.set(.3);
-        shooter2.set(.3);
-        // Timer.delay(3000);
-       // loader.set(.6);
+        loader.set(-.6);
     }
 
     public static void shootStop(){
         shooter.set(0);
-        shooter2.set(0);
-       // loader.set(0);
+        loader.set(0);
     }
 
 }
