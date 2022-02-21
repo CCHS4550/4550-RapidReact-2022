@@ -7,7 +7,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 //import edu.wpi.first.wpilibj.Timer;
 
-//this is line 9
 
 public class TedBallin implements RobotMap{
 
@@ -30,12 +29,15 @@ public class TedBallin implements RobotMap{
 
     public static void shootSlow(){
         shooter.set(.3);
-        loader.set(-.6);
+        shooter2.set(.3);
+        // Timer.delay(3000);
+       // loader.set(.6);
     }
 
     public static void shootStop(){
         shooter.set(0);
-        loader.set(0);
+        shooter2.set(0);
+       // loader.set(0);
     }
 
 }
