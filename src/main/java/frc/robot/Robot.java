@@ -145,9 +145,24 @@ public class Robot extends TimedRobot implements ControMap{
    * This function is called periodically during operator control.
    */
   public double deltaTime = 0.02;
+<<<<<<< Updated upstream
   public double decelTime = 0.25;
   public double velocity = 0;
   public float indexSpeed = 1;
+=======
+
+  public boolean aimPressed = false;
+  public double lastAim = 0;
+
+  public boolean intakePressed = false;
+  public boolean intakeExtended = false;
+
+  public Boolean armExtended = false;
+  public Boolean armPressed = false;
+
+  public boolean fastModePressed = false;
+  public boolean fastMode = false;
+>>>>>>> Stashed changes
   @Override
   public void teleopPeriodic() {
     // if(OI.button(0, ControMap.Y_BUTTON)){
@@ -211,6 +226,7 @@ public class Robot extends TimedRobot implements ControMap{
 
 
 
+<<<<<<< Updated upstream
 
 
       //shoot slow with A
@@ -225,6 +241,39 @@ public class Robot extends TimedRobot implements ControMap{
       // }
     }
     //climb with DPad
+=======
+    //LB to suck, LT to vom
+    if (OI.button(1, LB_BUTTON)){
+      System.out.println("Henry is sus");
+      Intake.suck();
+    } else if(OI.axis(1, LT) >= 0.1){
+      System.out.println("Henry is susser");
+      Intake.vomit();
+    } else {
+      System.out.println("Henry is sussy");
+      Intake.stop();
+    }
+
+    // //RB for fast shoot, RT for slow shoot
+    if(OI.button(1, RB_BUTTON))
+      TedBallin.setShoot(0.6);
+    else if(OI.axis(1, RT) >= 0.1)
+      TedBallin.setShoot(-0.6);
+    else
+      TedBallin.shootStop();
+>>>>>>> Stashed changes
+
+    if(OI.button(1, A_BUTTON)){
+      // Button pressed for first time
+      if (!fastModePressed) {
+        fastModePressed = true;
+        fastMode = !fastMode;
+        Chassis.setFastMode(fastMode);
+      }
+    } else if (fastModePressed) {
+      // Button released
+      fastModePressed = false;
+    }
 
   }
 
