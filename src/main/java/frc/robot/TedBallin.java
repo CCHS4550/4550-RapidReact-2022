@@ -17,6 +17,8 @@ public class TedBallin implements RobotMap{
     //declares Motor Controllers
     public static CCSparkMax shooter = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER, 
         MotorType.kBrushed, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, 69);
+        public static CCSparkMax shooter2 = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER2, 
+        MotorType.kBrushed, IdleMode.kCoast, RobotMap.SHOOTER2_REVERSE, 69);
     public static CCSparkMax loader = new CCSparkMax("Loader", "L", RobotMap.LOADER, 
         MotorType.kBrushed, IdleMode.kCoast, RobotMap.LOADER_REVERSE, 69);
     
@@ -24,16 +26,19 @@ public class TedBallin implements RobotMap{
 
     public static void setShoot(double set){
         shooter.set(set);
+        shooter2.set(set);
         loader.set(-set);
     }
 
     public static void shootSlow(){
         shooter.set(.3);
+        shooter2.set(.3);
         loader.set(-.6);
     }
 
     public static void shootStop(){
         shooter.set(0);
+        shooter2.set(0);
         loader.set(0);
     }
     
