@@ -1,8 +1,0 @@
-shooter: 1 and 7n (same direction)
-chassis: 2,3,5,6
-climber: 4
-
-Solenoids
-Arm: 0, 1
-Nothing: 2,3
-Chassis: 4,5
