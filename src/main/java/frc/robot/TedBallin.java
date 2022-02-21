@@ -6,7 +6,6 @@ import frc.parent.RobotMap;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 //import edu.wpi.first.wpilibj.Timer;
-
 //this is line 9
 
 public class TedBallin implements RobotMap{
