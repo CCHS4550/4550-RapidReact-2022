@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Chassis extends BallDumpy{
+public class Chassis{
 
     //Talon objects for the wheels
     //These control the main 4 motors on the robot
@@ -27,11 +27,13 @@ public class Chassis extends BallDumpy{
     //  MotorType.kBrushed, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE);
         // public static CCSparkMax climberRight = new CCSparkMax("Climber Right", "BR", RobotMap.CLIMBER_RIGHT, 
     // MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMEBR_RIGHT_REVERSE);
-    public static Solenoid shiftOne = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE);
-    public static Solenoid shiftTwo = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_TWO);
+    // public static Solenoid shiftOne = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE);
+    // public static Solenoid shiftTwo = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_TWO);
 
     //AHRS gyro measures the angle of the bot
     public static AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+    public static int autoStep = 0;
 
     
 
@@ -95,8 +97,8 @@ public class Chassis extends BallDumpy{
         "Whosever holds these loops, if he be worthy, shall posses the power of AJ"
     */
     public static void setFastMode(boolean on){
-        shiftOne.set(on);
-        shiftTwo.set(!on);
+        // shiftOne.set(on);
+        // shiftTwo.set(!on);
     }
     //Drives the robot to a certain distance
     //Kinda complex -> DO NOT TOUCH
@@ -146,6 +148,7 @@ public class Chassis extends BallDumpy{
     //Turns the robot to a certain angle, a positive angle will turn right
     //Kinda complex -> DO NOT TOUCH
     public static void turnToAngle(double goal, double aPer, double kp, double max, boolean debug){
+
         double aError = goal*aPer;
 
         double angl = gyro.getAngle();
@@ -175,7 +178,46 @@ public class Chassis extends BallDumpy{
         }
     }
 
+    public static boolean turnToAnglePeriodic(double goal, double kp, double max, double aError, int step){
+        if(step != autoStep) return true;
+        double angl = gyro.getAngle();
+        double error = goal-angl;
+        double input = error*kp;
+        input = OI.normalize(input, -max, max);
 
-    
+        driveSpd(input, -input);
+
+        if(error <= aError){
+            driveSpd(0.0, 0.0);
+            System.out.println("YOINK, ya made it");
+            autoStep++;
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean driveDistPeriodic(double goal, double kp, double max, double aError, int step){
+        if(step != autoStep) return true;
+        setFactor(0.048);
+        double lPos = getLDist();
+        double lError = goal-lPos;
+        double lSpd = lError*kp;
+        lSpd = OI.normalize(lSpd, -max, max);
+
+        double rPos = getRDist();
+        double rError = goal-rPos;
+        double rSpd = rError*kp;
+        rSpd = OI.normalize(rSpd, -max, max);
+
+        driveSpd(lSpd, rSpd);
+
+        if(lError <= aError && rError <= aError){
+            driveSpd(0.0, 0.0);
+            System.out.println("YOINK, ya made it");
+            autoStep++;
+            return true;
+        }
+        return false;
+    }
     
 }

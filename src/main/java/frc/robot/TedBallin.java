@@ -5,7 +5,7 @@ package frc.robot;
 import frc.parent.RobotMap;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.Timer;
+//import edu.wpi.first.wpilibj.Timer;
 
 
 public class TedBallin implements RobotMap{
@@ -16,26 +16,29 @@ public class TedBallin implements RobotMap{
 
     //declares Motor Controllers
     public static CCSparkMax shooter = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER, 
-        MotorType.kBrushed, IdleMode.kBrake, RobotMap.SHOOTER_REVERSE);
+        MotorType.kBrushed, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, 69);
+        public static CCSparkMax shooter2 = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER2, 
+        MotorType.kBrushed, IdleMode.kCoast, RobotMap.SHOOTER2_REVERSE, 69);
     public static CCSparkMax loader = new CCSparkMax("Loader", "L", RobotMap.LOADER, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.LOADER_REVERSE);
+        MotorType.kBrushed, IdleMode.kCoast, RobotMap.LOADER_REVERSE, 69);
     
     
 
-    public static void shootFast(){
-        shooter.set(.6);
-        Timer.delay(3000);
-        loader.set(.6);
+    public static void setShoot(double set){
+        shooter.set(set);
+        shooter2.set(set);
+        loader.set(-set);
     }
 
     public static void shootSlow(){
         shooter.set(.3);
-        Timer.delay(3000);
-        loader.set(.6);
+        shooter2.set(.3);
+        loader.set(-.6);
     }
 
     public static void shootStop(){
         shooter.set(0);
+        shooter2.set(0);
         loader.set(0);
     }
     
