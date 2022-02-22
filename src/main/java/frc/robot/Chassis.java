@@ -106,7 +106,7 @@ public class Chassis{
 
     /** 
      * Toggles fast mode. Will only trigger again after trigger is false
-     *@param trigger what will trigger the toggle
+     *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
     */
     public static void toggleFastMode(boolean trigger){
         shift.triggerSystem(trigger);

@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.helpers;
 
 import java.util.EnumMap;
 import java.util.HashMap;

@@ -60,7 +60,7 @@ public class Intake implements RobotMap {
 
     /** 
      * Toggles the intake arms. Will only trigger again after trigger is false
-     *@param trigger what will trigger the toggle
+     *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
     */
     public static void toggleIntake(boolean trigger){
         intakeSols.triggerSystem(trigger);

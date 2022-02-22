@@ -66,7 +66,7 @@ public class Arms implements RobotMap {
 
     /** 
      * Toggles the climbing arms. Will only trigger again after trigger is false
-     *@param trigger what will trigger the toggle
+     *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
     */
     public static void toggleArms(boolean trigger){
         armSols.triggerSystem(trigger);
