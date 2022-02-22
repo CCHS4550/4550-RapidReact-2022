@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.Compressor;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.helpers.OI;
+import frc.helpers.Timer;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -164,10 +166,6 @@ public class Robot extends TimedRobot implements ControlMap{
   public boolean aimPressed = false;
   public double lastAim = 0;
 
-  public boolean intakePressed = false;
-  public Boolean armPressed = false;
-  public boolean shiftPressed = false;
-
   public Solenoid sol0 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
   public Solenoid sol1 = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
   public Solenoid sol2 = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
@@ -194,71 +192,31 @@ public class Robot extends TimedRobot implements ControlMap{
 
     //driving with accel
     double joystick = OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
-
     //Emergency Brake
     decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
     if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
-
+    //accelerate towards joystick
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
 
     //dpad up or down to control elevator
-    if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
-      Arms.climberDown();
-    } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
-      Arms.climberUp();
-    } else {
-      Arms.climberStop();
-    }
-
-    //Climbing Arms Toggle (Y)
-    if(OI.button(1, Y_BUTTON)){
-      // Button pressed for first time
-      if (!armPressed) {
-        armPressed = true;
-        Arms.toggleArms();
-      }
-    } else {
-      // Button released
-      armPressed = false;
-    }
-
-    //Intake Arms Toggle (X)
-    if(OI.button(1, X_BUTTON)){
-      // Button pressed for first time
-      if (!intakePressed) {
-        intakePressed = true;
-        Intake.toggleIntake();
-      }
-    } else {
-      // Button released
-      intakePressed = false;
-    }
-
+    Arms.runElevator(OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT), 
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.1);
+    
     //LB to suck, LT to vom
-    if (OI.button(1, LB_BUTTON))
-      Intake.suck();
-    else if(OI.axis(1, LT) >= 0.1)
-      Intake.vomit();
-    else
-      Intake.stop();
+    Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
     // //RB for fast shoot, RT for slow shoot
-    if(OI.button(1, RB_BUTTON))
-      TedBallin.setShoot(0.6);
-    else if(OI.axis(1, RT) >= 0.1)
-      TedBallin.setShoot(-0.6);
-    else
-      TedBallin.shootStop();
+    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 0.6);
 
-    if(OI.button(0, A_BUTTON)){
-      if(!shiftPressed){
-        shiftPressed = true;
-        Chassis.toggleFastMode();
-      }
-    } else {
-      shiftPressed = false;
-    }
+    //Climbing Arms Toggle (Y)
+    Arms.toggleArms(OI.button(1, Y_BUTTON));
+
+    //Intake Arms Toggle (X)
+    Intake.toggleIntake(OI.button(1, X_BUTTON));
+
+    //Fast Mode Toggle (A)
+    Chassis.toggleFastMode(OI.button(1, A_BUTTON));
 
   }
 

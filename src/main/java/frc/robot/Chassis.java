@@ -1,5 +1,8 @@
 package frc.robot;
 
+import frc.helpers.CCSparkMax;
+import frc.helpers.OI;
+import frc.helpers.PneumaticsSystem;
 import frc.parent.*;
 //import frc.raspi.Vision;
 
@@ -96,6 +99,10 @@ public class Chassis{
 
     public static void toggleFastMode(){
         shift.toggle();
+    }
+
+    public static void toggleFastMode(boolean trigger){
+        shift.triggerSystem(trigger);
     }
     //Drives the robot to a certain distance
     //Kinda complex -> DO NOT TOUCH

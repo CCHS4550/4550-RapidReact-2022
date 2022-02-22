@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.helpers.CCSparkMax;
 // import edu.wpi.first.wpilibj.PneumaticsModuleType;
 // import edu.wpi.first.wpilibj.Solenoid;
 import frc.parent.RobotMap;
@@ -40,6 +41,21 @@ public class TedBallin implements RobotMap{
         shooter.set(0);
         shooter2.set(0);
         loader.set(0);
+    }
+
+    public static void shoot(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed){
+        if(hardStop){
+            setShoot(0);
+            return;
+        }
+        if(triggerOne){
+            setShoot(speed);
+            return;
+        }
+        if(triggerTwo){
+            setShoot(-speed);
+            return;
+        }
     }
 
 }

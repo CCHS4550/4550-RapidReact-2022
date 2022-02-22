@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import frc.helpers.CCSparkMax;
+import frc.helpers.PneumaticsSystem;
 import frc.parent.RobotMap;
 
 
@@ -36,5 +38,24 @@ public class Arms implements RobotMap {
         armSols.toggle();
     }
 
+    public static void runElevator(boolean upTrigger, boolean downTrigger, boolean hardStop, double speed){
+        if(hardStop){
+            climber.set(0);
+            return;
+        }
+        if(upTrigger){
+            climber.set(speed);
+            return;
+        }
+        if(downTrigger){
+            climber.set(-speed);
+            return;
+        }
+        climber.set(0);
+    }
+
+    public static void toggleArms(boolean trigger){
+        armSols.triggerSystem(trigger);
+    }
     
 }
