@@ -177,7 +177,7 @@ public class Robot extends TimedRobot implements ControlMap{
 
   @Override
   public void teleopPeriodic() {
-    switchPressed = table.getEntry("switch").getBoolean(false);
+    boolean switchPressed = table.getEntry("switch").getBoolean(false);
 
     // if(OI.button(0, ControlMap.Y_BUTTON)){
     //   if(aimPressed && lastAim <= 0.05) return;
