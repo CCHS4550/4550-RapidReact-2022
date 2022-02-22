@@ -9,7 +9,6 @@ package frc.robot;
 //import javax.lang.model.util.ElementScanner6;
 
 import edu.wpi.first.wpilibj.Compressor;
-// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.helpers.OI;
@@ -22,8 +21,6 @@ import frc.parent.RobotMap;
 //import frc.raspi.Vision;
 //import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-//import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -166,11 +163,6 @@ public class Robot extends TimedRobot implements ControlMap{
   public boolean aimPressed = false;
   public double lastAim = 0;
 
-  public Solenoid sol0 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
-  public Solenoid sol1 = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
-  public Solenoid sol2 = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
-  public Solenoid sol3 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
-
   @Override
   public void teleopPeriodic() {
     Timer.tick();
@@ -206,7 +198,7 @@ public class Robot extends TimedRobot implements ControlMap{
     //LB to suck, LT to vom
     Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
-    // //RB for fast shoot, RT for slow shoot
+    //RB for fast shoot, RT for reverse
     TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 0.6);
 
     //Climbing Arms Toggle (Y)
