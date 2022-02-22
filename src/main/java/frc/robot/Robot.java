@@ -199,7 +199,7 @@ public class Robot extends TimedRobot implements ControlMap{
     Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
     //RB for fast shoot, RT for reverse
-    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 0.6);
+    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 0.6, 0.1);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));

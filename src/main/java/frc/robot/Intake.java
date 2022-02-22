@@ -10,7 +10,7 @@ import frc.parent.RobotMap;
 
 
 public class Intake implements RobotMap {
-    public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY, MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, 69);
+    public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY, MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, true);
     public static PneumaticsSystem intakeSols = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_SOLENOID_ONE, RobotMap.INTAKE_SOLENOID_TWO);
     public static void suck() {
         sucky.set(0.6);
@@ -24,6 +24,13 @@ public class Intake implements RobotMap {
         sucky.set(0);
     }
 
+    /** 
+     * Will run the intake based on what triggers are true or false
+     *@param triggerOne what triggers intake with positive speed (takes precedence over triggerTwo). Suggest passing in a button or axis input
+     *@param triggerTwo what triggers intake with negative speed. Suggest passing in a button or axis input
+     *@param hardStop will set speed to 0 (takes precedence over triggers one and two)
+     *@param speed the intake speed
+    */
     public static void run(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed){
         if(hardStop){
             sucky.set(0);
@@ -44,10 +51,17 @@ public class Intake implements RobotMap {
         intakeSols.set(set);
     }
 
+    /** 
+     * Toggles the intake arms.
+    */
     public static void toggleIntake(){
         intakeSols.toggle();
     }
 
+    /** 
+     * Toggles the intake arms. Will only trigger again after trigger is false
+     *@param trigger what will trigger the toggle
+    */
     public static void toggleIntake(boolean trigger){
         intakeSols.triggerSystem(trigger);
     }

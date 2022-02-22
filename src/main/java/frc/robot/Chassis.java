@@ -18,13 +18,13 @@ public class Chassis{
     //Talon objects for the wheels
     //These control the main 4 motors on the robot
     public static CCSparkMax fLeft = new CCSparkMax("Front Left", "FL", RobotMap.FORWARD_LEFT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_LEFT_REVERSE);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_LEFT_REVERSE, false);
     public static CCSparkMax fRight = new CCSparkMax("Front Right", "FR", RobotMap.FORWARD_RIGHT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_RIGHT_REVERSE);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_RIGHT_REVERSE, false);
     public static CCSparkMax bLeft = new CCSparkMax("Back Left", "BL",RobotMap.BACK_LEFT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_LEFT_REVERSE);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_LEFT_REVERSE, false);
     public static CCSparkMax bRight = new CCSparkMax("Back Right", "BR", RobotMap.BACK_RIGHT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_RIGHT_REVERSE);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_RIGHT_REVERSE, false);
     public static PneumaticsSystem shift = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE, RobotMap.SHIFT_SOLENOID_TWO);
 
     //AHRS gyro measures the angle of the bot
@@ -97,13 +97,21 @@ public class Chassis{
         shift.set(on);
     }
 
+    /** 
+     * Toggles fast mode.
+    */
     public static void toggleFastMode(){
         shift.toggle();
     }
 
+    /** 
+     * Toggles fast mode. Will only trigger again after trigger is false
+     *@param trigger what will trigger the toggle
+    */
     public static void toggleFastMode(boolean trigger){
         shift.triggerSystem(trigger);
     }
+
     //Drives the robot to a certain distance
     //Kinda complex -> DO NOT TOUCH
     public static void driveDist(double goal, double aPer, double kp, double max, boolean debug){
