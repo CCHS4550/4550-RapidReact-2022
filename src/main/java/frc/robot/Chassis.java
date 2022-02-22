@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Chassis{
@@ -23,8 +22,7 @@ public class Chassis{
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_LEFT_REVERSE);
     public static CCSparkMax bRight = new CCSparkMax("Back Right", "BR", RobotMap.BACK_RIGHT, 
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_RIGHT_REVERSE);
-    // public static Solenoid shiftOne = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE);
-    // public static Solenoid shiftTwo = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_TWO);
+    public static PneumaticsSystem shift = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE, RobotMap.SHIFT_SOLENOID_TWO);
 
     //AHRS gyro measures the angle of the bot
     public static AHRS gyro = new AHRS(SPI.Port.kMXP);
@@ -93,8 +91,11 @@ public class Chassis{
         "Whosever holds these loops, if he be worthy, shall posses the power of AJ"
     */
     public static void setFastMode(boolean on){
-        // shiftOne.set(on);
-        // shiftTwo.set(!on);
+        shift.set(on);
+    }
+
+    public static void toggleFastMode(){
+        shift.toggle();
     }
     //Drives the robot to a certain distance
     //Kinda complex -> DO NOT TOUCH

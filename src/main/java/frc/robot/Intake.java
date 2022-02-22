@@ -5,13 +5,11 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.parent.RobotMap;
-import edu.wpi.first.wpilibj.Solenoid;
 
 
 public class Intake implements RobotMap {
     public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY, MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, 69);
-    public static Solenoid intSol1 = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_SOLENOID_ONE);
-    public static Solenoid intSol2 = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_SOLENOID_TWO);
+    public static PneumaticsSystem intakeSols = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_SOLENOID_ONE, RobotMap.INTAKE_SOLENOID_TWO);
     public static void suck() {
         sucky.set(0.6);
     }
@@ -25,7 +23,10 @@ public class Intake implements RobotMap {
     }
 
     public static void intakeArms(boolean set){
-        intSol1.set(set);
-        intSol2.set(!set);
+        intakeSols.set(set);
+    }
+
+    public static void toggleIntake(){
+        intakeSols.toggle();
     }
 }

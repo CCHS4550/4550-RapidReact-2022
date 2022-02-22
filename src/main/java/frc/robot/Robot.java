@@ -165,10 +165,8 @@ public class Robot extends TimedRobot implements ControlMap{
   public double lastAim = 0;
 
   public boolean intakePressed = false;
-  public boolean intakeExtended = false;
-
-  public Boolean armExtended = false;
   public Boolean armPressed = false;
+  public boolean shiftPressed = false;
 
   public Solenoid sol0 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
   public Solenoid sol1 = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
@@ -177,6 +175,7 @@ public class Robot extends TimedRobot implements ControlMap{
 
   @Override
   public void teleopPeriodic() {
+    Timer.tick();
     boolean switchPressed = table.getEntry("switch").getBoolean(false);
 
     // if(OI.button(0, ControlMap.Y_BUTTON)){
@@ -204,55 +203,62 @@ public class Robot extends TimedRobot implements ControlMap{
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
 
     //dpad up or down to control elevator
-    // if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
-    //   Arms.climberDown();
-    // } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
-    //   Arms.climberUp();
-    // } else {
-    //   Arms.climberStop();
-    // }
+    if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
+      Arms.climberDown();
+    } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
+      Arms.climberUp();
+    } else {
+      Arms.climberStop();
+    }
 
     //Climbing Arms Toggle (Y)
-    // if(OI.button(1, Y_BUTTON)){
-    //   // Button pressed for first time
-    //   if (!armPressed) {
-    //     armPressed = true;
-    //     armExtended = !armExtended;
-    //     Arms.setArms(armExtended);
-    //   }
-    // } else if (armPressed) {
-    //   // Button released
-    //   armPressed = false;
-    // }
+    if(OI.button(1, Y_BUTTON)){
+      // Button pressed for first time
+      if (!armPressed) {
+        armPressed = true;
+        Arms.toggleArms();
+      }
+    } else {
+      // Button released
+      armPressed = false;
+    }
 
     //Intake Arms Toggle (X)
-    // if(OI.button(1, X_BUTTON)){
-    //   // Button pressed for first time
-    //   if (!intakePressed) {
-    //     intakePressed = true;
-    //     intakeExtended = !intakeExtended;
-    //     Intake.intakeArms(intakeExtended);
-    //   }
-    // } else if (intakePressed) {
-    //   // Button released
-    //   intakePressed = false;
-    // }
+    if(OI.button(1, X_BUTTON)){
+      // Button pressed for first time
+      if (!intakePressed) {
+        intakePressed = true;
+        Intake.toggleIntake();
+      }
+    } else {
+      // Button released
+      intakePressed = false;
+    }
 
     //LB to suck, LT to vom
-    // if (OI.button(1, LB_BUTTON))
-    //   Intake.suck();
-    // else if(OI.axis(1, LT) >= 0.1)
-    //   Intake.vomit();
-    // else
-    //   Intake.stop();
+    if (OI.button(1, LB_BUTTON))
+      Intake.suck();
+    else if(OI.axis(1, LT) >= 0.1)
+      Intake.vomit();
+    else
+      Intake.stop();
 
     // //RB for fast shoot, RT for slow shoot
-    // if(OI.button(1, RB_BUTTON))
-    //   TedBallin.setShoot(0.6);
-    // else if(OI.axis(1, RT) >= 0.1)
-    //   TedBallin.setShoot(-0.6);
-    // else
-    //   TedBallin.shootStop();
+    if(OI.button(1, RB_BUTTON))
+      TedBallin.setShoot(0.6);
+    else if(OI.axis(1, RT) >= 0.1)
+      TedBallin.setShoot(-0.6);
+    else
+      TedBallin.shootStop();
+
+    if(OI.button(0, A_BUTTON)){
+      if(!shiftPressed){
+        shiftPressed = true;
+        Chassis.toggleFastMode();
+      }
+    } else {
+      shiftPressed = false;
+    }
 
   }
 
