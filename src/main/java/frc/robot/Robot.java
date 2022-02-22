@@ -21,6 +21,7 @@ import frc.parent.RobotMap;
 //import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 //import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -48,7 +49,7 @@ public class Robot extends TimedRobot implements ControlMap{
 
   public int alliance;
   double spdmlt = 1;
- 
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -58,7 +59,7 @@ public class Robot extends TimedRobot implements ControlMap{
 
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("switch");
-    
+
    // diagnostics = new Diagnostics2(Chassis.fLeft, Chassis.fRight, Chassis.bLeft, Chassis.bRight, Chassis.climberLeft, Chassis.climberRight);
     // m_chooser.addOption("My Auto", kCustomAuto);
     // m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -74,19 +75,19 @@ public class Robot extends TimedRobot implements ControlMap{
       break;
 
       case Red:
-        alliance = 0; 
+        alliance = 0;
       break;
-      
+
       case Invalid:
         alliance = -1;
       break;
     }
     //Vision.setPipeline(alliance);
-    
+
 
   }
 
-  
+
   /**
    * This function is called every robot packet, no matter the mode. Use
    * this for items like diagnostics that you want ran during disabled,
@@ -97,11 +98,11 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotPeriodic() {
-    
-    
+
+
     if(RobotMap.COMPRESSOR_ENABLE)
       c.enableDigital();
-    else 
+    else
       c.disable();
   }
 //stage deez
@@ -120,7 +121,7 @@ public class Robot extends TimedRobot implements ControlMap{
   public void autonomousInit() {
     Chassis.reset();
     //System.out.println("Auto selected: " + m_autoSelected);
-    
+
     // double dist = SmartDashboard.getNumber("Distance", 0);
     // double angl = SmartDashboard.getNumber("Angle", 0);
     // switch (m_autoSelected) {
@@ -143,19 +144,19 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void autonomousPeriodic() {
-    if(!Chassis.driveDistPeriodic(5, 0.1, 0.5, 0.5, 0)) return;
+    //if(!Chassis.driveDistPeriodic(5, 0.1, 0.5, 0.5, 0)) return;
   }
 
   @Override
   public void teleopInit() {
-    
+
   }
   /**
    * This function is called periodically during operator control.
    */
   public double decelTime = 4;
-  public double decelTimeFast = 1;
-  public double decelTimeSlow = 2;
+  public double decelTimeFast = 0.5;
+  public double decelTimeSlow = 4;
 
   public double velocity = 0;
   public double deltaTime = 0.02;
@@ -169,7 +170,10 @@ public class Robot extends TimedRobot implements ControlMap{
   public Boolean armExtended = false;
   public Boolean armPressed = false;
 
-  public boolean switchPressed = false;
+  public Solenoid sol0 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+  public Solenoid sol1 = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+  public Solenoid sol2 = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
+  public Solenoid sol3 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
 
   @Override
   public void teleopPeriodic() {
@@ -198,18 +202,17 @@ public class Robot extends TimedRobot implements ControlMap{
 
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
-    
 
-    // //dpad up or down to control elevator
+    //dpad up or down to control elevator
     // if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
     //   Arms.climberDown();
-    // } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){ 
+    // } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){
     //   Arms.climberUp();
     // } else {
     //   Arms.climberStop();
     // }
 
-    // //Climbing Arms Toggle (Y)
+    //Climbing Arms Toggle (Y)
     // if(OI.button(1, Y_BUTTON)){
     //   // Button pressed for first time
     //   if (!armPressed) {
@@ -223,33 +226,33 @@ public class Robot extends TimedRobot implements ControlMap{
     // }
 
     //Intake Arms Toggle (X)
-    if(OI.button(1, X_BUTTON)){
-      // Button pressed for first time
-      if (!intakePressed) {
-        intakePressed = true;
-        intakeExtended = !intakeExtended;
-        Intake.intakeArms(intakeExtended);
-      }
-    } else if (intakePressed) {
-      // Button released
-      intakePressed = false;
-    }
+    // if(OI.button(1, X_BUTTON)){
+    //   // Button pressed for first time
+    //   if (!intakePressed) {
+    //     intakePressed = true;
+    //     intakeExtended = !intakeExtended;
+    //     Intake.intakeArms(intakeExtended);
+    //   }
+    // } else if (intakePressed) {
+    //   // Button released
+    //   intakePressed = false;
+    // }
 
     //LB to suck, LT to vom
-    if (OI.button(1, LB_BUTTON))
-      Intake.suck();
-    else if(OI.axis(1, LT) >= 0.1)
-      Intake.vomit();
-    else
-      Intake.stop();
+    // if (OI.button(1, LB_BUTTON))
+    //   Intake.suck();
+    // else if(OI.axis(1, LT) >= 0.1)
+    //   Intake.vomit();
+    // else
+    //   Intake.stop();
 
     // //RB for fast shoot, RT for slow shoot
-    if(OI.button(1, RB_BUTTON))
-      TedBallin.setShoot(0.6);
-    else if(OI.axis(1, RT) >= 0.1)
-      TedBallin.setShoot(-0.6);
-    else
-      TedBallin.shootStop();
+    // if(OI.button(1, RB_BUTTON))
+    //   TedBallin.setShoot(0.6);
+    // else if(OI.axis(1, RT) >= 0.1)
+    //   TedBallin.setShoot(-0.6);
+    // else
+    //   TedBallin.shootStop();
 
   }
 

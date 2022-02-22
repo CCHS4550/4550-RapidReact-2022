@@ -23,10 +23,6 @@ public class Chassis{
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_LEFT_REVERSE);
     public static CCSparkMax bRight = new CCSparkMax("Back Right", "BR", RobotMap.BACK_RIGHT, 
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_RIGHT_REVERSE);
-    //     public static CCSparkMax climber = new CCSparkMax("Climber Left", "BL",5, 
-    //  MotorType.kBrushed, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE);
-        // public static CCSparkMax climberRight = new CCSparkMax("Climber Right", "BR", RobotMap.CLIMBER_RIGHT, 
-    // MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMEBR_RIGHT_REVERSE);
     // public static Solenoid shiftOne = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE);
     // public static Solenoid shiftTwo = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_TWO);
 
@@ -77,7 +73,7 @@ public class Chassis{
         bLeft.reset();
         bRight.reset();   
         
-    }
+   }
 
     public static double getLDist(){
         double dist = (fLeft.getPosition() + bLeft.getPosition())/2;

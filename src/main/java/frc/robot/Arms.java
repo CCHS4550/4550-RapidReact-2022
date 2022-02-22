@@ -1,4 +1,3 @@
-
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -12,7 +11,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class Arms implements RobotMap {
  
     public static CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, 
-        MotorType.kBrushed, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, 420.69f);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE);
     public static Solenoid armsOne = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE);
     public static Solenoid armsTwo = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_TWO);
     public static boolean climberCont = true;
@@ -50,5 +49,3 @@ public class Arms implements RobotMap {
         climberCont = !climberCont;
     }
 }
-
-
