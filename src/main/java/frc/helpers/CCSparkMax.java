@@ -27,6 +27,7 @@ public class CCSparkMax extends CANSparkMax{
     public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
      boolean reverse, boolean encoder){
         super(deviceID, controlMode);
+        if(controlMode.equals(MotorType.kBrushless)) encoder = true;
         this.name = name;
         this.shortName = shortName;
         
