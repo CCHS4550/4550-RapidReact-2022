@@ -1,4 +1,4 @@
-package frc.helpers;
+package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
