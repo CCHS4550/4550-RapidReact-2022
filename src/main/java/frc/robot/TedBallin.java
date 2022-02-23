@@ -9,7 +9,12 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 //import edu.wpi.first.wpilibj.Timer;
 
-
+/**
+ * Praise be Mr. Ballin' himself
+ * @param RawPower - infinity
+ * @param Flaws - zero
+ * @param Potential - also infinity
+ */
 public class TedBallin implements RobotMap{
 
 //template:public static CCSparkMax fLeft = new CCSparkMax("Front Left", "FL", RobotMap.FORWARD_LEFT, MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_LEFT_REVERSE);

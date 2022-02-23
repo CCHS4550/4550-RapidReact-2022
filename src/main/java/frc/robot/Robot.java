@@ -164,6 +164,7 @@ public class Robot extends TimedRobot implements ControlMap{
   public double lastAim = 0;
 
   @Override
+  @SuppressWarnings("unused")
   public void teleopPeriodic() {
     Timer.tick();
     boolean switchPressed = table.getEntry("switch").getBoolean(false);
@@ -192,9 +193,9 @@ public class Robot extends TimedRobot implements ControlMap{
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
 
     //dpad up or down to control elevator
-    Arms.runElevator(OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT), 
+    Arms.runElevator(OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT),
                      OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.1);
-    
+
     //LB to suck, LT to vom
     Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
