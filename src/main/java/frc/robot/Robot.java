@@ -9,9 +9,10 @@ package frc.robot;
 //import javax.lang.model.util.ElementScanner6;
 
 import edu.wpi.first.wpilibj.Compressor;
-// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.helpers.OI;
+import frc.helpers.Timer;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,7 +21,6 @@ import frc.parent.RobotMap;
 //import frc.raspi.Vision;
 //import frc.raspi.Vision;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-//import edu.wpi.first.wpilibj.Solenoid;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -48,7 +48,7 @@ public class Robot extends TimedRobot implements ControlMap{
 
   public int alliance;
   double spdmlt = 1;
- 
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -58,7 +58,7 @@ public class Robot extends TimedRobot implements ControlMap{
 
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("switch");
-    
+
    // diagnostics = new Diagnostics2(Chassis.fLeft, Chassis.fRight, Chassis.bLeft, Chassis.bRight, Chassis.climberLeft, Chassis.climberRight);
     // m_chooser.addOption("My Auto", kCustomAuto);
     // m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -74,19 +74,19 @@ public class Robot extends TimedRobot implements ControlMap{
       break;
 
       case Red:
-        alliance = 0; 
+        alliance = 0;
       break;
-      
+
       case Invalid:
         alliance = -1;
       break;
     }
     //Vision.setPipeline(alliance);
-    
+
 
   }
 
-  
+
   /**
    * This function is called every robot packet, no matter the mode. Use
    * this for items like diagnostics that you want ran during disabled,
@@ -97,11 +97,11 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotPeriodic() {
-    
-    
+
+
     if(RobotMap.COMPRESSOR_ENABLE)
       c.enableDigital();
-    else 
+    else
       c.disable();
   }
 //stage deez
@@ -120,7 +120,7 @@ public class Robot extends TimedRobot implements ControlMap{
   public void autonomousInit() {
     Chassis.reset();
     //System.out.println("Auto selected: " + m_autoSelected);
-    
+
     // double dist = SmartDashboard.getNumber("Distance", 0);
     // double angl = SmartDashboard.getNumber("Angle", 0);
     // switch (m_autoSelected) {
@@ -143,19 +143,19 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void autonomousPeriodic() {
-    if(!Chassis.driveDistPeriodic(5, 0.1, 0.5, 0.5, 0)) return;
+    //if(!Chassis.driveDistPeriodic(5, 0.1, 0.5, 0.5, 0)) return;
   }
 
   @Override
   public void teleopInit() {
-    
+
   }
   /**
    * This function is called periodically during operator control.
    */
   public double decelTime = 4;
-  public double decelTimeFast = 1;
-  public double decelTimeSlow = 2;
+  public double decelTimeFast = 0.5;
+  public double decelTimeSlow = 4;
 
   public double velocity = 0;
   public double deltaTime = 0.02;
@@ -163,17 +163,11 @@ public class Robot extends TimedRobot implements ControlMap{
   public boolean aimPressed = false;
   public double lastAim = 0;
 
-  public boolean intakePressed = false;
-  public boolean intakeExtended = false;
-
-  public Boolean armExtended = false;
-  public Boolean armPressed = false;
-
-  public boolean switchPressed = false;
-
   @Override
+  @SuppressWarnings("unused")
   public void teleopPeriodic() {
-    switchPressed = table.getEntry("switch").getBoolean(false);
+    Timer.tick();
+    boolean switchPressed = table.getEntry("switch").getBoolean(false);
 
     // if(OI.button(0, ControlMap.Y_BUTTON)){
     //   if(aimPressed && lastAim <= 0.05) return;
@@ -191,65 +185,31 @@ public class Robot extends TimedRobot implements ControlMap{
 
     //driving with accel
     double joystick = OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
-
     //Emergency Brake
     decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
     if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
-
+    //accelerate towards joystick
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
-    
 
-    // //dpad up or down to control elevator
-    // if (OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)){
-    //   Arms.climberDown();
-    // } else if (OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT)){ 
-    //   Arms.climberUp();
-    // } else {
-    //   Arms.climberStop();
-    // }
-
-    // //Climbing Arms Toggle (Y)
-    // if(OI.button(1, Y_BUTTON)){
-    //   // Button pressed for first time
-    //   if (!armPressed) {
-    //     armPressed = true;
-    //     armExtended = !armExtended;
-    //     Arms.setArms(armExtended);
-    //   }
-    // } else if (armPressed) {
-    //   // Button released
-    //   armPressed = false;
-    // }
-
-    //Intake Arms Toggle (X)
-    if(OI.button(1, X_BUTTON)){
-      // Button pressed for first time
-      if (!intakePressed) {
-        intakePressed = true;
-        intakeExtended = !intakeExtended;
-        Intake.intakeArms(intakeExtended);
-      }
-    } else if (intakePressed) {
-      // Button released
-      intakePressed = false;
-    }
+    //dpad up or down to control elevator
+    Arms.runElevator(OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT),
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.1);
 
     //LB to suck, LT to vom
-    if (OI.button(1, LB_BUTTON))
-      Intake.suck();
-    else if(OI.axis(1, LT) >= 0.1)
-      Intake.vomit();
-    else
-      Intake.stop();
+    Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
-    // //RB for fast shoot, RT for slow shoot
-    if(OI.button(1, RB_BUTTON))
-      TedBallin.setShoot(0.6);
-    else if(OI.axis(1, RT) >= 0.1)
-      TedBallin.setShoot(-0.6);
-    else
-      TedBallin.shootStop();
+    //RB for fast shoot, RT for reverse
+    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 0.6, 0.1);
+
+    //Climbing Arms Toggle (Y)
+    Arms.toggleArms(OI.button(1, Y_BUTTON));
+
+    //Intake Arms Toggle (X)
+    Intake.toggleIntake(OI.button(1, X_BUTTON));
+
+    //Fast Mode Toggle (A)
+    Chassis.toggleFastMode(OI.button(1, A_BUTTON));
 
   }
 
