@@ -1,4 +1,4 @@
-package frc.helpers;
+package frc.robot;
 
 import com.revrobotics.RelativeEncoder;
 //import com.revrobotics.*;
@@ -22,12 +22,10 @@ public class CCSparkMax extends CANSparkMax{
      * @param controlMode Specify whether the motor controller is operating in Brushed or Brushless mode
      * @param idleMode Specify whether the motor controller is set to Coast or Brake mode
      * @param reverse Reverses the direction of the motor controller
-     * @param encoder If the motor has an encoder or not
      */
     public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
-     boolean reverse, boolean encoder){
+     boolean reverse){
         super(deviceID, controlMode);
-        if(controlMode.equals(MotorType.kBrushless)) encoder = true;
         this.name = name;
         this.shortName = shortName;
         
@@ -35,7 +33,19 @@ public class CCSparkMax extends CANSparkMax{
         
 
         pidController = super.getPIDController();
-        if(encoder) this.encoder = super.getEncoder();
+        encoder = super.getEncoder();
+    }
+
+    public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
+     boolean reverse, float f){
+        super(deviceID, controlMode);
+        this.name = name;
+        this.shortName = shortName;
+        
+        super.setInverted(reverse);
+        
+
+        pidController = super.getPIDController();
     }
 
     public void reset(){

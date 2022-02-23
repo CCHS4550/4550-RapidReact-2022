@@ -1,8 +1,5 @@
 package frc.robot;
 
-import frc.helpers.CCSparkMax;
-import frc.helpers.OI;
-import frc.helpers.PneumaticsSystem;
 import frc.parent.*;
 //import frc.raspi.Vision;
 
@@ -11,6 +8,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Chassis{
@@ -18,14 +16,19 @@ public class Chassis{
     //Talon objects for the wheels
     //These control the main 4 motors on the robot
     public static CCSparkMax fLeft = new CCSparkMax("Front Left", "FL", RobotMap.FORWARD_LEFT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_LEFT_REVERSE, false);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_LEFT_REVERSE);
     public static CCSparkMax fRight = new CCSparkMax("Front Right", "FR", RobotMap.FORWARD_RIGHT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_RIGHT_REVERSE, false);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_RIGHT_REVERSE);
     public static CCSparkMax bLeft = new CCSparkMax("Back Left", "BL",RobotMap.BACK_LEFT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_LEFT_REVERSE, false);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_LEFT_REVERSE);
     public static CCSparkMax bRight = new CCSparkMax("Back Right", "BR", RobotMap.BACK_RIGHT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_RIGHT_REVERSE, false);
-    public static PneumaticsSystem shift = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE, RobotMap.SHIFT_SOLENOID_TWO);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_RIGHT_REVERSE);
+    //     public static CCSparkMax climber = new CCSparkMax("Climber Left", "BL",5, 
+    //  MotorType.kBrushed, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE);
+        // public static CCSparkMax climberRight = new CCSparkMax("Climber Right", "BR", RobotMap.CLIMBER_RIGHT, 
+    // MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMEBR_RIGHT_REVERSE);
+    // public static Solenoid shiftOne = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE);
+    // public static Solenoid shiftTwo = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_TWO);
 
     //AHRS gyro measures the angle of the bot
     public static AHRS gyro = new AHRS(SPI.Port.kMXP);
@@ -74,7 +77,7 @@ public class Chassis{
         bLeft.reset();
         bRight.reset();   
         
-   }
+    }
 
     public static double getLDist(){
         double dist = (fLeft.getPosition() + bLeft.getPosition())/2;
@@ -94,24 +97,9 @@ public class Chassis{
         "Whosever holds these loops, if he be worthy, shall posses the power of AJ"
     */
     public static void setFastMode(boolean on){
-        shift.set(on);
+        // shiftOne.set(on);
+        // shiftTwo.set(!on);
     }
-
-    /** 
-     * Toggles fast mode.
-    */
-    public static void toggleFastMode(){
-        shift.toggle();
-    }
-
-    /** 
-     * Toggles fast mode. Will only trigger again after trigger is false
-     *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
-    */
-    public static void toggleFastMode(boolean trigger){
-        shift.triggerSystem(trigger);
-    }
-
     //Drives the robot to a certain distance
     //Kinda complex -> DO NOT TOUCH
     public static void driveDist(double goal, double aPer, double kp, double max, boolean debug){
