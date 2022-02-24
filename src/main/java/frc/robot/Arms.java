@@ -12,7 +12,8 @@ import frc.parent.RobotMap;
 public class Arms implements RobotMap {
  
     public static CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, false);
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
+
     public static PneumaticsSystem armSols = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE, RobotMap.ARM_SOLENOID_TWO);
     public static boolean climberCont = true;
 

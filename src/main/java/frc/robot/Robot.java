@@ -7,7 +7,6 @@
 //testing
 package frc.robot;
 //import javax.lang.model.util.ElementScanner6;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -91,14 +90,12 @@ public class Robot extends TimedRobot implements ControlMap{
    * This function is called every robot packet, no matter the mode. Use
    * this for items like diagnostics that you want ran during disabled,
    * autonomous, teleoperated and test.
-   *
+   * 
    * <p>This runs after the mode specific periodic functions, but before
    * LiveWindow and SmartDashboard integrated updating.
    */
   @Override
   public void robotPeriodic() {
-
-
     if(RobotMap.COMPRESSOR_ENABLE)
       c.enableDigital();
     else
@@ -162,12 +159,13 @@ public class Robot extends TimedRobot implements ControlMap{
 
   public boolean aimPressed = false;
   public double lastAim = 0;
+  public double lastYaw = 500;
 
   @Override
-  @SuppressWarnings("unused")
+  //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    Timer.tick();
-    boolean switchPressed = table.getEntry("switch").getBoolean(false);
+    // Timer.tick();
+    // boolean switchPressed = table.getEntry("switch").getBoolean(false);
 
     // if(OI.button(0, ControlMap.Y_BUTTON)){
     //   if(aimPressed && lastAim <= 0.05) return;
@@ -176,9 +174,10 @@ public class Robot extends TimedRobot implements ControlMap{
     //     Chassis.axisDrive(0, lastAim, 0.25);
     //     return;
     //   }
+    //   if(!aimPressed) lastAim = 500;
     //   aimPressed = true;
-    //   lastAim = Vision.aim();
-    //   Chassis.axisDrive(0, Vision.aim(), 0.25);
+    //   if(lastYaw <= Vision.getYaw()) lastAim = Vision.aim();
+    //   Chassis.axisDrive(0, lastAim, 0.25);
     // } else {
     //   aimPressed = false;
     // }
