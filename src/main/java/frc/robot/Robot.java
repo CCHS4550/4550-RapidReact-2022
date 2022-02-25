@@ -101,6 +101,8 @@ public class Robot extends TimedRobot implements ControlMap{
       c.enableDigital();
     else
       c.disable();
+
+    Timer.tick();
   }
 //stage deez
   /**
@@ -165,7 +167,6 @@ public class Robot extends TimedRobot implements ControlMap{
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    // Timer.tick();
     // boolean switchPressed = table.getEntry("switch").getBoolean(false);
 
     // if(OI.button(0, ControlMap.Y_BUTTON)){
