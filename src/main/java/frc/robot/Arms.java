@@ -29,8 +29,8 @@ public class Arms implements RobotMap {
 
     /** 
      * Will run the elevator based on what triggers are true or false
-     *@param triggerOne what triggers the elevator with positive speed (takes precedence over triggerTwo). Suggest passing in a button or axis input.
-     *@param triggerTwo what triggers the elevator with negative speed. Suggest passing in a button or axis input.
+     *@param upTrigger what triggers the elevator with positive speed (takes precedence over triggerTwo). Suggest passing in a button or axis input.
+     *@param downTrigger what triggers the elevator with negative speed. Suggest passing in a button or axis input.
      *@param hardStop will set speed to 0 (takes precedence over triggers one and two)
      *@param speed the elevator speed
     */
