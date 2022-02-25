@@ -23,45 +23,34 @@ public class TedBallin implements RobotMap{
 
     //declares Motor Controllers
     public static CCSparkMax shooter = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER,
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.SHOOTER_REVERSE, true);
+        MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, true);
 
     public static CCSparkMax shooter2 = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER2,
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.SHOOTER_REVERSE, true);
+        MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, true);
 
-    public static CCSparkMax loader = new CCSparkMax("Loader", "L", RobotMap.LOADER,
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.LOADER_REVERSE, true);
+    // public static CCSparkMax loader = new CCSparkMax("Loader", "L", RobotMap.LOADER,
+    //     MotorType.kBrushless, IdleMode.kBrake, RobotMap.LOADER_REVERSE, true);
 
 
     public static void setShoot(double set){
         shooter.set(set);
-        shooter2.set(set);
-        loader.set(-set);
+        shooter2.set(-set);
+        // loader.set(-set);
     }
 
-    public static Integer trigger = null;
+    public static Integer trigger = -1;
     public static Timer timer = new Timer(69);
     public static void setShoot(double set, int trig, double time){
-        if(trigger != trig){
+        if(trig != trigger){
             shooter.set(set);
-            shooter2.set(set);
+            shooter2.set(-set);
             timer.set(time);
             trigger = trig;
             return;
         }
         if(!timer.triggered()) return;
-        loader.set(-set);
-    }
-
-    public static void shootSlow(){
-        shooter.set(.3);
-        shooter2.set(.3);
-        loader.set(-.6);
-    }
-
-    public static void shootStop(){
-        shooter.set(0);
-        shooter2.set(0);
-        loader.set(0);
+        System.out.println("timer");
+        // loader.set(-set);
     }
     
     /** 
@@ -71,22 +60,27 @@ public class TedBallin implements RobotMap{
         *@param speed the shoot speed
         *@param time how long it will take for the shooter to start after the indexer
     */
-    public static void shoot(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed, double time){
+    public static double velocity = 0;
+    public static void shoot(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed, double time, double decel){
         if(hardStop){
-            setShoot(0);
-            trigger = null;
-            return;
+            decel = 0.5;
+            triggerOne = false;
+            triggerTwo = false;
         }
         if(triggerOne){
             setShoot(speed, 0, time);
+            velocity = speed;
             return;
         }
         if(triggerTwo){
             setShoot(-speed, 1, time);
+            velocity = speed;
             return;
         }
-        setShoot(0);
-        trigger = null;
+        velocity -= Timer.deltaTime / decel;
+        if(velocity <= 0) velocity = 0;
+        setShoot(velocity);
+        trigger = -1;
     }
 
 }

@@ -19,6 +19,7 @@ import frc.parent.ControlMap;
 import frc.parent.RobotMap;
 //import frc.raspi.Vision;
 //import frc.raspi.Vision;
+//import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -152,7 +153,7 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   public double decelTime = 4;
   public double decelTimeFast = 0.5;
-  public double decelTimeSlow = 4;
+  public double decelTimeSlow = 1;
 
   public double velocity = 0;
   public double deltaTime = 0.02;
@@ -183,7 +184,7 @@ public class Robot extends TimedRobot implements ControlMap{
     // }
 
     //driving with accel
-    double joystick = OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
+    double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
     //Emergency Brake
     decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
     if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
@@ -191,15 +192,15 @@ public class Robot extends TimedRobot implements ControlMap{
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
 
-    //dpad up or down to control elevator
+    // //dpad up or down to control elevator;;;
     Arms.runElevator(OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT),
-                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.1);
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.5);
 
-    //LB to suck, LT to vom
-    Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
+    // //LB to suck, LT to vom
+    // Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
     //RB for fast shoot, RT for reverse
-    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 0.6, 0.1);
+    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 1, 0.1, 4);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));

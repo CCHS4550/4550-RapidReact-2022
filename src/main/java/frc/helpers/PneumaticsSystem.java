@@ -60,4 +60,12 @@ public class PneumaticsSystem {
         triggered = true;
         toggle();
     }
+
+    public void setOne(boolean set){
+        solenoid1.set(set);
+    }
+
+    public void setTwo(boolean set){
+        solenoid2.set(set);
+    }
 }
