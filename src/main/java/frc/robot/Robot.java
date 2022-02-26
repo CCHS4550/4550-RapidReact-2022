@@ -168,7 +168,7 @@ public class Robot extends TimedRobot implements ControlMap{
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
     // boolean switchPressed = table.getEntry("switch").getBoolean(false);
-
+    // System.out.println(switchPressed);
     // if(OI.button(0, ControlMap.Y_BUTTON)){
     //   if(aimPressed && lastAim <= 0.05) return;
     //   if(Vision.aim() == null){
@@ -191,6 +191,7 @@ public class Robot extends TimedRobot implements ControlMap{
     if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
     //accelerate towards joystick
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
+    if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
 
     // //dpad up or down to control elevator;;;
