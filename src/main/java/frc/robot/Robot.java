@@ -17,6 +17,7 @@ import frc.helpers.Timer;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.parent.ControlMap;
 import frc.parent.RobotMap;
+import frc.diagnostics.*;
 //import frc.raspi.Vision;
 //import frc.raspi.Vision;
 //import edu.wpi.first.wpilibj.Solenoid;
@@ -49,12 +50,22 @@ public class Robot extends TimedRobot implements ControlMap{
   public int alliance;
   double spdmlt = 1;
 
+  private DiagnosticsIF[] diagnostics;
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
+
+    diagnostics = new DiagnosticsIF[] {
+      new DiagnosticsNoLayout(Chassis.fLeft, Chassis.fRight, Chassis.bLeft, Chassis.bRight),
+      new PowerStatus()
+    };
+    for(DiagnosticsIF d : diagnostics) {
+      d.init();
+    }
 
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("switch");
@@ -86,6 +97,7 @@ public class Robot extends TimedRobot implements ControlMap{
 
   }
 
+  private long periodicCount;
 
   /**
    * This function is called every robot packet, no matter the mode. Use
@@ -97,6 +109,13 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotPeriodic() {
+
+    if (periodicCount++ % 100 == 0) {
+      for(DiagnosticsIF d : diagnostics) {
+        d.updateStatus();
+      }
+    }
+    
     if(RobotMap.COMPRESSOR_ENABLE)
       c.enableDigital();
     else

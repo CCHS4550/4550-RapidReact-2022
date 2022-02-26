@@ -1,14 +1,9 @@
-package frc.helpers;
+package frc.diagnostics;
 
-import static java.util.stream.Collectors.joining;
-
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.StringJoiner;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.FaultID;
@@ -17,9 +12,15 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-public class Diagnostics {
+import frc.helpers.CCSparkMax;
 
-    enum DataType {FAULTS, STICKY_FAULTS, TEMP, INVERTED_STATE, POSITION, VELOCITY};
+/**
+ * Diagnostics2 performs the same functions as Diagnostics, but coded without Streams and lambdas,
+ * hopefully its more readable for novice java programmers.
+ */
+public class OrigionalDiagnostics {
+
+    enum DataType {FAULTS, STICKY_FAULTS, TEMP, VOLTAGE, PDP, VELOCITY};
 
     private final ShuffleboardTab summaryTab = Shuffleboard.getTab("Summary");
     private final ShuffleboardTab motorTab = Shuffleboard.getTab("Motors");
@@ -28,7 +29,7 @@ public class Diagnostics {
     
     private Map<String, Map<DataType, NetworkTableEntry>> motorEntryMap = new HashMap<>();
   
-    public Diagnostics(CCSparkMax... motors) {
+    public OrigionalDiagnostics(CCSparkMax... motors) {
         this.motors = motors;
     }
 
@@ -69,14 +70,14 @@ public class Diagnostics {
             col += faultsWidth;
             
             // INVERTED_STATE
-            entryMap.put(DataType.INVERTED_STATE, motorTab.add(shortName + " inv. state", "")
-            .withWidget(BuiltInWidgets.kTextView)
+            entryMap.put(DataType.VOLTAGE, motorTab.add(shortName + "Voltage", 0)
+            .withWidget(BuiltInWidgets.kDial)
             .withPosition(col++, row) 
             .withSize(1, 1)
             .getEntry() );
 
             // POSITION
-            entryMap.put(DataType.POSITION, motorTab.add(shortName + "  position", 0)
+            entryMap.put(DataType.PDP, motorTab.add(shortName + "  position", 0)
             .withWidget(BuiltInWidgets.kTextView)
             .withPosition(col++, row) 
             .withSize(1, 1)
@@ -90,7 +91,6 @@ public class Diagnostics {
             .withProperties(Map.of("Min", 10, "Max", 100))  //celsius
             .getEntry() );
             
-            
             // VELOCITY
             entryMap.put(DataType.VELOCITY, motorTab.add(shortName + "  velocity", 0)
             .withWidget(BuiltInWidgets.kDial)
@@ -99,25 +99,40 @@ public class Diagnostics {
             .getEntry() );
             
             row++;
-            
         }
 
         Shuffleboard.selectTab("Motors");
     }
-
-    private void updateFaultStatus(NetworkTableEntry entry, Supplier<Short> faultsSupplier, 
-                    Function<CANSparkMax.FaultID, Boolean> faultSupplier) {
-                        int fault = faultsSupplier.get();
-                        String faultMsg = "No fault";
-                        if (fault != 0) {
-                            faultMsg = Arrays.stream(FaultID.values())
-                                .filter(v -> faultSupplier.apply(v))
-                                .map(FaultID::name)
-                                .collect(joining(","));
-                        }
-                        entry.setString(faultMsg); 
-    }
     
+    private void updateFaultStatus(NetworkTableEntry entry, CCSparkMax motor) {
+        int fault = motor.getFaults();
+        String faultMsg = "No fault";
+        if (fault != 0) {
+             StringJoiner sj = new StringJoiner(",");
+            for(CANSparkMax.FaultID faultId : FaultID.values()) {
+                if (motor.getFault(faultId)) {
+                    sj.add(faultId.name());
+                }
+            }
+            faultMsg = sj.toString();
+        }
+        entry.setString(faultMsg);
+    }
+
+    private void updateStickyFaultStatus(NetworkTableEntry entry, CCSparkMax motor) {
+        int fault = motor.getStickyFaults();
+        String faultMsg = "No fault";
+        if (fault != 0) {
+            StringJoiner sj = new StringJoiner(",");
+            for(CANSparkMax.FaultID faultId : FaultID.values()) {
+                if (motor.getStickyFault(faultId)) {
+                    sj.add(faultId.name());
+                }
+            }
+            faultMsg = sj.toString();
+        }
+        entry.setString(faultMsg);
+    }
     private NetworkTableEntry getEntry(CCSparkMax motor, DataType type) {
         return motorEntryMap.get(motor.getName()).get(type);
         
@@ -125,9 +140,9 @@ public class Diagnostics {
 
     private void updateFaultStatus(CCSparkMax motor, DataType type) {
         if (type.equals(DataType.FAULTS)) {
-            updateFaultStatus(getEntry(motor,type), motor::getFaults, motor::getFault);
+            updateFaultStatus(getEntry(motor,type), motor);
         } else {
-            updateFaultStatus(getEntry(motor,type), motor::getStickyFaults, motor::getStickyFault);
+            updateStickyFaultStatus(getEntry(motor,type), motor);
         }
     }
 
@@ -137,12 +152,15 @@ public class Diagnostics {
             case TEMP:
                 getEntry(motor,type).setDouble(motor.getMotorTemperature());
                 break;
-            case POSITION:
+            case PDP:
                 getEntry(motor,type).setString(Double.toString(motor.getEncoder().getPosition()));
                 break;
             case VELOCITY:
                 getEntry(motor,type).setDouble(motor.getEncoder().getVelocity());
                 break;
+            case VOLTAGE:
+                System.out.println(motor.getAppliedOutput());
+                getEntry(motor,type).setDouble(motor.getAppliedOutput());
             default:
                 break;
         }
@@ -156,22 +174,22 @@ public class Diagnostics {
                 updateFaultStatus(motor, type);
                 break;
             case TEMP:
-            case POSITION:
+            case PDP:
             case VELOCITY:
                 updateDoubleStatus(motor,type);
                 break;
-            case INVERTED_STATE: {
-                String msg = motor.getInverted() ? "inverted" : "";
-                getEntry(motor, type).setString(msg);
+            case VOLTAGE: {
+                double vol = motor.getAppliedOutput();
+                getEntry(motor, type).setDouble(vol);
             }
             break;
         }
     }
 
     public void updateStatus() {
-        
-        short allFaults = 0;
-        for(CCSparkMax motor: motors) {
+       
+        int allFaults = 0;
+        for (CCSparkMax motor : motors) {
             allFaults += motor.getFaults();
         }
 
@@ -179,9 +197,11 @@ public class Diagnostics {
         faultEntry.setBoolean(allFaults == 0);
 
         // update status on SparkMax controllers
-        Stream.of(motors).forEach(motor -> {
-            Arrays.stream(DataType.values()).forEach(type -> updateStatus(motor,type));
-        });
+        for (CCSparkMax motor : motors) {
+            for(DataType type : DataType.values()) {
+                updateStatus(motor, type);
+            }
+        }
         
     }
 }
