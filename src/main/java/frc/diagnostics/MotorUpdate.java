@@ -4,6 +4,7 @@ import frc.helpers.*;
 
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.ArrayList;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.FaultID;
@@ -13,12 +14,12 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 public class MotorUpdate {
 
     private Map<String, Map<MotorDataType, NetworkTableEntry>> motorEntryMap;
-    private CCSparkMax[] motors;
+    private ArrayList<CCSparkMax> motors;
     private NetworkTableEntry faultEntry;
     private MotorDataType[] displayedData;
 
     public MotorUpdate(Map<String, Map<MotorDataType, NetworkTableEntry>> motorEntryMap,
-        CCSparkMax[] motors, NetworkTableEntry faultEntry, MotorDataType[] displayedData) {
+        ArrayList<CCSparkMax> motors, NetworkTableEntry faultEntry, MotorDataType[] displayedData) {
         this.motorEntryMap = motorEntryMap;
         this.motors = motors;
         this.faultEntry = faultEntry;

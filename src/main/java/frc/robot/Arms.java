@@ -16,6 +16,8 @@ public class Arms implements RobotMap {
 
     public static PneumaticsSystem armSols = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE, RobotMap.ARM_SOLENOID_TWO);
 
+    public static void nothing(){};
+
     public static void setArms(boolean on){
         armSols.set(on);
     }

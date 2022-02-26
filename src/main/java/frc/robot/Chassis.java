@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Chassis{
 
+    public static void nothing(){};
+
     //Talon objects for the wheels
     //These control the main 4 motors on the robot
     public static CCSparkMax fLeft = new CCSparkMax("Front Left", "FL", RobotMap.FORWARD_LEFT, 

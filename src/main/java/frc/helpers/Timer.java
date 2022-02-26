@@ -96,11 +96,11 @@ public class Timer {
         return ticksToSeconds(ticksPassed);
     }
 
-    private static double ticksToSeconds(double ticks){
+    public static double ticksToSeconds(double ticks){
         return ticks * deltaTime;
     }
 
-    private static double secondsToTicks(double seconds){
+    public static double secondsToTicks(double seconds){
         return seconds / deltaTime;
     }
     

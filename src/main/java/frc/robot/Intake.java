@@ -10,6 +10,7 @@ import frc.parent.RobotMap;
 
 
 public class Intake implements RobotMap {
+    public static void nothing(){};
     // public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY,
     //     MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, true);
 

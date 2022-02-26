@@ -27,6 +27,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+import java.util.ArrayList;
+import frc.helpers.*;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -51,6 +54,7 @@ public class Robot extends TimedRobot implements ControlMap{
   double spdmlt = 1;
 
   private DiagnosticsIF[] diagnostics;
+  public ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -58,9 +62,16 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotInit() {
+    motors.add(Arms.climber);
+    motors.add(Chassis.fLeft);
+    motors.add(Chassis.fRight);
+    motors.add(Chassis.bRight);
+    motors.add(Chassis.bLeft);
+    motors.add(TedBallin.shooter);
+    motors.add(TedBallin.shooter2);
 
     diagnostics = new DiagnosticsIF[] {
-      new DiagnosticsNoLayout(Chassis.fLeft, Chassis.fRight, Chassis.bLeft, Chassis.bRight),
+      new DiagnosticsNoLayout(motors),
       new PowerStatus()
     };
     for(DiagnosticsIF d : diagnostics) {
@@ -98,6 +109,7 @@ public class Robot extends TimedRobot implements ControlMap{
   }
 
   private long periodicCount;
+  private double updateTime = 2;
 
   /**
    * This function is called every robot packet, no matter the mode. Use
@@ -110,7 +122,7 @@ public class Robot extends TimedRobot implements ControlMap{
   @Override
   public void robotPeriodic() {
 
-    if (periodicCount++ % 100 == 0) {
+    if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
       for(DiagnosticsIF d : diagnostics) {
         d.updateStatus();
       }

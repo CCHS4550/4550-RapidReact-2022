@@ -3,6 +3,8 @@ package frc.diagnostics;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -23,14 +25,14 @@ public class DiagnosticsNoLayout implements DiagnosticsIF {
     private final ShuffleboardTab motorTab = Shuffleboard.getTab("Motors");
     private NetworkTableEntry faultEntry;
     
-    private CCSparkMax[] motors;
+    private ArrayList<CCSparkMax> motors;
 
     // key -> motor name, value -> map (key -> DataType, value -> NetworkTableEntry)
     private Map<String, Map<MotorDataType, NetworkTableEntry>> motorEntryMap = new HashMap<>();
 
     private MotorUpdate motorUpdate;
 
-    public DiagnosticsNoLayout(CCSparkMax... motors) {
+    public DiagnosticsNoLayout(ArrayList<CCSparkMax> motors) {
         this.motors = motors;
     }
 
