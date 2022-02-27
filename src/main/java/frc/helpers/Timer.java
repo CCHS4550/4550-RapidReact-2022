@@ -1,7 +1,7 @@
 package frc.helpers;
 
 import java.util.ArrayList;
-
+@SuppressWarnings("rawtypes")
 public class Timer {
     public final static double deltaTime = 0.02; //seconds per tick
 
@@ -10,12 +10,27 @@ public class Timer {
     private double ticksPassed;
     private double ticksTotal;
     private boolean triggered;
+    private boolean started;
+    private LambdaRunner[] triggers;
 
     /** 
      * A timer that will run in periodic methods. The trigger will be true after the specified time has passed.
      *@param time how much time will pass before the timer is triggered
     */
     public Timer(double time){
+        triggers = null;
+        ticksTotal = secondsToTicks(time);
+        ticksPassed = 0;
+        triggered = false;
+        timers.add(this);
+    }
+
+    /** 
+     * A timer that will run in periodic methods. The trigger will be true after the specified time has passed.
+     *@param time how much time will pass before the timer is triggered
+    */
+    public Timer(double time, LambdaRunner... ms){
+        triggers = ms;
         ticksTotal = secondsToTicks(time);
         ticksPassed = 0;
         triggered = false;
@@ -28,6 +43,7 @@ public class Timer {
      *@param start what time you're starting the timer at
     */
     public Timer(double time, double start){
+        triggers = null;
         ticksTotal = secondsToTicks(time);
         ticksPassed = secondsToTicks(start);
         triggered = false;
@@ -39,8 +55,15 @@ public class Timer {
     */
     public static void tick(){
         for(Timer t : timers){
+            if(!t.started) continue;
             t.ticksPassed++;
-            if(t.ticksPassed >= t.ticksTotal) t.triggered = true;
+            if(t.ticksPassed >= t.ticksTotal){
+                if(t.triggers == null) continue;
+                for(LambdaRunner tr : t.triggers){
+                    if(!t.triggered()) tr.run();
+                }
+                t.triggered = true;
+            }
         }
     }
 
@@ -69,6 +92,15 @@ public class Timer {
         ticksPassed = 0;
         ticksTotal = secondsToTicks(time);
         triggered = false;
+        started = false;
+    }
+
+    public void set(double time, LambdaRunner... ls){
+        ticksPassed = 0;
+        ticksTotal = secondsToTicks(time);
+        triggered = false;
+        started = false;
+        triggers = ls;
     }
 
     /** 
@@ -102,6 +134,18 @@ public class Timer {
 
     public static double secondsToTicks(double seconds){
         return seconds / deltaTime;
+    }
+
+    public void start(){
+        started = true;
+    }
+    
+    public void stop(){
+        started = false;
+    }
+
+    public boolean started(){
+        return started;
     }
     
 }

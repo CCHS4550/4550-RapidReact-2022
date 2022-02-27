@@ -27,7 +27,7 @@ public interface RobotMap {
     public static final int CLIMBER = 4;
     public static final int SHOOTER = 1;
     public static final int SHOOTER2 = 7;
-    public static final int LOADER = 7;
+    //public static final int LOADER = 7;
     public static final int SUCKY = 3;
 
 
@@ -56,4 +56,7 @@ public interface RobotMap {
     //Other Constancts
     public static final int ROBOT_Y_DIR_SIGN = 1;
     public static final int ROBOT_X_DIR_SIGN = 1;
+
+    //DIO Switches and stuff
+    public static final int ELEVATOR_SWITCH = 0;
 }

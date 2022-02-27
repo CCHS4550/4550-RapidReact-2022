@@ -22,6 +22,7 @@ import frc.diagnostics.*;
 //import frc.raspi.Vision;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -62,13 +63,6 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotInit() {
-    motors.add(Arms.climber);
-    motors.add(Chassis.fLeft);
-    motors.add(Chassis.fRight);
-    motors.add(Chassis.bRight);
-    motors.add(Chassis.bLeft);
-    motors.add(TedBallin.shooter);
-    motors.add(TedBallin.shooter2);
 
     diagnostics = new DiagnosticsIF[] {
       new DiagnosticsNoLayout(motors),
@@ -115,7 +109,7 @@ public class Robot extends TimedRobot implements ControlMap{
    * This function is called every robot packet, no matter the mode. Use
    * this for items like diagnostics that you want ran during disabled,
    * autonomous, teleoperated and test.
-   * 
+   *
    * <p>This runs after the mode specific periodic functions, but before
    * LiveWindow and SmartDashboard integrated updating.
    */
@@ -127,7 +121,7 @@ public class Robot extends TimedRobot implements ControlMap{
         d.updateStatus();
       }
     }
-    
+
     if(RobotMap.COMPRESSOR_ENABLE)
       c.enableDigital();
     else
@@ -168,25 +162,32 @@ public class Robot extends TimedRobot implements ControlMap{
     // }
 
   }
-
   /**
    * This function is called periodically during autonomous.
    */
+  // add timer.start so it's not as much of a pain :)
+  boolean started = false;
+  Timer timer = new Timer(5);
   @Override
   public void autonomousPeriodic() {
-    //if(!Chassis.driveDistPeriodic(5, 0.1, 0.5, 0.5, 0)) return;
+    // if(!started){
+    //   timer.set(1);
+    // }
+    // TedBallin.shoot(!timer.triggered(), false, false, 1, 0, 1);
+    // if(!timer.triggered()) return;
+    if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.5, 0)) return;
   }
 
   @Override
   public void teleopInit() {
-
+    timer.start();
   }
   /**
    * This function is called periodically during operator control.
    */
-  public double decelTime = 4;
-  public double decelTimeFast = 0.5;
-  public double decelTimeSlow = 1;
+  public double decelTime = .2;
+  public double decelTimeFast = .2;
+  public double decelTimeSlow = .5;
 
   public double velocity = 0;
   public double deltaTime = 0.02;
@@ -195,9 +196,13 @@ public class Robot extends TimedRobot implements ControlMap{
   public double lastAim = 0;
   public double lastYaw = 500;
 
+  DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
+    //System.out.println(timer.elapsed() + " " + (timer.triggered() ? "triggered" : "not triggered"));
+    System.out.println("Switch: " + limit.get());
+    boolean switchPressed = limit.get() && OI.axis(1, L_JOYSTICK_VERTICAL) >= -0.5;
     // boolean switchPressed = table.getEntry("switch").getBoolean(false);
     // System.out.println(switchPressed);
     // if(OI.button(0, ControlMap.Y_BUTTON)){
@@ -217,16 +222,17 @@ public class Robot extends TimedRobot implements ControlMap{
 
     //driving with accel
     double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
+    if(Chassis.shift.on()) joystick *= 0.5;
     //Emergency Brake
     decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
     if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
     //accelerate towards joystick
     if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
     if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
-    Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.25, 1);
+    Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.75, 1);
 
     // //dpad up or down to control elevator;;;
-    Arms.runElevator(OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT),
+    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)) && !switchPressed,
                      OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.5);
 
     // //LB to suck, LT to vom
@@ -242,7 +248,7 @@ public class Robot extends TimedRobot implements ControlMap{
     Intake.toggleIntake(OI.button(1, X_BUTTON));
 
     //Fast Mode Toggle (A)
-    Chassis.toggleFastMode(OI.button(1, A_BUTTON));
+    Chassis.toggleFastMode(OI.button(0, A_BUTTON));
 
   }
 
