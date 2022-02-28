@@ -8,6 +8,8 @@ import frc.helpers.CCSparkMax;
 import frc.helpers.PneumaticsSystem;
 import frc.parent.RobotMap;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 
 public class Arms implements RobotMap {
  
@@ -58,6 +60,17 @@ public class Arms implements RobotMap {
     */
     public static void toggleArms(boolean trigger){
         armSols.triggerSystem(trigger);
+    }
+
+    public static final double ARM_ENCODER_HIGH = 69;
+    public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
+    public static boolean calibrated = false;
+    public static double calibrate(){
+        if(limit.get() && !calibrated){
+            calibrated = true;
+            climber.reset();
+        }
+        return climber.getPosition();
     }
     
 }
