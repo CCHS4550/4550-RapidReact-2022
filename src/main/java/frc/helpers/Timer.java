@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Timer {
     public final static double deltaTime = 0.02; //seconds per tick
 
-    private static ArrayList<Timer> timers = new ArrayList<Timer>();
+    public static ArrayList<Timer> timers = new ArrayList<Timer>();
 
     private double ticksPassed;
     private double ticksTotal;
@@ -18,6 +18,7 @@ public class Timer {
      *@param time how much time will pass before the timer is triggered
     */
     public Timer(double time){
+        triggers = new LambdaRunner[0];
         triggers = null;
         ticksTotal = secondsToTicks(time);
         ticksPassed = 0;
@@ -43,7 +44,7 @@ public class Timer {
      *@param start what time you're starting the timer at
     */
     public Timer(double time, double start){
-        triggers = null;
+        triggers = new LambdaRunner[0];
         ticksTotal = secondsToTicks(time);
         ticksPassed = secondsToTicks(start);
         triggered = false;
@@ -54,15 +55,15 @@ public class Timer {
      * Increments every timer. Must be included in the periodic function for timers to work.
     */
     public static void tick(){
-        for(Timer t : timers){
+        for(int i = 0; i < timers.size(); i++){
+            Timer t = timers.get(i);
             if(!t.started) continue;
             t.ticksPassed++;
             if(t.ticksPassed >= t.ticksTotal){
-                if(t.triggers == null) continue;
                 for(LambdaRunner tr : t.triggers){
                     if(!t.triggered()) tr.run();
                 }
-                t.triggered = true;
+                t.setTriggered(true);
             }
         }
     }
@@ -147,5 +148,16 @@ public class Timer {
     public boolean started(){
         return started;
     }
-    
+
+    public double total(){
+        return ticksToSeconds(ticksTotal);
+    }
+
+    private void setTriggered(boolean set){
+        triggered = set;
+    }
+
+    public String toString(){
+        return elapsed() + "/" + total() + ": " + triggers.length + " actions";
+    }
 }

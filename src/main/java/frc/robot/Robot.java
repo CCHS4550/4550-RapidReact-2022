@@ -10,8 +10,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.helpers.OI;
-import frc.helpers.Timer;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -55,7 +53,7 @@ public class Robot extends TimedRobot implements ControlMap{
   double spdmlt = 1;
 
   private DiagnosticsIF[] diagnostics;
-  public ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
+  public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -63,6 +61,10 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotInit() {
+    Intake.nothing();
+    Arms.nothing();
+    Chassis.nothing();
+    TedBallin.nothing();
 
     diagnostics = new DiagnosticsIF[] {
       new DiagnosticsNoLayout(motors),
@@ -115,7 +117,6 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotPeriodic() {
-
     if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
       for(DiagnosticsIF d : diagnostics) {
         d.updateStatus();
@@ -141,8 +142,13 @@ public class Robot extends TimedRobot implements ControlMap{
    * the switch structure below with additional strings. If using the
    * SendableChooser make sure to add them to the chooser code above as well.
    */
+  boolean started = false;
+  Timer timer = new Timer(5, new LambdaRunner<Object, Double>(new Object(), 0d, (t, v) -> TedBallin.setShoot(v)));
+
   @Override
   public void autonomousInit() {
+    timer.start();
+    TedBallin.setShoot(1);
     Chassis.reset();
     //System.out.println("Auto selected: " + m_autoSelected);
 
@@ -166,15 +172,10 @@ public class Robot extends TimedRobot implements ControlMap{
    * This function is called periodically during autonomous.
    */
   // add timer.start so it's not as much of a pain :)
-  boolean started = false;
-  Timer timer = new Timer(5);
+  
   @Override
   public void autonomousPeriodic() {
-    // if(!started){
-    //   timer.set(1);
-    // }
-    // TedBallin.shoot(!timer.triggered(), false, false, 1, 0, 1);
-    // if(!timer.triggered()) return;
+    if(!timer.triggered()) return;
     if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.5, 0)) return;
   }
 
@@ -200,8 +201,7 @@ public class Robot extends TimedRobot implements ControlMap{
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    //System.out.println(timer.elapsed() + " " + (timer.triggered() ? "triggered" : "not triggered"));
-    System.out.println("Switch: " + limit.get());
+    //System.out.println("Switch: " + limit.get());
     boolean switchPressed = limit.get() && OI.axis(1, L_JOYSTICK_VERTICAL) >= -0.5;
     // boolean switchPressed = table.getEntry("switch").getBoolean(false);
     // System.out.println(switchPressed);
@@ -257,6 +257,10 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void disabledInit() {
+    for(Timer t : Timer.timers){
+      t.stop();
+      t.reset();
+    }
   }
 
   /**

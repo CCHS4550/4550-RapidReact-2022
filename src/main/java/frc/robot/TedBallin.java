@@ -23,7 +23,7 @@ public class TedBallin implements RobotMap{
     public static CCSparkMax shooter = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER,
         MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, true);
 
-    public static CCSparkMax shooter2 = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER2,
+    public static CCSparkMax shooter2 = new CCSparkMax("Shooter2", "S2", RobotMap.SHOOTER2,
         MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, true);
 
     // public static CCSparkMax loader = new CCSparkMax("Loader", "L", RobotMap.LOADER,
