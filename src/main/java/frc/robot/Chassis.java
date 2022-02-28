@@ -27,8 +27,8 @@ public class Chassis extends BallDumpy{
     //  MotorType.kBrushed, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE);
         // public static CCSparkMax climberRight = new CCSparkMax("Climber Right", "BR", RobotMap.CLIMBER_RIGHT, 
     // MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMEBR_RIGHT_REVERSE);
-    public static Solenoid shiftOne = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE);
-    public static Solenoid shiftTwo = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_TWO);
+    // public static Solenoid shiftOne = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE);
+    // public static Solenoid shiftTwo = new Solenoid(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_TWO);
 
     //AHRS gyro measures the angle of the bot
     public static AHRS gyro = new AHRS(SPI.Port.kMXP);
@@ -94,17 +94,10 @@ public class Chassis extends BallDumpy{
     /*
         "Whosever holds these loops, if he be worthy, shall posses the power of AJ"
     */
-<<<<<<< Updated upstream
     // public static void setFastMode(boolean on){
     //     shiftOne.set(on);
     //     shiftTwo.set(!on);
     // }
-=======
-    public static void setFastMode(boolean on){
-        shiftOne.set(on);
-        shiftTwo.set(!on);
-    }
->>>>>>> Stashed changes
     //Drives the robot to a certain distance
     //Kinda complex -> DO NOT TOUCH
     public static void driveDist(double goal, double aPer, double kp, double max, boolean debug){

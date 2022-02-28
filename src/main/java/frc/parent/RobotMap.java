@@ -41,19 +41,10 @@ public interface RobotMap {
     
     //Pneumatic Stuff 
     public static final boolean COMPRESSOR_ENABLE = true;
-<<<<<<< Updated upstream
-    public static final int INT_SOLENOID_ONE = 7;
-    public static final int INT_SOLENOID_TWO = 2;
-    public static final int SHIFT_SOLENOID_ONE = 0;
-    public static final int SHIFT_SOLENOID_TWO = 1;
-=======
     public static final int ARM_SOLENOID_ONE = 3;
     public static final int ARM_SOLENOID_TWO = 2;
-    public static final int SHIFT_SOLENOID_ONE = 2;
-    public static final int SHIFT_SOLENOID_TWO = 3;
-    public static final int INTAKE_SOLENOID_ONE = 1;
-    public static final int INTAKE_SOLENOID_TWO = 6;
->>>>>>> Stashed changes
+    public static final int SHIFT_SOLENOID_ONE = 0;
+    public static final int SHIFT_SOLENOID_TWO = 1;
 
     //Other Constancts 
     public static final int ROBOT_Y_DIR_SIGN = 1;
