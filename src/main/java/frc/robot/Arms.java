@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.helpers.CCSparkMax;
+import frc.helpers.OI;
 import frc.helpers.PneumaticsSystem;
 import frc.parent.RobotMap;
 
@@ -17,8 +18,12 @@ public class Arms implements RobotMap {
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
 
     public static PneumaticsSystem armSols = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE, RobotMap.ARM_SOLENOID_TWO);
+    public static double position;
 
-    public static void nothing(){};
+    public static void nothing(){
+        climber.setPositionConversionFactor(1 / ARM_ENCODER_HIGH);
+        position = climber.getPosition();
+    }
 
     public static void setArms(boolean on){
         armSols.set(on);
@@ -39,19 +44,27 @@ public class Arms implements RobotMap {
      *@param speed the elevator speed
     */
     public static void runElevator(boolean upTrigger, boolean downTrigger, boolean hardStop, double speed){
+        if(!calibrated) return;
+        // if a trigger is set, set pos to the right encoder to stop the elevator from going
+        // otherwise move in the direction of the set pos
         if(hardStop){
             climber.set(0);
             return;
         }
         if(upTrigger){
+            if(calibrated) position = climber.getPosition();
             climber.set(speed);
             return;
         }
         if(downTrigger){
+            if(climber.getPosition() <= -1 && calibrated) return;
+            if(calibrated) position = climber.getPosition();
             climber.set(-speed);
             return;
         }
-        climber.set(0);
+        double set = 0;
+        if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
+        climber.set(OI.normalize(set, -speed, speed));
     }
 
     /** 
@@ -62,15 +75,30 @@ public class Arms implements RobotMap {
         armSols.triggerSystem(trigger);
     }
 
-    public static final double ARM_ENCODER_HIGH = 69;
-    public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
+    public static final double ARM_ENCODER_HIGH = 165;
+    //public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
     public static boolean calibrated = false;
-    public static double calibrate(){
-        if(limit.get() && !calibrated){
+    public static boolean calibrate(){
+        if(calibrated) return true;
+        if(!calibrated){
+            climber.set(.5);
+        }
+        if(Robot.limit.get() && !calibrated){
+            climber.set(0);
             calibrated = true;
+            position = 0;
             climber.reset();
         }
-        return climber.getPosition();
+        return calibrated;
+    }
+
+    /**
+     * 
+     * @param position a value from 0-1, with 0 being all the way down, and 1 being all the way up
+     */
+    public static void setPosition(double position){
+        if(calibrated);
+        Arms.position = OI.normalize(position, -1, 0);
     }
     
 }

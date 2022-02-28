@@ -104,4 +104,8 @@ public class CCSparkMax extends CANSparkMax{
     public String getShortName() {
         return shortName;
     }
+
+    public void set(boolean stop, double speed){
+        if(!stop) super.set(speed);
+    }
 }

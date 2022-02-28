@@ -129,6 +129,7 @@ public class Robot extends TimedRobot implements ControlMap{
       c.disable();
 
     Timer.tick();
+    Arms.calibrate();
   }
 //stage deez
   /**
@@ -150,22 +151,6 @@ public class Robot extends TimedRobot implements ControlMap{
     timer.start();
     TedBallin.setShoot(1);
     Chassis.reset();
-    //System.out.println("Auto selected: " + m_autoSelected);
-
-    // double dist = SmartDashboard.getNumber("Distance", 0);
-    // double angl = SmartDashboard.getNumber("Angle", 0);
-    // switch (m_autoSelected) {
-    //   case kCustomAuto:
-    //     break;
-    //   case kDefaultAuto:
-    //     Chassis.driveDist(dist, 0.05, 0.04, 0.25, false);
-    //     Chassis.turnToAngle(angl, 0.005, 0.5, 0.25, false);
-    //     break;
-    //   case kResetPIDs:
-    //     break;
-    //   default:
-    //     break;
-    // }
 
   }
   /**
@@ -197,7 +182,7 @@ public class Robot extends TimedRobot implements ControlMap{
   public double lastAim = 0;
   public double lastYaw = 500;
 
-  DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
+  public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
@@ -232,8 +217,11 @@ public class Robot extends TimedRobot implements ControlMap{
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.75, 1);
 
     // //dpad up or down to control elevator;;;
-    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)) && !switchPressed,
+    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT) || OI.axis(1, L_JOYSTICK_VERTICAL) < -0.5) && !switchPressed,
                      OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.5);
+    
+    //set the elevator all the way up with B button
+    if(OI.button(1, B_BUTTON)) Arms.setPosition(-1);
 
     // //LB to suck, LT to vom
     // Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
