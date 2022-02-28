@@ -29,6 +29,7 @@ public interface RobotMap {
     public static final int BACK_RIGHT = 1;
     public static final int INTAKE = 3; //brushed
     public static final int INDEXER = 7;
+    public static final int SUCKY = 3;
 
 
     //Wheel Polarities
@@ -43,8 +44,10 @@ public interface RobotMap {
     public static final boolean COMPRESSOR_ENABLE = true;
     public static final int ARM_SOLENOID_ONE = 3;
     public static final int ARM_SOLENOID_TWO = 2;
-    public static final int SHIFT_SOLENOID_ONE = 0;
-    public static final int SHIFT_SOLENOID_TWO = 1;
+    public static final int SHIFT_SOLENOID_ONE = 2;
+    public static final int SHIFT_SOLENOID_TWO = 3;
+    public static final int INTAKE_SOLENOID_ONE = 1;
+    public static final int INTAKE_SOLENOID_TWO = 6;
 
     //Other Constancts 
     public static final int ROBOT_Y_DIR_SIGN = 1;
