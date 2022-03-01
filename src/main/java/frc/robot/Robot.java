@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.math.controller.PIDController;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,6 +27,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 import java.util.ArrayList;
 import frc.helpers.*;
 
@@ -36,6 +41,7 @@ import frc.helpers.*;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
+//API: https://first.wpi.edu/wpilib/allwpilib/docs/release/java/index.html
 public class Robot extends TimedRobot implements ControlMap{
   // private static final String kDefaultAuto = "Default";
   // private static final String kCustomAuto = "My Auto";
@@ -61,10 +67,6 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotInit() {
-    Intake.nothing();
-    Arms.nothing();
-    Chassis.nothing();
-    TedBallin.nothing();
 
     diagnostics = new DiagnosticsIF[] {
       new DiagnosticsNoLayout(motors),
@@ -183,37 +185,44 @@ public class Robot extends TimedRobot implements ControlMap{
   public double lastYaw = 500;
 
   public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
+
+  double kP = 0.5;
+  double kI = 0.5;
+  double kD = 0.5;
+  PIDController accel = new PIDController(kP, kI, kD);
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
     //System.out.println("Switch: " + limit.get());
     boolean switchPressed = limit.get() && OI.axis(1, L_JOYSTICK_VERTICAL) >= -0.5;
-    // boolean switchPressed = table.getEntry("switch").getBoolean(false);
-    // System.out.println(switchPressed);
-    // if(OI.button(0, ControlMap.Y_BUTTON)){
-    //   if(aimPressed && lastAim <= 0.05) return;
-    //   if(Vision.aim() == null){
-    //     if(!aimPressed) return;
-    //     Chassis.axisDrive(0, lastAim, 0.25);
-    //     return;
-    //   }
-    //   if(!aimPressed) lastAim = 500;
-    //   aimPressed = true;
-    //   if(lastYaw <= Vision.getYaw()) lastAim = Vision.aim();
-    //   Chassis.axisDrive(0, lastAim, 0.25);
-    // } else {
-    //   aimPressed = false;
-    // }
+    // // boolean switchPressed = table.getEntry("switch").getBoolean(false);
+    // // System.out.println(switchPressed);
+    // // if(OI.button(0, ControlMap.Y_BUTTON)){
+    // //   if(aimPressed && lastAim <= 0.05) return;
+    // //   if(Vision.aim() == null){
+    // //     if(!aimPressed) return;
+    // //     Chassis.axisDrive(0, lastAim, 0.25);
+    // //     return;
+    // //   }
+    // //   if(!aimPressed) lastAim = 500;
+    // //   aimPressed = true;
+    // //   if(lastYaw <= Vision.getYaw()) lastAim = Vision.aim();
+    // //   Chassis.axisDrive(0, lastAim, 0.25);
+    // // } else {
+    // //   aimPressed = false;
+    // // }
 
-    //driving with accel
-    double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
-    if(Chassis.shift.on()) joystick *= 0.5;
-    //Emergency Brake
-    decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
-    if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
-    //accelerate towards joystick
-    if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
-    if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
+    // //driving with accel
+    // double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
+    // if(Chassis.shift.on()) joystick *= 0.5;
+    // //Emergency Brake
+    // decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
+    // if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
+    // //accelerate towards joystick
+    // if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
+    // if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
+    velocity = accel.calculate(velocity, OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL));
+    if(Chassis.shift.on()) velocity *= 0.5;
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.75, 1);
 
     // //dpad up or down to control elevator;;;

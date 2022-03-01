@@ -3,6 +3,7 @@ package frc.robot;
 import frc.helpers.CCSparkMax;
 import frc.helpers.OI;
 import frc.helpers.PneumaticsSystem;
+import frc.helpers.*;
 import frc.parent.*;
 //import frc.raspi.Vision;
 
@@ -11,7 +12,12 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class Chassis{
 
@@ -117,6 +123,29 @@ public class Chassis{
     public static void toggleFastMode(boolean trigger){
         shift.triggerSystem(trigger);
     }
+    
+    /**
+     * Toggles fast mode. Will only trigger again after trigger is false
+     * 
+     * @param trigger what will trigger the toggle. Suggest passing in a button or axis input.
+     * @param cont which controller will rumble to indicate speed
+     */
+    public static Timer timer = new Timer(0.1);
+    public static boolean triggered = false;
+    public static void toggleFastMode(boolean trigger, Joystick cont){
+        shift.triggerSystem(trigger);
+        if(!trigger){
+            timer.start();
+            cont.setRumble(shift.on() ? RumbleType.kLeftRumble : RumbleType.kRightRumble, 0.5);
+            triggered = true;
+        } else {
+            triggered = false;
+        }
+        if(timer.triggered()){
+            cont.setRumble(RumbleType.kLeftRumble, 0);
+            cont.setRumble(RumbleType.kRightRumble, 0);
+        }
+    }
 
     //Drives the robot to a certain distance
     //Kinda complex -> DO NOT TOUCH
@@ -152,7 +181,6 @@ public class Chassis{
                 System.out.println("Right - Right Speed: " + rSpd + 
                                         " Right Error: " + rError + 
                                         " Right Position" + rPos);
-                Timer.delay(0.5);
             }
 
             if(lError <= aError && rError <= aError){
@@ -185,7 +213,6 @@ public class Chassis{
                 System.out.println("Input: " + input);
                 System.out.println("Error: " + error);
                 System.out.println("Angle: " + angl);
-                Timer.delay(0.5);
             }
 
             if(error <= aError){
@@ -236,6 +263,16 @@ public class Chassis{
             return true;
         }
         return false;
+    }
+
+    public static DifferentialDrive frontDrive = new DifferentialDrive(fLeft, fRight);
+    public static DifferentialDrive backDrive = new DifferentialDrive(bLeft, bRight);
+    /**
+     * it's about drive it's about power we stay hungry we devour
+     */
+    public static void arcadeDrive(double forward, double side){
+        frontDrive.arcadeDrive(forward, side);
+        backDrive.arcadeDrive(forward, side);
     }
     
 }
