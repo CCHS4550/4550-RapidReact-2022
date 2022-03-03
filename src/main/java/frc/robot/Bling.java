@@ -13,7 +13,7 @@ public class Bling {
     public static AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
     
 
-public void rainbow() {
+public static void rainbow() {
     // For every pixel
     int m_rainbowFirstPixelHue = 100;
     for (int i = 0; i < m_ledBuffer.getLength(); i++) {
@@ -30,25 +30,25 @@ public void rainbow() {
     m_rainbowFirstPixelHue %= 180;
   }
 
-  public void red(){
+  public static void red(){
       for (var i = 0; i < m_ledBuffer.getLength(); i++) 
         m_ledBuffer.setRGB(i, 255, 0, 0);
     m_led.setData(m_ledBuffer);
   }
   
-  public void blue(){
+  public static void blue(){
       for (int i = 0; i < m_ledBuffer.getLength(); i++) 
         m_ledBuffer.setRGB(i, 0, 0, 255);
     m_led.setData(m_ledBuffer);
   }
   
- public void green(){
+ public static void green(){
      for (int i = 0; i < m_ledBuffer.getLength(); i++) 
         m_ledBuffer.setRGB(i, 0, 255, 0);
   m_led.setData(m_ledBuffer);
   }
 
-  public void redBlue(){
+  public static void redBlue(){
     for (int i = 0; i < m_ledBuffer.getLength(); i++) {
         if (i % 8 <= 3)
             m_ledBuffer.setRGB(i, 0, 0, 255);
