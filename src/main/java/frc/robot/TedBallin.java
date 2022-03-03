@@ -26,15 +26,15 @@ public class TedBallin implements RobotMap{
     public static CCSparkMax shooter2 = new CCSparkMax("Shooter2", "S2", RobotMap.SHOOTER2,
         MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, true);
 
-    // public static CCSparkMax loader = new CCSparkMax("Loader", "L", RobotMap.LOADER,
-    //     MotorType.kBrushless, IdleMode.kBrake, RobotMap.LOADER_REVERSE, true);
+    public static CCSparkMax loader = new CCSparkMax("Loader", "L", RobotMap.LOADER,
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.LOADER_REVERSE, true);
 
     public static void nothing(){};
 
     public static void setShoot(double set){
         shooter.set(set);
         shooter2.set(-set);
-        // loader.set(-set);
+        loader.set(-set);
     }
 
     public static Integer trigger = -1;
@@ -44,12 +44,13 @@ public class TedBallin implements RobotMap{
             shooter.set(set);
             shooter2.set(-set);
             timer.set(time);
+            timer.start();
             trigger = trig;
             return;
         }
         if(!timer.triggered()) return;
         System.out.println("timer");
-        // loader.set(-set);
+        loader.set(-set);
     }
     
     /** 

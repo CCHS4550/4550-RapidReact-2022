@@ -11,6 +11,11 @@ import frc.parent.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.Joystick;
+
+import frc.helpers.*;
+
 
 public class Arms implements RobotMap {
  
@@ -57,10 +62,73 @@ public class Arms implements RobotMap {
             return;
         }
         if(downTrigger){
-            if(climber.getPosition() <= -1 && calibrated) return;
+            if(climber.getPosition() <= -1 && calibrated) {
+                return;
+            }
             if(calibrated) position = climber.getPosition();
             climber.set(-speed);
             return;
+        }
+        double set = 0;
+        if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
+        climber.set(OI.normalize(set, -speed, speed));
+    }
+
+    /** 
+     * Will run the elevator based on what triggers are true or false
+     *@param upTrigger what triggers the elevator with positive speed (takes precedence over triggerTwo). Suggest passing in a button or axis input.
+     *@param downTrigger what triggers the elevator with negative speed. Suggest passing in a button or axis input.
+     *@param hardStop will set speed to 0 (takes precedence over triggers one and two)
+     *@param speed the elevator speed
+     *@param controller which joystick will vibrate when the elevator hits the max or min
+    */
+    public static Timer timer = new Timer(0.2);
+    public static boolean down = false;
+    public static boolean up = false;
+    public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
+    public static void runElevator(boolean upTrigger, boolean downTrigger, boolean hardStop, double speed, Joystick controller){
+        if(!calibrated) return;
+        // if a trigger is set, set pos to the right encoder to stop the elevator from going
+        // otherwise move in the direction of the set pos
+        if(hardStop){
+            climber.set(0);
+            return;
+        }
+        if(upTrigger){
+            if(limit.get()){
+                if(!down){
+                    down = true;
+                    controller.setRumble(RumbleType.kRightRumble, 1);
+                    controller.setRumble(RumbleType.kLeftRumble, 1);
+                    timer.reset();
+                    timer.start();
+                }
+            } else {
+                down = false;
+            }
+            if(calibrated) position = climber.getPosition();
+            climber.set(speed);
+            return;
+        }
+        if(downTrigger){
+            if(climber.getPosition() <= -1 && calibrated) {
+                if(!up){
+                    timer.reset();
+                    timer.start();
+                    controller.setRumble(RumbleType.kRightRumble, 1);
+                    controller.setRumble(RumbleType.kLeftRumble, 1);
+                    up = true;
+                }
+            } else {
+                up = false;
+            }
+            if(calibrated) position = climber.getPosition();
+            climber.set(-speed);
+            return;
+        }
+        if(timer.triggered()){
+            controller.setRumble(RumbleType.kRightRumble, 0);
+            controller.setRumble(RumbleType.kLeftRumble, 0);
         }
         double set = 0;
         if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
@@ -83,7 +151,7 @@ public class Arms implements RobotMap {
         if(!calibrated){
             climber.set(.5);
         }
-        if(Robot.limit.get() && !calibrated){
+        if(limit.get() && !calibrated){
             climber.set(0);
             calibrated = true;
             position = 0;
