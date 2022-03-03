@@ -195,7 +195,7 @@ public class Robot extends TimedRobot implements ControlMap{
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    Bling.rainbow();
+    //Bling.rainbow();
     //System.out.println("Switch: " + limit.get());
     // // boolean switchPressed = table.getEntry("switch").getBoolean(false);
     // // System.out.println(switchPressed);
@@ -256,7 +256,7 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void disabledInit() {
-    Bling.redBlue();
+    //Bling.redBlue();
     for(Timer t : Timer.timers){
       t.stop();
       t.reset();
