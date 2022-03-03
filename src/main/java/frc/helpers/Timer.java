@@ -11,15 +11,12 @@ public class Timer {
     private double ticksTotal;
     private boolean triggered;
     private boolean started;
-    private LambdaRunner[] triggers;
 
     /** 
      * A timer that will run in periodic methods. The trigger will be true after the specified time has passed.
      *@param time how much time will pass before the timer is triggered
     */
     public Timer(double time){
-        triggers = new LambdaRunner[0];
-        triggers = null;
         ticksTotal = secondsToTicks(time);
         ticksPassed = 0;
         triggered = false;
@@ -31,7 +28,6 @@ public class Timer {
      *@param time how much time will pass before the timer is triggered
     */
     public Timer(double time, LambdaRunner... ms){
-        triggers = ms;
         ticksTotal = secondsToTicks(time);
         ticksPassed = 0;
         triggered = false;
@@ -44,7 +40,6 @@ public class Timer {
      *@param start what time you're starting the timer at
     */
     public Timer(double time, double start){
-        triggers = new LambdaRunner[0];
         ticksTotal = secondsToTicks(time);
         ticksPassed = secondsToTicks(start);
         triggered = false;
@@ -60,9 +55,6 @@ public class Timer {
             if(!t.started) continue;
             t.ticksPassed++;
             if(t.ticksPassed >= t.ticksTotal){
-                for(LambdaRunner tr : t.triggers){
-                    if(!t.triggered()) tr.run();
-                }
                 t.setTriggered(true);
             }
         }
@@ -74,6 +66,7 @@ public class Timer {
     public void reset(){
         ticksPassed = 0;
         triggered = false;
+        started = false;
     }
 
     /** 
@@ -101,7 +94,6 @@ public class Timer {
         ticksTotal = secondsToTicks(time);
         triggered = false;
         started = false;
-        triggers = ls;
     }
 
     /** 
@@ -158,6 +150,6 @@ public class Timer {
     }
 
     public String toString(){
-        return elapsed() + "/" + total() + ": " + triggers.length + " actions";
+        return elapsed() + "/" + total();
     }
 }

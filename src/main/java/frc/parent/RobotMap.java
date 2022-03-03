@@ -27,8 +27,8 @@ public interface RobotMap {
     public static final int CLIMBER = 4;
     public static final int SHOOTER = 1;
     public static final int SHOOTER2 = 7;
-    //public static final int LOADER = 7;
-    public static final int SUCKY = 3;
+    public static final int LOADER = 11;
+    public static final int SUCKY = 10;
 
 
     //Wheel Polarities

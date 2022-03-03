@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.math.controller.PIDController;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -21,15 +22,14 @@ import frc.diagnostics.*;
 //import frc.raspi.Vision;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+// import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+// import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 import java.util.ArrayList;
 import frc.helpers.*;
@@ -67,7 +67,10 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotInit() {
-
+    Arms.nothing();
+    Chassis.nothing();
+    Intake.nothing();
+    TedBallin.nothing();
     diagnostics = new DiagnosticsIF[] {
       new DiagnosticsNoLayout(motors),
       new PowerStatus()
@@ -131,7 +134,7 @@ public class Robot extends TimedRobot implements ControlMap{
       c.disable();
 
     Timer.tick();
-    Arms.calibrate();
+    //Arms.calibrate();
   }
 //stage deez
   /**
@@ -184,8 +187,6 @@ public class Robot extends TimedRobot implements ControlMap{
   public double lastAim = 0;
   public double lastYaw = 500;
 
-  public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
-
   double kP = 0.5;
   double kI = 0.5;
   double kD = 0.5;
@@ -194,7 +195,6 @@ public class Robot extends TimedRobot implements ControlMap{
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
     //System.out.println("Switch: " + limit.get());
-    boolean switchPressed = limit.get() && OI.axis(1, L_JOYSTICK_VERTICAL) >= -0.5;
     // // boolean switchPressed = table.getEntry("switch").getBoolean(false);
     // // System.out.println(switchPressed);
     // // if(OI.button(0, ControlMap.Y_BUTTON)){
@@ -226,14 +226,14 @@ public class Robot extends TimedRobot implements ControlMap{
     Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.75, 1);
 
     // //dpad up or down to control elevator;;;
-    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT) || OI.axis(1, L_JOYSTICK_VERTICAL) < -0.5) && !switchPressed,
-                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.5);
+    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT) || OI.axis(1, L_JOYSTICK_VERTICAL) < -0.5),
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.5, OI.joystickArray[1]);
     
     //set the elevator all the way up with B button
     if(OI.button(1, B_BUTTON)) Arms.setPosition(-1);
 
-    // //LB to suck, LT to vom
-    // Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
+    //LB to suck, LT to vom
+    Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
     //RB for fast shoot, RT for reverse
     TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 1, 0.1, 4);
@@ -245,7 +245,7 @@ public class Robot extends TimedRobot implements ControlMap{
     Intake.toggleIntake(OI.button(1, X_BUTTON));
 
     //Fast Mode Toggle (A)
-    Chassis.toggleFastMode(OI.button(0, A_BUTTON));
+    Chassis.toggleFastMode(OI.button(0, A_BUTTON), OI.joystickArray[0]);
 
   }
 
@@ -258,6 +258,10 @@ public class Robot extends TimedRobot implements ControlMap{
       t.stop();
       t.reset();
     }
+    OI.joystickArray[0].setRumble(RumbleType.kLeftRumble, 0);
+    OI.joystickArray[0].setRumble(RumbleType.kRightRumble, 0);
+    OI.joystickArray[1].setRumble(RumbleType.kLeftRumble, 0);
+    OI.joystickArray[1].setRumble(RumbleType.kRightRumble, 0);
   }
 
   /**

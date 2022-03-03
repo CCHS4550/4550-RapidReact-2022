@@ -11,8 +11,8 @@ import frc.parent.RobotMap;
 
 public class Intake implements RobotMap {
     public static void nothing(){};
-    // public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY,
-    //     MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, true);
+    public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY,
+        MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, true);
 
     public static PneumaticsSystem intakeSols = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_SOLENOID_ONE, RobotMap.INTAKE_SOLENOID_TWO);
 
@@ -24,19 +24,19 @@ public class Intake implements RobotMap {
      *@param speed the intake speed
     */
     public static void run(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed){
-        // if(hardStop){
-        //     sucky.set(0);
-        //     return;
-        // }
-        // if(triggerOne){
-        //     sucky.set(speed);
-        //     return;
-        // }
-        // if(triggerTwo){
-        //     sucky.set(speed);
-        //     return;
-        // }
-        // sucky.set(0);
+        if(hardStop){
+            sucky.set(0);
+            return;
+        }
+        if(triggerOne){
+            sucky.set(speed);
+            return;
+        }
+        if(triggerTwo){
+            sucky.set(speed);
+            return;
+        }
+        sucky.set(0);
     }
 
     public static void intakeArms(boolean set){
