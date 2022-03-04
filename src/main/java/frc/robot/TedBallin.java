@@ -43,13 +43,13 @@ public class TedBallin implements RobotMap{
         if(trig != trigger){
             shooter.set(set);
             shooter2.set(-set);
+            timer.reset();
             timer.set(time);
             timer.start();
             trigger = trig;
             return;
         }
         if(!timer.triggered()) return;
-        System.out.println("timer");
         loader.set(-set);
     }
     
@@ -77,10 +77,11 @@ public class TedBallin implements RobotMap{
             velocity = speed;
             return;
         }
+        trigger = -1;
         velocity -= Timer.deltaTime / decel;
+        timer.stop();
         if(velocity <= 0) velocity = 0;
         setShoot(velocity);
-        trigger = -1;
     }
 
 }

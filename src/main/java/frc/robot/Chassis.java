@@ -135,7 +135,7 @@ public class Chassis{
         shift.triggerSystem(trigger);
         if(trigger){
             if(!triggered){
-                double rumble = shift.on() ? .2 : 0;
+                double rumble = shift.on() ? .15 : 1;
                 cont.setRumble(RumbleType.kLeftRumble, rumble);
                 cont.setRumble(RumbleType.kRightRumble, rumble);
                 triggered = true;
@@ -263,14 +263,14 @@ public class Chassis{
         return false;
     }
 
-    // public static DifferentialDrive frontDrive = new DifferentialDrive(fLeft, fRight);
-    // public static DifferentialDrive backDrive = new DifferentialDrive(bLeft, bRight);
+    public static DifferentialDrive frontDrive = new DifferentialDrive(fLeft, fRight);
+    public static DifferentialDrive backDrive = new DifferentialDrive(bLeft, bRight);
     /**
      * it's about drive it's about power we stay hungry we devour
-    //  */
-    // public static void arcadeDrive(double forward, double side){
-    //     frontDrive.arcadeDrive(forward, side);
-    //     backDrive.arcadeDrive(forward, side);
-    // }
+    */
+    public static void arcadeDrive(double forward, double side){
+        frontDrive.arcadeDrive(forward, side);
+        backDrive.arcadeDrive(forward, side);
+    }
     
 }

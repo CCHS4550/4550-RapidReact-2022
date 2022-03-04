@@ -61,12 +61,18 @@ public class Robot extends TimedRobot implements ControlMap{
   private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
+  public DoubleSlider slider; 
+  public DoubleEntry entry;
+  public BooleanSwitch swit;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
+    slider = new DoubleSlider("test", 0, -5, 5);
+    entry = new DoubleEntry("Entry Test", 69);
+    swit = new BooleanSwitch("Switch Test", true);
     Arms.nothing();
     Chassis.nothing();
     Intake.nothing();
@@ -112,6 +118,8 @@ public class Robot extends TimedRobot implements ControlMap{
   private long periodicCount;
   private double updateTime = 2;
 
+  
+
   /**
    * This function is called every robot packet, no matter the mode. Use
    * this for items like diagnostics that you want ran during disabled,
@@ -122,6 +130,7 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotPeriodic() {
+    System.out.println(slider.value() + " " + entry.value());
     if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
       for(DiagnosticsIF d : diagnostics) {
         d.updateStatus();
@@ -134,7 +143,7 @@ public class Robot extends TimedRobot implements ControlMap{
       c.disable();
 
     Timer.tick();
-    //Arms.calibrate();
+    Arms.calibrate();
   }
 //stage deez
   /**
@@ -171,8 +180,8 @@ public class Robot extends TimedRobot implements ControlMap{
 
   @Override
   public void teleopInit() {
+    
     timer.start();
-
   }
   /**
    * This function is called periodically during operator control.
@@ -189,13 +198,12 @@ public class Robot extends TimedRobot implements ControlMap{
   public double lastYaw = 500;
 
   double kP = 0.5;
-  double kI = 0.5;
-  double kD = 0.5;
+  double kI = 0.0;
+  double kD = 0.0;
   PIDController accel = new PIDController(kP, kI, kD);
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    //Bling.rainbow();
     //System.out.println("Switch: " + limit.get());
     // // boolean switchPressed = table.getEntry("switch").getBoolean(false);
     // // System.out.println(switchPressed);
@@ -215,17 +223,17 @@ public class Robot extends TimedRobot implements ControlMap{
     // // }
 
     // //driving with accel
-    // double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
-    // if(Chassis.shift.on()) joystick *= 0.5;
+    double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL) * .5;
+    if(Chassis.shift.on()) joystick *= 0.25;
     // //Emergency Brake
     // decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
     // if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
     // //accelerate towards joystick
     // if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
     // if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
-    velocity = accel.calculate(velocity, OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL));
-    if(Chassis.shift.on()) velocity *= 0.5;
-    Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.75, 1);
+    // velocity = accel.calculate(velocity, joystick);
+    // Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.2, 1);
+    Chassis.arcadeDrive(joystick, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.2);
 
     // //dpad up or down to control elevator;;;
     Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT) || OI.axis(1, L_JOYSTICK_VERTICAL) < -0.5),
@@ -238,7 +246,7 @@ public class Robot extends TimedRobot implements ControlMap{
     Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
     //RB for fast shoot, RT for reverse
-    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 1, 0.1, 4);
+    //TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 25, 1, 4);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));
@@ -256,7 +264,6 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void disabledInit() {
-    //Bling.redBlue();
     for(Timer t : Timer.timers){
       t.stop();
       t.reset();

@@ -103,6 +103,7 @@ public class Arms implements RobotMap {
                     timer.reset();
                     timer.start();
                 }
+                return;
             } else {
                 down = false;
             }
@@ -119,6 +120,7 @@ public class Arms implements RobotMap {
                     controller.setRumble(RumbleType.kLeftRumble, 1);
                     up = true;
                 }
+                return;
             } else {
                 up = false;
             }
