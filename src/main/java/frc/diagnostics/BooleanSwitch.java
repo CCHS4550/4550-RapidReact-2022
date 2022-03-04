@@ -5,10 +5,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
-import java.awt.Point;
-
-public class BooleanSwitch{
-    private Point pos = ShuffleManager.pos;
+public class BooleanSwitch extends ShuffleManager{
 
     private SimpleWidget widget;
     private NetworkTableEntry entry;
@@ -29,7 +26,7 @@ public class BooleanSwitch{
             .withPosition(pos.x, pos.y)
             .withSize(2, 1);
         entry = widget.getEntry();
-        pos.move(2, 0);
+        pos.translate(2, 0);
         if(pos.x >= 7) pos.setLocation(0, pos.y + 1);
     }
 
@@ -41,6 +38,7 @@ public class BooleanSwitch{
      * @param max
      */
     public BooleanSwitch(String title, Boolean defaultValue){
+        System.out.print(pos);
         widget =
         Shuffleboard.getTab("Config")
             .add(title, defaultValue)
@@ -48,11 +46,11 @@ public class BooleanSwitch{
             .withPosition(pos.x, pos.y)
             .withSize(2, 1);
         entry = widget.getEntry();
-        pos.move(2, 0);
+        pos.translate(2, 0);
         if(pos.x >= 7) pos.setLocation(1, pos.y + 2);
     }
 
-    public double value(){
-        return entry.getDouble(0);
+    public boolean value(){
+        return entry.getBoolean(true);
     }
 }

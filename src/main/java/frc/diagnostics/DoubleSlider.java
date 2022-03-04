@@ -7,11 +7,8 @@ import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.awt.Point;
 
-public class DoubleSlider{
-
-    private Point pos = ShuffleManager.pos;
+public class DoubleSlider extends ShuffleManager {
 
     private SimpleWidget widget;
     private NetworkTableEntry entry;
@@ -36,7 +33,7 @@ public class DoubleSlider{
         properties.put("Max", max);
         properties.put("Min", min);
         widget.withProperties(properties);
-        pos.move(2, 0);
+        pos.translate(2, 0);
         if(pos.x >= 7) pos.setLocation(0, pos.y + 1);
     }
 
@@ -48,6 +45,7 @@ public class DoubleSlider{
      * @param max
      */
     public DoubleSlider(String title, double defaultValue, double min, double max){
+        System.out.print(pos);
         widget =
         Shuffleboard.getTab("Config")
             .add(title, defaultValue)
@@ -59,7 +57,7 @@ public class DoubleSlider{
         properties.put("Max", max);
         properties.put("Min", min);
         widget.withProperties(properties);
-        pos.move(2, 0);
+        pos.translate(2, 0);
         if(pos.x >= 7) pos.setLocation(1, pos.y + 2);
     }
 

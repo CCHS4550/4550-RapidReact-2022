@@ -130,7 +130,6 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   @Override
   public void robotPeriodic() {
-    System.out.println(slider.value() + " " + entry.value());
     if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
       for(DiagnosticsIF d : diagnostics) {
         d.updateStatus();

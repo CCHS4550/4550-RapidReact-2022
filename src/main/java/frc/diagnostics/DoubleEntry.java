@@ -5,10 +5,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
-import java.awt.Point;
-
-public class DoubleEntry{
-    private Point pos = ShuffleManager.pos;
+public class DoubleEntry extends ShuffleManager {
 
     private SimpleWidget widget;
     private NetworkTableEntry entry;
@@ -29,7 +26,7 @@ public class DoubleEntry{
             .withPosition(pos.x, pos.y)
             .withSize(2, 1);
         entry = widget.getEntry();
-        pos.move(2, 0);
+        pos.translate(2, 0);
         if(pos.x >= 7) pos.setLocation(0, pos.y + 1);
     }
 
@@ -41,6 +38,7 @@ public class DoubleEntry{
      * @param max
      */
     public DoubleEntry(String title, double defaultValue){
+        System.out.print(pos);
         widget =
         Shuffleboard.getTab("Config")
             .add(title, defaultValue)
@@ -48,7 +46,7 @@ public class DoubleEntry{
             .withPosition(pos.x, pos.y)
             .withSize(2, 1);
         entry = widget.getEntry();
-        pos.move(2, 0);
+        pos.translate(2, 0);
         if(pos.x >= 7) pos.setLocation(1, pos.y + 2);
     }
 
