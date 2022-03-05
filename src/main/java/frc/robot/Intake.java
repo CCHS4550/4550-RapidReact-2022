@@ -23,7 +23,7 @@ public class Intake implements RobotMap {
      *@param hardStop will set speed to 0 (takes precedence over triggers one and two)
      *@param speed the intake speed
     */
-    public static void run(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed){
+    public static void runShooter(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed){
         if(hardStop){
             sucky.set(0);
             return;

@@ -222,7 +222,7 @@ public class Robot extends TimedRobot implements ControlMap{
     // // }
 
     // //driving with accel
-    double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL) * .5;
+    double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
     if(Chassis.shift.on()) joystick *= 0.25;
     // //Emergency Brake
     // decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
@@ -241,11 +241,14 @@ public class Robot extends TimedRobot implements ControlMap{
     //set the elevator all the way up with B button
     if(OI.button(1, B_BUTTON)) Arms.setPosition(-1);
 
-    //LB to suck, LT to vom
-    Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
+    //LB to index, LT to unindex
+    TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.5);
 
     //RB for fast shoot, RT for reverse
-    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 25, 0, 4);
+    TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 1, 4);
+
+    //A for in, B for out
+    Intake.run(OI.button(1, A_BUTTON), OI.button(1, B_BUTTON), false, 1);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));
