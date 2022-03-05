@@ -235,7 +235,7 @@ public class Robot extends TimedRobot implements ControlMap{
     Chassis.arcadeDrive(joystick, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.2);
 
     // //dpad up or down to control elevator;;;
-    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT) || OI.axis(1, L_JOYSTICK_VERTICAL) < -0.5),
+    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT) && !Arms.limit.get()),
                      OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.5, OI.joystickArray[1]);
     
     //set the elevator all the way up with B button
@@ -245,7 +245,7 @@ public class Robot extends TimedRobot implements ControlMap{
     Intake.run(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.6);
 
     //RB for fast shoot, RT for reverse
-    //TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 25, 1, 4);
+    TedBallin.shoot(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 25, 0, 4);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));

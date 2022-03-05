@@ -33,7 +33,7 @@ public class Intake implements RobotMap {
             return;
         }
         if(triggerTwo){
-            sucky.set(speed);
+            sucky.set(-speed);
             return;
         }
         sucky.set(0);

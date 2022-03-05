@@ -103,6 +103,7 @@ public class Arms implements RobotMap {
                     timer.reset();
                     timer.start();
                 }
+                climber.set(0);
                 return;
             } else {
                 down = false;
@@ -120,6 +121,7 @@ public class Arms implements RobotMap {
                     controller.setRumble(RumbleType.kLeftRumble, 1);
                     up = true;
                 }
+                climber.set(speed);
                 return;
             } else {
                 up = false;
