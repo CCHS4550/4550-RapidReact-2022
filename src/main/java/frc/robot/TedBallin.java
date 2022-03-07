@@ -34,7 +34,6 @@ public class TedBallin implements RobotMap{
     public static void setShoot(double set){
         shooter.set(set);
         shooter2.set(-set);
-        loader.set(-set);
     }
     
     /** 

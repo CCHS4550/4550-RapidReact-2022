@@ -11,12 +11,16 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+// import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class Chassis{
 
-    public static void nothing(){};
+    public static void nothing(){
+        double rumble = shift.on() ? .15 : 0;
+        OI.joystickArray[0].setRumble(RumbleType.kLeftRumble, rumble);
+        OI.joystickArray[0].setRumble(RumbleType.kRightRumble, rumble);
+    }
 
     //Talon objects for the wheels
     //These control the main 4 motors on the robot
@@ -118,6 +122,19 @@ public class Chassis{
     public static void toggleFastMode(boolean trigger){
         shift.triggerSystem(trigger);
     }
+
+    public static boolean triggered2 = false;
+    public static boolean fast = false;
+    public static void toggleFast(boolean trigger){
+        if(trigger){
+            if(!triggered2){
+                fast = !fast;
+                triggered2 = true;
+            }
+        } else {
+            triggered2 = false;
+        }
+    }
     
     /**
      * Toggles fast mode. Will only trigger again after trigger is false
@@ -130,7 +147,7 @@ public class Chassis{
         shift.triggerSystem(trigger);
         if(trigger){
             if(!triggered){
-                double rumble = shift.on() ? .15 : 1;
+                double rumble = shift.on() ? .15 : 0;
                 cont.setRumble(RumbleType.kLeftRumble, rumble);
                 cont.setRumble(RumbleType.kRightRumble, rumble);
                 triggered = true;
@@ -258,14 +275,14 @@ public class Chassis{
         return false;
     }
 
-    public static DifferentialDrive frontDrive = new DifferentialDrive(fLeft, fRight);
-    public static DifferentialDrive backDrive = new DifferentialDrive(bLeft, bRight);
-    /**
-     * it's about drive it's about power we stay hungry we devour
-    */
-    public static void arcadeDrive(double forward, double side){
-        frontDrive.arcadeDrive(forward, side);
-        backDrive.arcadeDrive(forward, side);
-    }
+    // public static DifferentialDrive frontDrive = new DifferentialDrive(fLeft, fRight);
+    // public static DifferentialDrive backDrive = new DifferentialDrive(bLeft, bRight);
+    // /**
+    //  * it's about drive it's about power we stay hungry we devour
+    // */
+    // public static void arcadeDrive(double forward, double side){
+    //     frontDrive.arcadeDrive(forward, side);
+    //     backDrive.arcadeDrive(forward, side);
+    // }
     
 }

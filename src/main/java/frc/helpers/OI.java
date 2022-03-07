@@ -4,6 +4,7 @@ package frc.helpers;
 
 import edu.wpi.first.wpilibj.Joystick;
 import frc.parent.ControlMap;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 //This controllers are user input
 //It also has the normalize method cuz IDK where else to put it
@@ -84,5 +85,17 @@ public class OI {
        //return value > max ? max : value < min ? min : value;
     }
 
+    public static void setRumble(int contNumber, double value){
+        joystickArray[contNumber].setRumble(RumbleType.kLeftRumble, value);
+        joystickArray[contNumber].setRumble(RumbleType.kRightRumble, value);
+    }
+
+    public static void setRumbleLeft(int contNumber, double value){
+        joystickArray[contNumber].setRumble(RumbleType.kLeftRumble, value);
+    }
+
+    public static void setRumbleRight(int contNumber, double value){
+        joystickArray[contNumber].setRumble(RumbleType.kRightRumble, value);
+    }
 
 }

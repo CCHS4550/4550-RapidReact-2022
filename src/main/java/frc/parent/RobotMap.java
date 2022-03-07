@@ -21,9 +21,9 @@ public interface RobotMap {
 
     // Wheel Talons
     public static final int FORWARD_LEFT = 2;
-    public static final int FORWARD_RIGHT = 5;
+    public static final int FORWARD_RIGHT = 6;
     public static final int BACK_LEFT = 3;
-    public static final int BACK_RIGHT = 6;
+    public static final int BACK_RIGHT = 5;
     public static final int CLIMBER = 4;
     public static final int SHOOTER = 1;
     public static final int SHOOTER2 = 7;

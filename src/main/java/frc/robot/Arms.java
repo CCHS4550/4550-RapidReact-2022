@@ -23,11 +23,11 @@ public class Arms implements RobotMap {
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
 
     public static PneumaticsSystem armSols = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE, RobotMap.ARM_SOLENOID_TWO);
-    public static double position;
+    //public static double position;
 
     public static void nothing(){
         climber.setPositionConversionFactor(1 / ARM_ENCODER_HIGH);
-        position = climber.getPosition();
+        // position = climber.getPosition();
     }
 
     public static void setArms(boolean on){
@@ -57,7 +57,7 @@ public class Arms implements RobotMap {
             return;
         }
         if(upTrigger){
-            if(calibrated) position = climber.getPosition();
+            // if(calibrated) position = climber.getPosition();
             climber.set(speed);
             return;
         }
@@ -65,12 +65,12 @@ public class Arms implements RobotMap {
             if(climber.getPosition() <= -1 && calibrated) {
                 return;
             }
-            if(calibrated) position = climber.getPosition();
+            // if(calibrated) position = climber.getPosition();
             climber.set(-speed);
             return;
         }
         double set = 0;
-        if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
+        //if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
         climber.set(OI.normalize(set, -speed, speed));
     }
 
@@ -85,9 +85,9 @@ public class Arms implements RobotMap {
     public static Timer timer = new Timer(0.2);
     public static boolean down = false;
     public static boolean up = false;
-    public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
+    //public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
     public static void runElevator(boolean upTrigger, boolean downTrigger, boolean hardStop, double speed, Joystick controller){
-        if(!calibrated) return;
+        //if(!calibrated) return;
         // if a trigger is set, set pos to the right encoder to stop the elevator from going
         // otherwise move in the direction of the set pos
         if(hardStop){
@@ -95,47 +95,47 @@ public class Arms implements RobotMap {
             return;
         }
         if(upTrigger){
-            if(limit.get()){
-                if(!down){
-                    down = true;
-                    controller.setRumble(RumbleType.kRightRumble, 1);
-                    controller.setRumble(RumbleType.kLeftRumble, 1);
-                    timer.reset();
-                    timer.start();
-                }
-                climber.set(0);
-                return;
-            } else {
-                down = false;
-            }
-            if(calibrated) position = climber.getPosition();
+            // if(limit.get()){
+            //     if(!down){
+            //         down = true;
+            //         controller.setRumble(RumbleType.kRightRumble, 1);
+            //         controller.setRumble(RumbleType.kLeftRumble, 1);
+            //         timer.reset();
+            //         timer.start();
+            //     }
+            //     climber.set(0);
+            //     return;
+            // } else {
+            //     down = false;
+            // }
+            //if(calibrated) position = climber.getPosition();
             climber.set(speed);
             return;
         }
         if(downTrigger){
-            if(climber.getPosition() <= -1 && calibrated) {
-                if(!up){
-                    timer.reset();
-                    timer.start();
-                    controller.setRumble(RumbleType.kRightRumble, 1);
-                    controller.setRumble(RumbleType.kLeftRumble, 1);
-                    up = true;
-                }
-                climber.set(speed);
-                return;
-            } else {
-                up = false;
-            }
-            if(calibrated) position = climber.getPosition();
+            // if(climber.getPosition() <= -1 && calibrated) {
+            //     if(!up){
+            //         timer.reset();
+            //         timer.start();
+            //         controller.setRumble(RumbleType.kRightRumble, 1);
+            //         controller.setRumble(RumbleType.kLeftRumble, 1);
+            //         up = true;
+            //     }
+            //     climber.set(speed);
+            //     return;
+            // } else {
+            //     up = false;
+            // }
+            //if(calibrated) position = climber.getPosition();
             climber.set(-speed);
             return;
         }
-        if(timer.triggered()){
-            controller.setRumble(RumbleType.kRightRumble, 0);
-            controller.setRumble(RumbleType.kLeftRumble, 0);
-        }
+        // if(timer.triggered()){
+        //     controller.setRumble(RumbleType.kRightRumble, 0);
+        //     controller.setRumble(RumbleType.kLeftRumble, 0);
+        // }
         double set = 0;
-        if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
+        //if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
         climber.set(OI.normalize(set, -speed, speed));
     }
 
@@ -151,26 +151,27 @@ public class Arms implements RobotMap {
     //public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
     public static boolean calibrated = false;
     public static boolean calibrate(){
-        if(calibrated) return true;
-        if(!calibrated){
-            climber.set(.5);
-        }
-        if(limit.get() && !calibrated){
-            climber.set(0);
-            calibrated = true;
-            position = 0;
-            climber.reset();
-        }
-        return calibrated;
+        // if(calibrated) return true;
+        // if(!calibrated){
+        //     climber.set(.5);
+        // }
+        // if(limit.get() && !calibrated){
+        //     climber.set(0);
+        //     calibrated = true;
+        //     //position = 0;
+        //     climber.reset();
+        // }
+        // return calibrated;
+        return true;
     }
 
     /**
      * 
      * @param position a value from 0-1, with 0 being all the way down, and 1 being all the way up
      */
-    public static void setPosition(double position){
-        if(calibrated);
-        Arms.position = OI.normalize(position, -1, 0);
-    }
+    // public static void setPosition(double position){
+    //     if(calibrated);
+    //     Arms.position = OI.normalize(position, -1, 0);
+    // }
     
 }

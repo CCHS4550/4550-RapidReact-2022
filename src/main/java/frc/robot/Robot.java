@@ -22,6 +22,7 @@ import frc.diagnostics.*;
 //import frc.raspi.Vision;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -61,18 +62,20 @@ public class Robot extends TimedRobot implements ControlMap{
   private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
-  public DoubleSlider slider; 
-  public DoubleEntry entry;
-  public BooleanSwitch swit;
+  // public DoubleSlider slider; 
+  // public DoubleEntry entry;
+  // public BooleanSwitch swit;
+  SlewRateLimiter limiter = new SlewRateLimiter(1);
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
-    slider = new DoubleSlider("test", 0, -5, 5);
-    entry = new DoubleEntry("Entry Test", 69);
-    swit = new BooleanSwitch("Switch Test", true);
+    Chassis.shift.set(true);
+    // slider = new DoubleSlider("test", 0, -5, 5);
+    // entry = new DoubleEntry("Entry Test", 69);
+    // swit = new BooleanSwitch("Switch Test", true);
     Arms.nothing();
     Chassis.nothing();
     Intake.nothing();
@@ -142,7 +145,7 @@ public class Robot extends TimedRobot implements ControlMap{
       c.disable();
 
     Timer.tick();
-    Arms.calibrate();
+    //Arms.calibrate();
   }
 //stage deez
   /**
@@ -157,11 +160,11 @@ public class Robot extends TimedRobot implements ControlMap{
    * SendableChooser make sure to add them to the chooser code above as well.
    */
   boolean started = false;
-  Timer timer = new Timer(5, new LambdaRunner<Object, Double>(new Object(), 0d, (t, v) -> TedBallin.setShoot(v)));
+  //Timer timer = new Timer(5, new LambdaRunner<Object, Double>(new Object(), 0d, (t, v) -> TedBallin.setShoot(v)));
 
   @Override
   public void autonomousInit() {
-    timer.start();
+    //timer.start();
     TedBallin.setShoot(1);
     Chassis.reset();
 
@@ -173,14 +176,14 @@ public class Robot extends TimedRobot implements ControlMap{
   
   @Override
   public void autonomousPeriodic() {
-    if(!timer.triggered()) return;
+    //if(!timer.triggered()) return;
     if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.5, 0)) return;
   }
 
   @Override
   public void teleopInit() {
     
-    timer.start();
+    //timer.start();
   }
   /**
    * This function is called periodically during operator control.
@@ -189,7 +192,13 @@ public class Robot extends TimedRobot implements ControlMap{
   public double decelTimeFast = .2;
   public double decelTimeSlow = .5;
 
+  public double decelTimeR = .2;
+  public double decelTimeRFast = .1;
+  public double decelTimeRSlow = .3;
+
   public double velocity = 0;
+  public double rVelocity = 0;
+
   public double deltaTime = 0.02;
 
   public boolean aimPressed = false;
@@ -200,6 +209,7 @@ public class Robot extends TimedRobot implements ControlMap{
   double kI = 0.0;
   double kD = 0.0;
   PIDController accel = new PIDController(kP, kI, kD);
+
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
@@ -223,32 +233,45 @@ public class Robot extends TimedRobot implements ControlMap{
 
     // //driving with accel
     double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
-    if(Chassis.shift.on()) joystick *= 0.25;
-    // //Emergency Brake
+     if(Chassis.fast) joystick *= 0.5;
+    double rJoystick = OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL);
+    // if(Chassis.fast) rJoystick *= .5;
+    rJoystick *= 0.5;
+    
+    // //setting decel
     // decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
-    // if(OI.button(0, ControlMap.LB_BUTTON)) joystick = 0;
+    // decelTimeR = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeRFast : decelTimeRSlow;
+
+    // //Emergency Brake
+    // if(OI.button(0, ControlMap.LB_BUTTON)) {
+    //   joystick = 0;
+    //   rJoystick = 0;
+    // }
     // //accelerate towards joystick
     // if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
     // if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
-    // velocity = accel.calculate(velocity, joystick);
-    // Chassis.axisDrive(velocity, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.2, 1);
-    Chassis.arcadeDrive(joystick, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.2);
 
+    // if(rJoystick - rVelocity != 0) rVelocity += (rJoystick - rVelocity) / Math.abs(rJoystick - rVelocity) * deltaTime / decelTimeR;
+    // if(Math.abs(rVelocity) < 0.05 && Math.abs(rJoystick) <= 0.05) rVelocity = 0;
+
+    //velocity = accel.calculate(velocity, joystick);
+    Chassis.axisDrive(limiter.calculate(joystick), rJoystick, 1);
+    //Chassis.arcadeDrive(joystick, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.5);
+
+    double armSpeed = 1;
+    if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
     // //dpad up or down to control elevator;;;
-    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT) && !Arms.limit.get()),
-                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, 0.5, OI.joystickArray[1]);
-    
-    //set the elevator all the way up with B button
-    if(OI.button(1, B_BUTTON)) Arms.setPosition(-1);
+    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1]);
 
     //LB to index, LT to unindex
     TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.5);
 
     //RB for fast shoot, RT for reverse
-    TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, 1, 4);
+    TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, -.75, 4);
 
     //A for in, B for out
-    Intake.run(OI.button(1, A_BUTTON), OI.button(1, B_BUTTON), false, 1);
+    Intake.run(OI.button(1, A_BUTTON), OI.button(1, B_BUTTON), false, -1);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));
@@ -258,6 +281,9 @@ public class Robot extends TimedRobot implements ControlMap{
 
     //Fast Mode Toggle (A)
     Chassis.toggleFastMode(OI.button(0, A_BUTTON), OI.joystickArray[0]);
+
+    //Fast Toggle (Y)
+    Chassis.toggleFast(OI.button(0, Y_BUTTON));
 
   }
 
@@ -270,6 +296,7 @@ public class Robot extends TimedRobot implements ControlMap{
       t.stop();
       t.reset();
     }
+    Arms.calibrated = false;
     OI.joystickArray[0].setRumble(RumbleType.kLeftRumble, 0);
     OI.joystickArray[0].setRumble(RumbleType.kRightRumble, 0);
     OI.joystickArray[1].setRumble(RumbleType.kLeftRumble, 0);
