@@ -9,7 +9,7 @@ public class Bling {
     // Reuse buffer
     // Default to a length of 60, / Length is expensive to set, so only set it once, then just update data
  
-    public static AddressableLED m_led = new AddressableLED(0);
+    public static AddressableLED m_led = new AddressableLED(2); //port 2
     public static AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
     
 

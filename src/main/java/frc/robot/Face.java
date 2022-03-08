@@ -3,8 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Servo;
 
 public class Face {
-    public static Servo eyebrow1 = new Servo(1);
-    public static Servo eyebrow2 = new Servo(2);
+    public static Servo eyebrow1 = new Servo(0); //left
+    public static Servo eyebrow2 = new Servo(1); //right
 
     public static void neutral() {
         eyebrow1.setAngle(0);
