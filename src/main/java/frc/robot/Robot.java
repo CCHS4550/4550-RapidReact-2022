@@ -44,6 +44,7 @@ import frc.helpers.*;
  */
 //API: https://first.wpi.edu/wpilib/allwpilib/docs/release/java/index.html
 public class Robot extends TimedRobot implements ControlMap{
+  public static Timer count = new Timer(9);
   // private static final String kDefaultAuto = "Default";
   // private static final String kCustomAuto = "My Auto";
   // private static final String kResetPIDs = "Reset PIDs";
@@ -145,6 +146,7 @@ public class Robot extends TimedRobot implements ControlMap{
       c.disable();
 
     Timer.tick();
+
     //Arms.calibrate();
   }
 //stage deez
@@ -165,19 +167,62 @@ public class Robot extends TimedRobot implements ControlMap{
   @Override
   public void autonomousInit() {
     //timer.start();
-    TedBallin.setShoot(1);
     Chassis.reset();
-
+    shoot.start();
   }
   /**
    * This function is called periodically during autonomous.
    */
   // add timer.start so it's not as much of a pain :)
-  
+  Timer shoot = new Timer(1);
+  Timer driveStart = new Timer(0.5);
   @Override
   public void autonomousPeriodic() {
     //if(!timer.triggered()) return;
-    if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.5, 0)) return;
+    /*
+    shoot first
+    180 turn
+    pop intake
+    run intake
+    move straight out + grab ted ballin
+    180
+    stop intake
+    pull intake in
+    go straight
+    ted ballin the ball in
+    
+    tate does magic stuff here WOOOO
+    */
+    if(!driveStart.started()){
+      if(!shoot.started()) TedBallin.setShoot(1);
+      if(shoot.triggered()){
+        TedBallin.loader.set(.85);
+        driveStart.start();
+      } else return;
+    }
+    if(driveStart.triggered()){
+      TedBallin.setShoot(0);
+      TedBallin.loader.set(0);
+    } else return;
+
+    
+    if(!Chassis.turnToAnglePeriodic(180, 0.1, 0.5, 3, 0)) return;
+    Intake.toggleIntake(true);
+    Intake.suck(1);
+    if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.5, 1)) return;
+    if(!Chassis.turnToAnglePeriodic(180, 0.1, 0.5, 0.1, 2)) return;
+    if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.1, 3)) return;
+    if (Chassis.autoStep >= 4) {
+      driveStart.start();
+    } 
+
+    //among us in real life
+    //when the impostor is sussy!!!!
+    //:)
+    //:O
+    //:D
+    //D:
+    //uwu
   }
 
   @Override

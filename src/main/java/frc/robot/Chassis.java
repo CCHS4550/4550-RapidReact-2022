@@ -233,6 +233,15 @@ public class Chassis{
         }
     }
 
+    /**
+    Turns to an angle 
+    @param goal the target angle
+    @param kp the proportional constant\
+    @param max the maximum speed
+    @param aError the accepted error
+    @param step what step in autonomous this is
+    @return if this step is completed or not
+     */
     public static boolean turnToAnglePeriodic(double goal, double kp, double max, double aError, int step){
         if(step != autoStep) return true;
         double angl = gyro.getAngle();
@@ -251,8 +260,17 @@ public class Chassis{
         return false;
     }
 
+    /**
+    drives to a set distance
+    @param goal the target distance
+    @param kp the proportional constant\
+    @param max the maximum speed
+    @param aError the accepted error
+    @param step what step in autonomous this is
+    @return if this step is completed or not
+     */
     public static boolean driveDistPeriodic(double goal, double kp, double max, double aError, int step){
-        if(step != autoStep) return true;
+        if(step < autoStep) return true;
         setFactor(0.048);
         double lPos = getLDist();
         double lError = goal-lPos;
@@ -286,3 +304,7 @@ public class Chassis{
     // }
     
 }
+/*
+
+
+ */

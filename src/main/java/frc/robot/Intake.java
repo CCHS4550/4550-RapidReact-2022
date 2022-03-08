@@ -39,6 +39,12 @@ public class Intake implements RobotMap {
         sucky.set(0);
     }
 
+    public static void suck(double speed){
+        sucky.set(speed);
+    }
+
+    
+
     public static void intakeArms(boolean set){
         intakeSols.set(set);
     }
