@@ -79,7 +79,7 @@ public class Robot extends TimedRobot implements ControlMap{
     // swit = new BooleanSwitch("Switch Test", true);
     Arms.nothing();
     Chassis.nothing();
-    Intake.nothing();
+    // Intake.nothing();
     TedBallin.nothing();
     diagnostics = new DiagnosticsIF[] {
       new DiagnosticsNoLayout(motors),
@@ -146,8 +146,9 @@ public class Robot extends TimedRobot implements ControlMap{
       c.disable();
 
     Timer.tick();
+    System.out.println(shoot + ", " + driveStart);
 
-    //Arms.calibrate();
+    Arms.calibrate();
   }
 //stage deez
   /**
@@ -168,7 +169,14 @@ public class Robot extends TimedRobot implements ControlMap{
   public void autonomousInit() {
     //timer.start();
     Chassis.reset();
-    shoot.start();
+    TedBallin.setShoot(0.85);
+    Timer.delay(2);
+    TedBallin.loader.set(1);
+    Timer.delay(1);
+    Chassis.driveDist(3.5, 0.1, 0.3, 0.5, true);
+    TedBallin.setShoot(0);
+    TedBallin.loader.set(0);
+    // shoot.start();
   }
   /**
    * This function is called periodically during autonomous.
@@ -188,33 +196,30 @@ public class Robot extends TimedRobot implements ControlMap{
     180
     stop intake
     pull intake in
-    go straight
+    go straight;
     ted ballin the ball in
     
     tate does magic stuff here WOOOO
     */
-    if(!driveStart.started()){
-      if(!shoot.started()) TedBallin.setShoot(1);
-      if(shoot.triggered()){
-        TedBallin.loader.set(.85);
-        driveStart.start();
-      } else return;
-    }
-    if(driveStart.triggered()){
-      TedBallin.setShoot(0);
-      TedBallin.loader.set(0);
-    } else return;
-
+    // if(!driveStart.started()){
+    //   if(!shoot.started()) TedBallin.setShoot(1);
+    //   if(shoot.triggered()){
+    //     TedBallin.loader.set(.85);
+    //     driveStart.start();
+    //   } else return;
+    // }
+    // if(driveStart.triggered()){
+    //   TedBallin.setShoot(0);
+    //   TedBallin.loader.set(0);
+    // } else return;
+    // if(Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.1, 0)) return;;
     
-    if(!Chassis.turnToAnglePeriodic(180, 0.1, 0.5, 3, 0)) return;
-    Intake.toggleIntake(true);
-    Intake.suck(1);
-    if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.5, 1)) return;
-    if(!Chassis.turnToAnglePeriodic(180, 0.1, 0.5, 0.1, 2)) return;
-    if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.1, 3)) return;
-    if (Chassis.autoStep >= 4) {
-      driveStart.start();
-    } 
+    // if(!Chassis.turnToAnglePeriodic(180, 0.1, 0.5, 3, 1)) return;
+    // Intake.toggleIntake(true);
+    // Intake.suck(1);
+    // if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.5, 2)) return;
+    // if(!Chassis.turnToAnglePeriodic(180, 0.1, 0.5, 0.1, 3)) return;
+    // if(!Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.1, 4)) return;
 
     //among us in real life
     //when the impostor is sussy!!!!
@@ -227,7 +232,7 @@ public class Robot extends TimedRobot implements ControlMap{
 
   @Override
   public void teleopInit() {
-    
+    Face.angry();
     //timer.start();
   }
   /**
@@ -235,14 +240,9 @@ public class Robot extends TimedRobot implements ControlMap{
    */
   public double decelTime = .2;
   public double decelTimeFast = .2;
-  public double decelTimeSlow = .5;
-
-  public double decelTimeR = .2;
-  public double decelTimeRFast = .1;
-  public double decelTimeRSlow = .3;
+  public double decelTimeSlow = 0;
 
   public double velocity = 0;
-  public double rVelocity = 0;
 
   public double deltaTime = 0.02;
 
@@ -278,29 +278,30 @@ public class Robot extends TimedRobot implements ControlMap{
 
     // //driving with accel
     double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
-     if(Chassis.fast) joystick *= 0.5;
+     if(Chassis.fast) {
+       joystick *= 0.5;
+     } else {
+       joystick *= 0.8;
+     }
     double rJoystick = OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL);
     // if(Chassis.fast) rJoystick *= .5;
     rJoystick *= 0.5;
     
-    // //setting decel
-    // decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
-    // decelTimeR = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeRFast : decelTimeRSlow;
+    //setting decel
+    decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
 
-    // //Emergency Brake
-    // if(OI.button(0, ControlMap.LB_BUTTON)) {
-    //   joystick = 0;
-    //   rJoystick = 0;
-    // }
-    // //accelerate towards joystick
-    // if(joystick - velocity != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
-    // if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
-
-    // if(rJoystick - rVelocity != 0) rVelocity += (rJoystick - rVelocity) / Math.abs(rJoystick - rVelocity) * deltaTime / decelTimeR;
-    // if(Math.abs(rVelocity) < 0.05 && Math.abs(rJoystick) <= 0.05) rVelocity = 0;
+    //Emergency Brake
+    if(OI.button(0, ControlMap.LB_BUTTON)) {
+      joystick = 0;
+      rJoystick = 0;
+    }
+    //accelerate towards joystick
+    if(joystick - velocity != 0 && decelTime != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
+    if(decelTime == 0) velocity = joystick;
+    if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
 
     //velocity = accel.calculate(velocity, joystick);
-    Chassis.axisDrive(limiter.calculate(joystick), rJoystick, 1);
+    Chassis.axisDrive(velocity, rJoystick, 1);
     //Chassis.arcadeDrive(joystick, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.5);
 
     double armSpeed = 1;
@@ -310,19 +311,19 @@ public class Robot extends TimedRobot implements ControlMap{
                      OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1]);
 
     //LB to index, LT to unindex
-    TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.5);
+    TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.25);
 
     //RB for fast shoot, RT for reverse
     TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, -.75, 4);
 
     //A for in, B for out
-    Intake.run(OI.button(1, A_BUTTON), OI.button(1, B_BUTTON), false, -1);
+    //Intake.run(OI.button(1, A_BUTTON), OI.button(1, B_BUTTON), false, -1);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));
 
     //Intake Arms Toggle (X)
-    Intake.toggleIntake(OI.button(1, X_BUTTON));
+    //Intake.toggleIntake(OI.button(1, X_BUTTON));
 
     //Fast Mode Toggle (A)
     Chassis.toggleFastMode(OI.button(0, A_BUTTON), OI.joystickArray[0]);

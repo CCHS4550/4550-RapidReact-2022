@@ -85,7 +85,7 @@ public class Arms implements RobotMap {
     public static Timer timer = new Timer(0.2);
     public static boolean down = false;
     public static boolean up = false;
-    //public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
+    public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
     public static void runElevator(boolean upTrigger, boolean downTrigger, boolean hardStop, double speed, Joystick controller){
         //if(!calibrated) return;
         // if a trigger is set, set pos to the right encoder to stop the elevator from going
@@ -95,45 +95,45 @@ public class Arms implements RobotMap {
             return;
         }
         if(upTrigger){
-            // if(limit.get()){
-            //     if(!down){
-            //         down = true;
-            //         controller.setRumble(RumbleType.kRightRumble, 1);
-            //         controller.setRumble(RumbleType.kLeftRumble, 1);
-            //         timer.reset();
-            //         timer.start();
-            //     }
-            //     climber.set(0);
-            //     return;
-            // } else {
-            //     down = false;
-            // }
+            if(limit.get()){
+                if(!down){
+                    down = true;
+                    controller.setRumble(RumbleType.kRightRumble, 1);
+                    controller.setRumble(RumbleType.kLeftRumble, 1);
+                    timer.reset();
+                    timer.start();
+                }
+                climber.set(0);
+                return;
+            } else {
+                down = false;
+            }
             //if(calibrated) position = climber.getPosition();
             climber.set(speed);
             return;
         }
         if(downTrigger){
-            // if(climber.getPosition() <= -1 && calibrated) {
-            //     if(!up){
-            //         timer.reset();
-            //         timer.start();
-            //         controller.setRumble(RumbleType.kRightRumble, 1);
-            //         controller.setRumble(RumbleType.kLeftRumble, 1);
-            //         up = true;
-            //     }
-            //     climber.set(speed);
-            //     return;
-            // } else {
-            //     up = false;
-            // }
-            //if(calibrated) position = climber.getPosition();
+            if(climber.getPosition() <= -1 && calibrated) {
+                if(!up){
+                    timer.reset();
+                    timer.start();
+                    controller.setRumble(RumbleType.kRightRumble, 1);
+                    controller.setRumble(RumbleType.kLeftRumble, 1);
+                    up = true;
+                }
+                climber.set(0);
+                return;
+            } else {
+                up = false;
+            }
+            // if(calibrated) position = climber.getPosition();
             climber.set(-speed);
             return;
         }
-        // if(timer.triggered()){
-        //     controller.setRumble(RumbleType.kRightRumble, 0);
-        //     controller.setRumble(RumbleType.kLeftRumble, 0);
-        // }
+        if(timer.triggered()){
+            controller.setRumble(RumbleType.kRightRumble, 0);
+            controller.setRumble(RumbleType.kLeftRumble, 0);
+        }
         double set = 0;
         //if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
         climber.set(OI.normalize(set, -speed, speed));
@@ -151,18 +151,17 @@ public class Arms implements RobotMap {
     //public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
     public static boolean calibrated = false;
     public static boolean calibrate(){
-        // if(calibrated) return true;
-        // if(!calibrated){
-        //     climber.set(.5);
-        // }
-        // if(limit.get() && !calibrated){
-        //     climber.set(0);
-        //     calibrated = true;
-        //     //position = 0;
-        //     climber.reset();
-        // }
-        // return calibrated;
-        return true;
+        if(calibrated) return true;
+        if(!calibrated){
+            climber.set(.5);
+        }
+        if(limit.get() && !calibrated){
+            climber.set(0);
+            calibrated = true;
+            //position = 0;
+            climber.reset();
+        }
+        return calibrated;
     }
 
     /**
