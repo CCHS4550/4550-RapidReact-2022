@@ -169,13 +169,13 @@ public class Robot extends TimedRobot implements ControlMap{
   public void autonomousInit() {
     //timer.start();
     Chassis.reset();
-    TedBallin.setShoot(0.85);
-    Timer.delay(2);
-    TedBallin.loader.set(1);
-    Timer.delay(1);
+    // TedBallin.setShoot(0.335);
+    // Timer.delay(2);
+    // TedBallin.loader.set(1);
+    // Timer.delay(1);
     Chassis.driveDist(3.5, 0.1, 0.3, 0.5, true);
-    TedBallin.setShoot(0);
-    TedBallin.loader.set(0);
+    // TedBallin.setShoot(0);
+    // TedBallin.loader.set(0);
     // shoot.start();
   }
   /**
@@ -190,7 +190,7 @@ public class Robot extends TimedRobot implements ControlMap{
     /*
     shoot first
     180 turn
-    pop intake
+    pop intake6
     run intake
     move straight out + grab ted ballin
     180
@@ -314,7 +314,7 @@ public class Robot extends TimedRobot implements ControlMap{
     TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.25);
 
     //RB for fast shoot, RT for reverse
-    TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, -.75, 4);
+    TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, -.3225, 4);
 
     //A for in, B for out
     //Intake.run(OI.button(1, A_BUTTON), OI.button(1, B_BUTTON), false, -1);
