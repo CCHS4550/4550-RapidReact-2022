@@ -43,7 +43,7 @@ import frc.helpers.*;
  * project.
  */
 //API: https://first.wpi.edu/wpilib/allwpilib/docs/release/java/index.html
-public class Robot extends TimedRobot implements ControlMap{
+public class Robot extends TimedRobot implements ControlMap {
   public static Timer count = new Timer(9);
   // private static final String kDefaultAuto = "Default";
   // private static final String kCustomAuto = "My Auto";
@@ -59,6 +59,8 @@ public class Robot extends TimedRobot implements ControlMap{
 
   public int alliance;
   double spdmlt = 1;
+
+  public boolean calibrate = false;
 
   private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
@@ -148,7 +150,7 @@ public class Robot extends TimedRobot implements ControlMap{
     Timer.tick();
     System.out.println(shoot + ", " + driveStart);
 
-    Arms.calibrate();
+    if(calibrate) Arms.calibrate();
   }
 //stage deez
   /**
@@ -167,15 +169,22 @@ public class Robot extends TimedRobot implements ControlMap{
 
   @Override
   public void autonomousInit() {
+    while(true && calibrate){
+      Arms.calibrate();
+      if(!DriverStation.isAutonomous() || Arms.calibrate()){
+        break;
+      }
+    }
+    Timer.delay(2);
     //timer.start();
     Chassis.reset();
-    // TedBallin.setShoot(0.335);
-    // Timer.delay(2);
-    // TedBallin.loader.set(1);
-    // Timer.delay(1);
-    Chassis.driveDist(3.5, 0.1, 0.3, 0.5, true);
-    // TedBallin.setShoot(0);
-    // TedBallin.loader.set(0);
+    TedBallin.setShoot(0.5);
+    Timer.delay(2);
+    TedBallin.loader.set(-1);
+    Timer.delay(1);
+    Chassis.driveDist(-3.5, 0.1, 0.3, 0.5, true);
+    TedBallin.setShoot(0);
+    TedBallin.loader.set(0);
     // shoot.start();
   }
   /**
@@ -275,11 +284,11 @@ public class Robot extends TimedRobot implements ControlMap{
     // // } else {
     // //   aimPressed = false;
     // // }
-
+    Chassis.toggleFast(OI.button(0, Y_BUTTON));
     // //driving with accel
     double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
      if(Chassis.fast) {
-       joystick *= 0.5;
+       joystick *= 0.25;
      } else {
        joystick *= 0.8;
      }
@@ -308,7 +317,11 @@ public class Robot extends TimedRobot implements ControlMap{
     if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
     // //dpad up or down to control elevator;;;
     Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
-                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1]);
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, A_BUTTON));
+    if(OI.button(1, A_BUTTON)){
+      calibrate = false;
+      Arms.calibrated = false;
+    } 
 
     //LB to index, LT to unindex
     TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.25);

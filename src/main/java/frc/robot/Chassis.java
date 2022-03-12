@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.Joystick;
 // import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 public class Chassis{
 
     public static void nothing(){
-        double rumble = shift.on() ? .15 : 0;
+        double rumble = shift.on() ? .3 : 0;
         OI.joystickArray[0].setRumble(RumbleType.kLeftRumble, rumble);
         OI.joystickArray[0].setRumble(RumbleType.kRightRumble, rumble);
     }
@@ -147,7 +148,7 @@ public class Chassis{
         shift.triggerSystem(trigger);
         if(trigger){
             if(!triggered){
-                double rumble = shift.on() ? .15 : 0;
+                double rumble = shift.on() ? .3 : 0;
                 cont.setRumble(RumbleType.kLeftRumble, rumble);
                 cont.setRumble(RumbleType.kRightRumble, rumble);
                 triggered = true;
@@ -159,9 +160,9 @@ public class Chassis{
 
     //Drives the robot to a certain distance
     //Kinda complex -> DO NOT TOUCH
-    public static void driveDist(double goal, double aPer, double kp, double max, boolean debug){
+    public static void driveDist(double goal, double accepted, double kp, double max, boolean debug){
         setFactor(0.048);
-        double aError = goal*aPer;
+        //double aError = goal*aPer;
 
         double lPos = getLDist();
         double lError = goal-lPos;
@@ -193,7 +194,7 @@ public class Chassis{
                                         " Right Position" + rPos);
             }
 
-            if(lError <= aError && rError <= aError){
+            if((Math.abs(lError) <= accepted && Math.abs(rError) <= accepted) || !DriverStation.isAutonomous()){
                 driveSpd(0.0, 0.0);
                 System.out.println("YOINK, ya made it");
                 break; 
@@ -224,8 +225,7 @@ public class Chassis{
                 System.out.println("Error: " + error);
                 System.out.println("Angle: " + angl);
             }
-
-            if(error <= aError){
+            if(Math.abs(error) <= aError || !DriverStation.isAutonomous()){
                 driveSpd(0.0, 0.0);
                 System.out.println("YOINK, ya made it");
                 break; 
@@ -251,7 +251,7 @@ public class Chassis{
 
         driveSpd(input, -input);
 
-        if(error <= aError){
+        if(Math.abs(error) <= aError){
             driveSpd(0.0, 0.0);
             System.out.println("YOINK, ya made it");
             autoStep++;
@@ -284,7 +284,7 @@ public class Chassis{
 
         driveSpd(lSpd, rSpd);
 
-        if(lError <= aError && rError <= aError){
+        if(Math.abs(lError) <= aError && Math.abs(rError) <= aError){
             driveSpd(0.0, 0.0);
             System.out.println("YOINK, ya made it");
             autoStep++;

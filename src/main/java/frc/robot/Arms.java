@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj.Joystick;
 
 import frc.helpers.*;
 
-
+//add something to check encoder rate of change
+//if it slows down for over 1 second, stop or warn with rumble
 public class Arms implements RobotMap {
  
     public static CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, 
@@ -86,7 +87,7 @@ public class Arms implements RobotMap {
     public static boolean down = false;
     public static boolean up = false;
     public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
-    public static void runElevator(boolean upTrigger, boolean downTrigger, boolean hardStop, double speed, Joystick controller){
+    public static void runElevator(boolean upTrigger, boolean downTrigger, boolean hardStop, double speed, Joystick controller, boolean override){
         //if(!calibrated) return;
         // if a trigger is set, set pos to the right encoder to stop the elevator from going
         // otherwise move in the direction of the set pos
@@ -95,7 +96,9 @@ public class Arms implements RobotMap {
             return;
         }
         if(upTrigger){
-            if(limit.get()){
+            if(limit.get() && !override){
+                calibrated = true;
+                climber.reset();
                 if(!down){
                     down = true;
                     controller.setRumble(RumbleType.kRightRumble, 1);
@@ -113,7 +116,7 @@ public class Arms implements RobotMap {
             return;
         }
         if(downTrigger){
-            if(climber.getPosition() <= -1 && calibrated) {
+            if(climber.getPosition() <= -1 && calibrated & !override) {
                 if(!up){
                     timer.reset();
                     timer.start();
@@ -160,8 +163,9 @@ public class Arms implements RobotMap {
             calibrated = true;
             //position = 0;
             climber.reset();
+            return true;
         }
-        return calibrated;
+        return false;
     }
 
     /**
