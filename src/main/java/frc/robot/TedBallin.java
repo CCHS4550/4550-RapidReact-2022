@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.helpers.AutoTimer;
 import frc.helpers.CCSparkMax;
 import frc.helpers.Timer;
 // import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -30,6 +31,72 @@ public class TedBallin implements RobotMap{
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.LOADER_REVERSE, true);
 
     public static void nothing(){};
+
+    /**
+     * a shoot function to be used in autonomous, will set the shoot then move onto the next step after time is up
+     * @param power speed of shooting
+     * @param time how long before autonomous proceeds
+     * @param step what step of auto it is
+     */
+    public static boolean shootTriggered = false;
+    public static AutoTimer shootTimer = new AutoTimer(0, 0);
+    public static boolean shoot(double power, double time, int step){
+        if(step != Robot.autoStep){
+            return true;
+        }
+        if(!shootTriggered){
+            shootTriggered = true;
+            shootTimer = new AutoTimer(time, step);
+            shootTimer.start(step);
+        }
+        setShoot(power);
+        if(shootTimer.triggered()){
+            Robot.autoStep++;
+            shootTriggered = false;
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean setShoot(double set, int step){
+        if(step != Robot.autoStep) return true;
+        setShoot(set);
+        Robot.autoStep++;
+        return true;
+    }
+
+    /**
+     * a shoot function to be used in autonomous, will set the indexer then move onto the next step after time is up
+     * @param power speed of shooting
+     * @param time how long before autonomous proceeds
+     * @param step what step of auto it is
+     */
+    public static boolean indexTriggered = false;
+    public static AutoTimer indTimer = new AutoTimer(0, 0);
+    public static boolean index(double power, double time, int step){
+        if(step != Robot.autoStep){
+            return true;
+        }
+        if(!indexTriggered){
+            indexTriggered = true;
+            indTimer = new AutoTimer(time, step);
+            indTimer.start(step);
+        }
+        setShoot(power);
+        if(indTimer.triggered()){
+            Robot.autoStep++;
+            indexTriggered = false;
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean setIndexer(double set, int step){
+        if(step != Robot.autoStep) return true;
+        loader.set(set);
+        Robot.autoStep++;
+        return true;
+    }
 
     public static void setShoot(double set){
         shooter.set(set);

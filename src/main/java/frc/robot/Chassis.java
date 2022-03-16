@@ -40,11 +40,7 @@ public class Chassis{
     public static PneumaticsSystem shift = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE, RobotMap.SHIFT_SOLENOID_TWO);
 
     //AHRS gyro measures the angle of the bot
-    public static AHRS gyro = new AHRS(SPI.Port.kMXP);
-
-    public static int autoStep = 0;
-
-    
+    public static AHRS gyro = new AHRS(SPI.Port.kMXP);    
 
     //To be used in TeleOP
     //Takes in two axises, most likely the controller axises
@@ -243,7 +239,7 @@ public class Chassis{
     @return if this step is completed or not
      */
     public static boolean turnToAnglePeriodic(double goal, double kp, double max, double aError, int step){
-        if(step != autoStep) return true;
+        if(step < Robot.autoStep) return true;
         double angl = gyro.getAngle();
         double error = goal-angl;
         double input = error*kp;
@@ -254,7 +250,7 @@ public class Chassis{
         if(Math.abs(error) <= aError){
             driveSpd(0.0, 0.0);
             System.out.println("YOINK, ya made it");
-            autoStep++;
+            Robot.autoStep++;
             return true;
         }
         return false;
@@ -270,7 +266,7 @@ public class Chassis{
     @return if this step is completed or not
      */
     public static boolean driveDistPeriodic(double goal, double kp, double max, double aError, int step){
-        if(step < autoStep) return true;
+        if(step < Robot.autoStep) return true;
         setFactor(0.048);
         double lPos = getLDist();
         double lError = goal-lPos;
@@ -287,7 +283,7 @@ public class Chassis{
         if(Math.abs(lError) <= aError && Math.abs(rError) <= aError){
             driveSpd(0.0, 0.0);
             System.out.println("YOINK, ya made it");
-            autoStep++;
+            Robot.autoStep++;
             return true;
         }
         return false;

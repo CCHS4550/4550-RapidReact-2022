@@ -65,9 +65,9 @@ public class Robot extends TimedRobot implements ControlMap {
   private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
-  // public DoubleSlider slider; 
-  // public DoubleEntry entry;
-  // public BooleanSwitch swit;
+  DoubleSlider slider = new DoubleSlider("test", 0, -5, 5);
+  DoubleEntry entry = new DoubleEntry("Entry Test", 69);
+  BooleanSwitch swit = new BooleanSwitch("Switch Test", true);
   SlewRateLimiter limiter = new SlewRateLimiter(1);
   /**
    * This function is run when the robot is first started up and should be
@@ -76,9 +76,7 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   public void robotInit() {
     Chassis.shift.set(true);
-    // slider = new DoubleSlider("test", 0, -5, 5);
-    // entry = new DoubleEntry("Entry Test", 69);
-    // swit = new BooleanSwitch("Switch Test", true);
+    
     Arms.nothing();
     Chassis.nothing();
     // Intake.nothing();
@@ -175,24 +173,41 @@ public class Robot extends TimedRobot implements ControlMap {
         break;
       }
     }
+
     Timer.delay(2);
     //timer.start();
     Chassis.reset();
-    TedBallin.setShoot(0.5);
+    TedBallin.setShoot(0.4);
     Timer.delay(2);
     TedBallin.loader.set(-1);
     Timer.delay(1);
-    Chassis.driveDist(-3.5, 0.1, 0.3, 0.5, true);
+    Chassis.driveDist(-5, 0.1, 0.3, 0.5, false);
     TedBallin.setShoot(0);
     TedBallin.loader.set(0);
+
+
+    // Timer.delay(2);
+    // //timer.start();
+    // Chassis.reset();
+    // TedBallin.setShoot(0.5);
+    // Timer.delay(2);
+    // TedBallin.loader.set(-1);
+    // Timer.delay(1);
+    // Chassis.driveDist(-3.5, 0.1, 0.3, 0.5, true);
+    // TedBallin.setShoot(0);
+    // TedBallin.loader.set(0);
+
+
     // shoot.start();
   }
   /**
    * This function is called periodically during autonomous.
    */
   // add timer.start so it's not as much of a pain :)
+  // add auto timer class, add timer based auto functions (run at some point in time with what step)
   Timer shoot = new Timer(1);
   Timer driveStart = new Timer(0.5);
+  public static int autoStep = 0;
   @Override
   public void autonomousPeriodic() {
     //if(!timer.triggered()) return;
@@ -288,7 +303,7 @@ public class Robot extends TimedRobot implements ControlMap {
     // //driving with accel
     double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
      if(Chassis.fast) {
-       joystick *= 0.25;
+       joystick *= 0.35;
      } else {
        joystick *= 0.8;
      }
