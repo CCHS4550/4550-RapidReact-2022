@@ -92,8 +92,9 @@ public class Robot extends TimedRobot implements ControlMap {
       } 
     }
     if(d == null){
-      deez.add(new Delay(0, action));
-      return false;
+      Delay amongus = new Delay(0, action);
+      deez.add(amongus);
+      d = amongus;
     }
     if(d.triggered()) d.run();
     return d.triggered();
@@ -317,9 +318,17 @@ public class Robot extends TimedRobot implements ControlMap {
   double kD = 0.0;
   PIDController accel = new PIDController(kP, kI, kD);
 
+  DoubleSlider pos1Test = new DoubleSlider("Pos 1", -0.25, -1, 0);
+  DoubleSlider pos2Test = new DoubleSlider("Pos 2", -1, -1, 0);
+
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
+    if(Arms.calibrated){
+      Arms.moveToPos();
+      if(OI.button(2, A_BUTTON)) Arms.setPosition(pos1Test.value());
+      if(OI.button(2, B_BUTTON)) Arms.setPosition(pos2Test.value());
+    }
     if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
     if(autoClimb) autoClimb();
     //System.out.println("Switch: " + limit.get());
@@ -376,6 +385,7 @@ public class Robot extends TimedRobot implements ControlMap {
     if(OI.button(1, L_JOYSTICK_BUTTON)){
       calibrate = false;
       Arms.calibrated = false;
+      autoClimb = false;
     } 
 
     //LB to index, LT to unindex
