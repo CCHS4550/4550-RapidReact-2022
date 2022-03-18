@@ -3,6 +3,8 @@ package frc.diagnostics;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
 public class BooleanSwitch extends ShuffleManager{
@@ -19,6 +21,12 @@ public class BooleanSwitch extends ShuffleManager{
      * @param max
      */
     public BooleanSwitch(String tab, String title, Boolean defaultValue){
+        // ShuffleboardTab t = Shuffleboard.getTab(title);
+        // for(ShuffleboardComponent c : t.getComponents()){
+        //     if(c.getTitle().equals(title)){
+
+        //     }
+        // }
         widget =
         Shuffleboard.getTab(tab)
             .add(title, defaultValue)

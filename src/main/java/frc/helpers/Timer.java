@@ -24,16 +24,16 @@ public class Timer extends edu.wpi.first.wpilibj.Timer {
         timers.add(this);
     }
 
-    /** 
-     * A timer that will run in periodic methods. The trigger will be true after the specified time has passed.
-     *@param time how much time will pass before the timer is triggered
-    */
-    public Timer(double time, LambdaRunner... ms){
-        ticksTotal = secondsToTicks(time);
-        ticksPassed = 0;
-        triggered = false;
-        timers.add(this);
-    }
+    // /** 
+    //  * A timer that will run in periodic methods. The trigger will be true after the specified time has passed.
+    //  *@param time how much time will pass before the timer is triggered
+    // */
+    // public Timer(double time, LambdaRunner... ms){
+    //     ticksTotal = secondsToTicks(time);
+    //     ticksPassed = 0;
+    //     triggered = false;
+    //     timers.add(this);
+    // }
 
     /** 
      * A timer that will run in periodic methods. The trigger will be true after the specified time has passed.
@@ -90,12 +90,12 @@ public class Timer extends edu.wpi.first.wpilibj.Timer {
         started = false;
     }
 
-    public void set(double time, LambdaRunner... ls){
-        ticksPassed = 0;
-        ticksTotal = secondsToTicks(time);
-        triggered = false;
-        started = false;
-    }
+    // public void set(double time, LambdaRunner... ls){
+    //     ticksPassed = 0;
+    //     ticksTotal = secondsToTicks(time);
+    //     triggered = false;
+    //     started = false;
+    // }
 
     /** 
      * Restarts a timer to a specified value and sets the time to a specified value.

@@ -24,7 +24,7 @@ public class Arms implements RobotMap {
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
 
     public static PneumaticsSystem armSols = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE, RobotMap.ARM_SOLENOID_TWO);
-    //public static double position;
+    public static double position;
 
     public static void nothing(){
         climber.setPositionConversionFactor(1 / ARM_ENCODER_HIGH);
@@ -98,6 +98,7 @@ public class Arms implements RobotMap {
         if(upTrigger){
             if(limit.get() && !override){
                 calibrated = true;
+                position = 0;
                 climber.reset();
                 if(!down){
                     down = true;
@@ -176,5 +177,21 @@ public class Arms implements RobotMap {
     //     if(calibrated);
     //     Arms.position = OI.normalize(position, -1, 0);
     // }
+
+    public static void setPosition(double pos){
+        if(calibrated)
+        position = pos;
+    }
+
+    public static void moveToPos(){
+        if(!calibrated) return;
+        double set = 0;
+        if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
+        climber.set(OI.normalize(set, -1, 1));
+    }
+
+    public static boolean atPos(){
+        return !(Math.abs(climber.getPosition() - position) > 0.02 && calibrated);
+    }
     
 }

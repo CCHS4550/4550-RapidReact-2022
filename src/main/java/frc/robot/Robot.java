@@ -22,7 +22,6 @@ import frc.diagnostics.*;
 //import frc.raspi.Vision;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -65,16 +64,53 @@ public class Robot extends TimedRobot implements ControlMap {
   private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
-  DoubleSlider slider = new DoubleSlider("test", 0, -5, 5);
-  DoubleEntry entry = new DoubleEntry("Entry Test", 69);
-  BooleanSwitch swit = new BooleanSwitch("Switch Test", true);
-  SlewRateLimiter limiter = new SlewRateLimiter(1);
+
+  public static ArrayList<Delay> deez = new ArrayList<Delay>();
+  public boolean delay(double time, Lambda action){
+    Delay d = null;
+    for(Delay c : deez){
+      if(c.action().equals(action)){
+        d = c;
+        break;
+      } 
+    }
+    if(d == null){
+      deez.add(new Delay(time, action));
+      return false;
+    }
+    if(d.triggered()) d.run();
+    return d.triggered();
+  }
+
+  public boolean delay(boolean cond, Lambda action){
+    if(!cond) return false;
+    Delay d = null;
+    for(Delay c : deez){
+      if(c.action().equals(action)){
+        d = c;
+        break;
+      } 
+    }
+    if(d == null){
+      deez.add(new Delay(0, action));
+      return false;
+    }
+    if(d.triggered()) d.run();
+    return d.triggered();
+  }
+
+  DoubleSlider slider;
+  DoubleEntry entry;
+  BooleanSwitch swit;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
+    slider = new DoubleSlider("test", 0, -5, 5);
+    entry = new DoubleEntry("Entry Test", 69);
+    swit = new BooleanSwitch("Switch Test", true);
     Chassis.shift.set(true);
     
     Arms.nothing();
@@ -146,7 +182,6 @@ public class Robot extends TimedRobot implements ControlMap {
       c.disable();
 
     Timer.tick();
-    System.out.println(shoot + ", " + driveStart);
 
     if(calibrate) Arms.calibrate();
   }
@@ -274,6 +309,9 @@ public class Robot extends TimedRobot implements ControlMap {
   public double lastAim = 0;
   public double lastYaw = 500;
 
+  public boolean autoClimb = false;
+  public Trigger autoClimbTrigger = new Trigger();
+
   double kP = 0.5;
   double kI = 0.0;
   double kD = 0.0;
@@ -282,6 +320,8 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
+    if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
+    if(autoClimb) autoClimb();
     //System.out.println("Switch: " + limit.get());
     // // boolean switchPressed = table.getEntry("switch").getBoolean(false);
     // // System.out.println(switchPressed);
@@ -333,7 +373,7 @@ public class Robot extends TimedRobot implements ControlMap {
     // //dpad up or down to control elevator;;;
     Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
                      OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, A_BUTTON));
-    if(OI.button(1, A_BUTTON)){
+    if(OI.button(1, L_JOYSTICK_BUTTON)){
       calibrate = false;
       Arms.calibrated = false;
     } 
@@ -359,6 +399,27 @@ public class Robot extends TimedRobot implements ControlMap {
     //Fast Toggle (Y)
     Chassis.toggleFast(OI.button(0, Y_BUTTON));
 
+  }
+
+  double pos1 = 0.5;
+  double pos2 = 0.5;
+  void autoClimb(){
+    if(Arms.calibrated){
+      Arms.moveToPos();
+      if(!delay(0, () -> Arms.setPosition(pos1))) return;
+
+      if(!delay(Arms.atPos(), () -> Arms.setPosition(pos2))) return;
+      if(!delay(0.25, () -> Arms.toggleArms())) return;
+
+      if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
+      if(!delay(0.5, () -> Arms.setPosition(pos1))) return;
+
+      if(!delay(Arms.atPos(), () -> Arms.setPosition(pos2))) return;
+      if(!delay(0.25, () -> Arms.toggleArms())) return;
+
+      if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
+      if(!delay(0.5, () -> Arms.setPosition(pos1))) return;
+    }
   }
 
   /**
