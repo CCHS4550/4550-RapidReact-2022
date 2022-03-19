@@ -147,6 +147,8 @@ public class Chassis{
                 double rumble = shift.on() ? .3 : 0;
                 cont.setRumble(RumbleType.kLeftRumble, rumble);
                 cont.setRumble(RumbleType.kRightRumble, rumble);
+                if(shift.on()) Face.angry();
+            else Face.neutral();
                 triggered = true;
             }
         } else {

@@ -3,28 +3,32 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Servo;
 
 public class Face {
-    public static Servo eyebrow1 = new Servo(0); //left
-    public static Servo eyebrow2 = new Servo(1); //right
+    public static Servo eyebrow1 = new Servo(1); //left
+    public static Servo eyebrow2 = new Servo(2); //right
 
     public static void neutral() {
-        eyebrow1.setAngle(0);
-        eyebrow2.setAngle(0);
+        setServos(90, 90);
     }
  
     public static void angry(){
-        eyebrow1.setAngle(45);
-        eyebrow2.setAngle(-45);
+        setServos(45, 135);
     }
  
     public static void sad(){
-        eyebrow1.setAngle(-45);
-        eyebrow2.setAngle(45);
+        setServos(135, 45);
     }
  
     public static void theRock(){
-        eyebrow1.setAngle(0);
-        eyebrow2.setAngle(45);
+        setServos(90, 40);
     }
- 
+
+    public static void setServos(double angle1, double angle2){
+        if(angle1 < 0) angle1 += 180;
+        if(angle1 > 180) angle1 %= 180;
+        eyebrow1.setAngle(angle1);
+        if(angle2 < 0) angle2 += 180;
+        if(angle2 > 180) angle2 %= 180;
+        eyebrow2.setAngle(angle2);
+    }
 
 }
