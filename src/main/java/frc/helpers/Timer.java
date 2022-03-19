@@ -2,7 +2,6 @@ package frc.helpers;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("rawtypes")
 public class Timer extends edu.wpi.first.wpilibj.Timer {
     public final static double deltaTime = 0.02; //seconds per tick
 

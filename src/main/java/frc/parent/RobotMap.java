@@ -29,6 +29,7 @@ public interface RobotMap {
     public static final int SHOOTER2 = 7;
     public static final int LOADER = 8;
     public static final int SUCKY = 9;
+    public static final int INTAKE_IN = 69;
 
 
     //Wheel Polarities
@@ -50,8 +51,6 @@ public interface RobotMap {
     public static final int ARM_SOLENOID_TWO = 6;
     public static final int SHIFT_SOLENOID_ONE = 1;
     public static final int SHIFT_SOLENOID_TWO = 5;
-    public static final int INTAKE_SOLENOID_ONE = 2;
-    public static final int INTAKE_SOLENOID_TWO = 7;
 
     //Other Constancts
     public static final int ROBOT_Y_DIR_SIGN = 1;

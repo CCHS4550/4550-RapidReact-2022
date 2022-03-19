@@ -103,6 +103,8 @@ public class Robot extends TimedRobot implements ControlMap {
   DoubleSlider slider;
   DoubleEntry entry;
   BooleanSwitch swit;
+
+  public static BooleanDisplay calibrated = new BooleanDisplay("Calibrated", false);
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -453,6 +455,10 @@ public class Robot extends TimedRobot implements ControlMap {
    */
   @Override
   public void testPeriodic() {
+    if(OI.button(0, A_BUTTON)) Intake.intake.set(0.25);
+    if(OI.button(0, B_BUTTON)) Intake.intake.set(-0.25);
+    if(OI.button(0, Y_BUTTON)) Intake.intake.reset();
+    System.out.println(Intake.intake.getPosition());
   }
 
 }

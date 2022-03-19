@@ -3,7 +3,6 @@ package frc.diagnostics;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import edu.wpi.first.networktables.NetworkTableEntry;

@@ -98,6 +98,7 @@ public class Arms implements RobotMap {
         if(upTrigger){
             if(limit.get() && !override){
                 calibrated = true;
+                Robot.calibrated.set(true);
                 position = 0;
                 climber.reset();
                 if(!down){
