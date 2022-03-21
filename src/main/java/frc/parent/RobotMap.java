@@ -29,7 +29,7 @@ public interface RobotMap {
     public static final int SHOOTER2 = 7;
     public static final int LOADER = 8;
     public static final int SUCKY = 9;
-    public static final int INTAKE_IN = 69;
+    public static final int INTAKE_IN = 10;
 
 
     //Wheel Polarities

@@ -120,13 +120,13 @@ public class Robot extends TimedRobot implements ControlMap {
     Chassis.nothing();
     // Intake.nothing();
     TedBallin.nothing();
-    diagnostics = new DiagnosticsIF[] {
-      new DiagnosticsNoLayout(motors),
-      new PowerStatus()
-    };
-    for(DiagnosticsIF d : diagnostics) {
-      d.init();
-    }
+    // diagnostics = new DiagnosticsIF[] {
+    //   new DiagnosticsNoLayout(motors),
+    //   new PowerStatus()
+    // };
+    // for(DiagnosticsIF d : diagnostics) {
+    //   d.init();
+    // }
 
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("switch");
@@ -173,11 +173,11 @@ public class Robot extends TimedRobot implements ControlMap {
    */
   @Override
   public void robotPeriodic() {
-    if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
-      for(DiagnosticsIF d : diagnostics) {
-        d.updateStatus();
-      }
-    }
+    // if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
+    //   for(DiagnosticsIF d : diagnostics) {
+    //     d.updateStatus();
+    //   }
+    // }
 
     if(RobotMap.COMPRESSOR_ENABLE)
       c.enableDigital();
@@ -403,7 +403,7 @@ public class Robot extends TimedRobot implements ControlMap {
     Arms.toggleArms(OI.button(1, Y_BUTTON));
 
     //Intake Arms Toggle (X)
-    //Intake.toggleIntake(OI.button(1, X_BUTTON));
+    Intake.toggleIntake(OI.button(1, X_BUTTON), 0.5);
 
     //Fast Mode Toggle (A)
     Chassis.toggleFastMode(OI.button(0, A_BUTTON), OI.joystickArray[0]);
@@ -453,12 +453,17 @@ public class Robot extends TimedRobot implements ControlMap {
   /**
    * This function is called periodically during test mode.
    */
+  DoubleEntry conversion = new DoubleEntry("conversion factor", 1);
   @Override
   public void testPeriodic() {
-    if(OI.button(0, A_BUTTON)) Intake.intake.set(0.25);
+    if(OI.button(0, A_BUTTON)){
+       Intake.intake.set(0.25);
+       System.out.println("A");
+    }
     if(OI.button(0, B_BUTTON)) Intake.intake.set(-0.25);
     if(OI.button(0, Y_BUTTON)) Intake.intake.reset();
     System.out.println(Intake.intake.getPosition());
+    Intake.intake.setPositionConversionFactor(conversion.value());
   }
 
 }
