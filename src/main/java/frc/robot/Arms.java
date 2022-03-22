@@ -63,7 +63,7 @@ public class Arms implements RobotMap {
             return;
         }
         if(downTrigger){
-            if(climber.getPosition() <= -1 && calibrated) {
+            if(climber.getPosition() <= -1.05 && calibrated) {
                 return;
             }
             // if(calibrated) position = climber.getPosition();

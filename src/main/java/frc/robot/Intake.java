@@ -75,7 +75,7 @@ public class Intake implements RobotMap {
      *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
     */
     public static Trigger t = new Trigger();
-    public static PIDController spd = new PIDController(0.3, 0, 0);
+    public static PIDController spd = new PIDController(0.75, 0, 0.01);
     public static void toggleIntake(boolean trigger, double speed){
         speed = OI.normalize(speed, -0.3, 0.3);
         if(t.trigger(trigger)){
@@ -87,6 +87,5 @@ public class Intake implements RobotMap {
         if(Math.abs(intake.getPosition() - position) > 0.1) set = -Math.abs(intake.getPosition() - position) / (intake.getPosition() - position);
         intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
         intake.setPositionConversionFactor(0.10686979799148262178959147156001);
-        System.out.println(position + " " + intake.getPosition());
     }
 }

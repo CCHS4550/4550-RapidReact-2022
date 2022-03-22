@@ -120,11 +120,13 @@ public class TedBallin implements RobotMap{
         if(triggerOne){
             setShoot(speed);
             velocity = speed;
+            Face.sad();
             return;
         }
         if(triggerTwo){
             setShoot(-speed);
             velocity = -speed;
+            Face.sad();
             return;
         }
         velocity -= Timer.deltaTime / decel * Math.signum(velocity);

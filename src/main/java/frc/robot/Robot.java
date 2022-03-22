@@ -177,6 +177,7 @@ public class Robot extends TimedRobot implements ControlMap {
    */
   @Override
   public void robotPeriodic() {
+    System.out.println(Arms.limit.get());
     // if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
     //   for(DiagnosticsIF d : diagnostics) {
     //     d.updateStatus();
@@ -335,14 +336,11 @@ public class Robot extends TimedRobot implements ControlMap {
   DoubleSlider pos1Test = new DoubleSlider("Pos 1", -0.25, -1, 0);
   DoubleSlider pos2Test = new DoubleSlider("Pos 2", -1, -1, 0);
 
+  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 1);
+
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    if(Arms.calibrated){
-      Arms.moveToPos();
-      if(OI.button(2, A_BUTTON)) Arms.setPosition(pos1Test.value());
-      if(OI.button(2, B_BUTTON)) Arms.setPosition(pos2Test.value());
-    }
     if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
     if(autoClimb) autoClimb();
     //System.out.println("Switch: " + limit.get());
@@ -395,7 +393,7 @@ public class Robot extends TimedRobot implements ControlMap {
     if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
     // //dpad up or down to control elevator;;;
     Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
-                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, A_BUTTON));
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, L_JOYSTICK_BUTTON));
     if(OI.button(1, L_JOYSTICK_BUTTON)){
       calibrate = false;
       Arms.calibrated = false;
@@ -403,10 +401,10 @@ public class Robot extends TimedRobot implements ControlMap {
     } 
 
     //LB to index, LT to unindex
-    TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.25);
+    TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.5);
 
     //RB for fast shoot, RT for reverse
-    TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, -.3225, 4);
+    TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, -shootSpeed.value(), 4);
 
     //A for in, B for out
     //Intake.run(OI.button(1, A_BUTTON), OI.button(1, B_BUTTON), false, -1);
@@ -468,13 +466,20 @@ public class Robot extends TimedRobot implements ControlMap {
   DoubleEntry conversion = new DoubleEntry("conversion factor", 1);
   @Override
   public void testPeriodic() {
-    if(OI.button(0, A_BUTTON)){
-       Intake.intake.set(0.05);
-    }
-    else if(OI.button(0, B_BUTTON)) Intake.intake.set(-0.05);
-    else Intake.intake.set(0);
-    if(OI.button(0, Y_BUTTON)) Intake.intake.reset();
-    System.out.println(Intake.intake.getPosition());
+    double armSpeed = 1;
+    if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
+    // //dpad up or down to control elevator;;;
+    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, L_JOYSTICK_BUTTON));
+    if(OI.button(1, L_JOYSTICK_BUTTON)){
+      calibrate = false;
+      Arms.calibrated = false;
+      autoClimb = false;
+    } 
+
+    if(Arms.calibrated && OI.button(0, A_BUTTON)) Arms.moveToPos();
+    if(Arms.calibrated && OI.button(0, X_BUTTON)) Arms.setPosition(pos1Test.value());
+    if(Arms.calibrated && OI.button(0, X_BUTTON)) Arms.setPosition(pos2Test.value());
   }
 
 }
