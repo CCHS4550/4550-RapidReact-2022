@@ -207,11 +207,13 @@ public class Robot extends TimedRobot implements ControlMap {
   boolean started = false;
   //Timer timer = new Timer(5, new LambdaRunner<Object, Double>(new Object(), 0d, (t, v) -> TedBallin.setShoot(v)));
 
+
   @Override
   public void autonomousInit() {
-    while(true && calibrate){
+    double tempTimer = System.currentTimeMillis();
+    while(calibrate){
       Arms.calibrate();
-      if(!DriverStation.isAutonomous() || Arms.calibrate()){
+      if(!DriverStation.isAutonomous() || Arms.calibrate() || System.currentTimeMillis() - tempTimer > 3000){
         break;
       }
     }
@@ -222,11 +224,17 @@ public class Robot extends TimedRobot implements ControlMap {
     TedBallin.setShoot(0.4);
     Timer.delay(2);
     TedBallin.loader.set(-1);
-    Timer.delay(1);
-    Chassis.driveDist(-5, 0.1, 0.3, 0.5, false);
+    Timer.delay(2);
     TedBallin.setShoot(0);
     TedBallin.loader.set(0);
-
+    //Intake out
+    Intake.suck(1);
+    Chassis.driveDist(-5, 0.1, 0.3, 0.5, false);
+    Timer.delay(1);
+    Chassis.driveDist(5, 0.1, 0.3, 0.5, false);
+    TedBallin.setShoot(0.4);
+    Timer.delay(1);
+    TedBallin.loader.set(-1);
 
     // Timer.delay(2);
     // //timer.start();
