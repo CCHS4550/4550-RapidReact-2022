@@ -105,12 +105,16 @@ public class Robot extends TimedRobot implements ControlMap {
   BooleanSwitch swit;
 
   public static BooleanDisplay calibrated = new BooleanDisplay("Calibrated", false);
+
+  public Timer calibration = new Timer(3);
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
+    calibration.reset();
+    calibration.start();
     slider = new DoubleSlider("test", 0, -5, 5);
     entry = new DoubleEntry("Entry Test", 69);
     swit = new BooleanSwitch("Switch Test", true);
@@ -186,7 +190,7 @@ public class Robot extends TimedRobot implements ControlMap {
 
     Timer.tick();
 
-    if(calibrate) Arms.calibrate();
+    if(calibrate && !calibration.triggered()) Arms.calibrate();
   }
 //stage deez
   /**
@@ -457,13 +461,12 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   public void testPeriodic() {
     if(OI.button(0, A_BUTTON)){
-       Intake.intake.set(0.25);
-       System.out.println("A");
+       Intake.intake.set(0.05);
     }
-    if(OI.button(0, B_BUTTON)) Intake.intake.set(-0.25);
+    else if(OI.button(0, B_BUTTON)) Intake.intake.set(-0.05);
+    else Intake.intake.set(0);
     if(OI.button(0, Y_BUTTON)) Intake.intake.reset();
     System.out.println(Intake.intake.getPosition());
-    Intake.intake.setPositionConversionFactor(conversion.value());
   }
 
 }
