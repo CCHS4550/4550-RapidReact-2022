@@ -423,8 +423,8 @@ public class Robot extends TimedRobot implements ControlMap {
 
   }
 
-  double pos1 = 0.5;
-  double pos2 = 0.5;
+  double pos1 = -1;
+  double pos2 = -0.05;
   void autoClimb(){
     if(Arms.calibrated){
       Arms.moveToPos();
@@ -437,10 +437,10 @@ public class Robot extends TimedRobot implements ControlMap {
       if(!delay(0.5, () -> Arms.setPosition(pos1))) return;
 
       if(!delay(Arms.atPos(), () -> Arms.setPosition(pos2))) return;
-      if(!delay(0.25, () -> Arms.toggleArms())) return;
+      // if(!delay(0.25, () -> Arms.toggleArms())) return;
 
-      if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
-      if(!delay(0.5, () -> Arms.setPosition(pos1))) return;
+      // if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
+      // if(!delay(0.5, () -> Arms.setPosition(pos1))) return;
     }
   }
 
@@ -477,9 +477,9 @@ public class Robot extends TimedRobot implements ControlMap {
       autoClimb = false;
     } 
 
-    if(Arms.calibrated && OI.button(0, A_BUTTON)) Arms.moveToPos();
-    if(Arms.calibrated && OI.button(0, X_BUTTON)) Arms.setPosition(pos1Test.value());
-    if(Arms.calibrated && OI.button(0, X_BUTTON)) Arms.setPosition(pos2Test.value());
+    if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
+    System.out.println(autoClimb);
+    if(autoClimb) autoClimb();
   }
 
 }
