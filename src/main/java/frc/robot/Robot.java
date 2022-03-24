@@ -226,11 +226,21 @@ public class Robot extends TimedRobot implements ControlMap {
     Timer.delay(2);
     TedBallin.loader.set(-1);
     Timer.delay(2);
-    TedBallin.setShoot(0);
     TedBallin.loader.set(0);
-    //Intake out
+    TedBallin.setShoot(0);
+    Intake.autoSetIntake(false);
     Intake.suck(1);
     Chassis.driveDist(-2, 0.1, 0.3, 0.25, false);
+    Chassis.driveDist(2, 0.1, 0.3, 0.25, false);
+    TedBallin.setShoot(.75);
+    Timer.delay(2);
+    TedBallin.loader.set(-1);
+    Timer.delay(2);
+    TedBallin.setShoot(0);
+    TedBallin.loader.set(0);
+    
+
+
     // Timer.delay(1);
     // Chassis.driveDist(5, 0.1, 0.3, 0.5, false);
     // TedBallin.setShoot(0.4);

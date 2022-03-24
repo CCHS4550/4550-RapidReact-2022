@@ -78,7 +78,6 @@ public class Intake implements RobotMap {
     }
 
     public static void autoSetIntake(boolean set){
-
         in = set;
         spd.setP(in ? 0.5 : 0.5);
         position = in ? 0 : -1.1;
