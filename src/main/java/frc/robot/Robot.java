@@ -59,7 +59,7 @@ public class Robot extends TimedRobot implements ControlMap {
   public int alliance;
   double spdmlt = 1;
 
-  public boolean calibrate = false;
+  public boolean calibrate = true;
   public static boolean set = false;
 
   private DiagnosticsIF[] diagnostics;
@@ -190,7 +190,7 @@ public class Robot extends TimedRobot implements ControlMap {
 
     Timer.tick();
 
-    if(calibrate && !calibration.triggered()) Arms.calibrate();
+    //if(calibrate && !calibration.triggered()) Arms.calibrate();
   }
 //stage deez
   /**
@@ -219,10 +219,10 @@ public class Robot extends TimedRobot implements ControlMap {
       }
     }
 
-    Timer.delay(2);
+    Timer.delay(1);
     //timer.start();
     Chassis.reset();
-    TedBallin.setShoot(0.4);
+    TedBallin.setShoot(0.75);
     Timer.delay(2);
     TedBallin.loader.set(-1);
     Timer.delay(2);
@@ -230,12 +230,12 @@ public class Robot extends TimedRobot implements ControlMap {
     TedBallin.loader.set(0);
     //Intake out
     Intake.suck(1);
-    Chassis.driveDist(-5, 0.1, 0.3, 0.5, false);
-    Timer.delay(1);
-    Chassis.driveDist(5, 0.1, 0.3, 0.5, false);
-    TedBallin.setShoot(0.4);
-    Timer.delay(1);
-    TedBallin.loader.set(-1);
+    Chassis.driveDist(-2, 0.1, 0.3, 0.25, false);
+    // Timer.delay(1);
+    // Chassis.driveDist(5, 0.1, 0.3, 0.5, false);
+    // TedBallin.setShoot(0.4);
+    // Timer.delay(1);
+    // TedBallin.loader.set(-1);
 
     // Timer.delay(2);
     // //timer.start();
@@ -398,6 +398,7 @@ public class Robot extends TimedRobot implements ControlMap {
       calibrate = false;
       Arms.calibrated = false;
       autoClimb = false;
+      autoClimbCount = 0;
     } 
 
     //LB to index, LT to unindex
@@ -439,10 +440,12 @@ public class Robot extends TimedRobot implements ControlMap {
 
   }
 
-  double pos1 = -1;
-  double pos2 = -0.05;
+  double pos1 = -1.05;
+  double pos2 = 0;
   
-  Timer quarter = new Timer(0.75);
+  Timer quarter = new Timer(0.2);
+  Timer half = new Timer(0.5);
+
 
   Trigger toggle = new Trigger();
   void autoClimb(){
@@ -468,15 +471,15 @@ public class Robot extends TimedRobot implements ControlMap {
         if(Arms.atPos() && quarter.triggered()){
           //once elevator is fully extended, start another .25 second timer
           autoClimbCount = 2;
-          quarter.reset();
-          quarter.start();
+          half.reset();
+          half.start();
           toggle = new Trigger();
         }
         //robot is tilted on the mid bar, with arms fully extended on mid bar
       } else if(autoClimbCount == 2){
         //retract arms
         Arms.toggleArms(toggle.trigger(true));
-        if(quarter.triggered()){
+        if(half.triggered()){
           //after a .25 second delay, continue to next step
           Arms.setPosition(pos2);
           autoClimbCount = 3;
@@ -504,15 +507,15 @@ public class Robot extends TimedRobot implements ControlMap {
         if(Arms.atPos() && quarter.triggered()){
           //once elevator is fully extended, start another .25 second timer
           autoClimbCount = 5;
-          quarter.reset();
-          quarter.start();
+          half.reset();
+          half.start();
           toggle = new Trigger();
         }
         //robot is tilted on the high bar, with arms fully extended
       } else if(autoClimbCount == 5){
         //retract arms
         Arms.toggleArms(toggle.trigger(true));
-        if(quarter.triggered()){
+        if(half.triggered()){
           //after a .25 second delay, continue to next step
           Arms.setPosition(pos2);
           autoClimbCount = 6;
@@ -522,7 +525,6 @@ public class Robot extends TimedRobot implements ControlMap {
         //robot is now tilted and hugging the traversal bar
       } else if(autoClimbCount == 6){
         //begin lowering elevator
-        Arms.toggleArms(toggle.trigger(quarter.triggered()));
         if(quarter.triggered()){
           Arms.setPosition(pos2);
           Arms.moveToPos();
