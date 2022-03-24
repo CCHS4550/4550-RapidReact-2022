@@ -49,7 +49,7 @@ public class Intake implements RobotMap {
             return;
         }
         if(triggerTwo){
-            sucky.set(-speed);
+            sucky.set(-0.5 * speed);
             return;
         }
         sucky.set(0);
@@ -93,6 +93,5 @@ public class Intake implements RobotMap {
         if(Math.abs(intake.getPosition() - position) > 0.1) set = -Math.abs(intake.getPosition() - position) / (intake.getPosition() - position);
         intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
         intake.setPositionConversionFactor(0.10686979799148262178959147156001);
-        System.out.println(intake.getPosition());
     }
 }

@@ -176,6 +176,7 @@ public class Robot extends TimedRobot implements ControlMap {
    */
   @Override
   public void robotPeriodic() {
+    Arms.nothing();
     // if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
     //   for(DiagnosticsIF d : diagnostics) {
     //     d.updateStatus();
@@ -342,11 +343,6 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))){
-       autoClimb = !autoClimb;
-       autoClimbCount = 0;
-    }
-    if(autoClimb) autoClimb();
     //System.out.println("Switch: " + limit.get());
     // // boolean switchPressed = table.getEntry("switch").getBoolean(false);
     // // System.out.println(switchPressed);
@@ -397,8 +393,8 @@ public class Robot extends TimedRobot implements ControlMap {
     if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
     // //dpad up or down to control elevator;;;
     Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
-                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, L_JOYSTICK_BUTTON));
-    if(OI.button(1, L_JOYSTICK_BUTTON)){
+                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, A_BUTTON));
+    if(OI.button(1, A_BUTTON)){
       calibrate = false;
       Arms.calibrated = false;
       autoClimb = false;
@@ -425,29 +421,116 @@ public class Robot extends TimedRobot implements ControlMap {
     //Fast Toggle (Y)
     Chassis.toggleFast(OI.button(0, Y_BUTTON));
 
+    if(OI.button(1, L_JOYSTICK_BUTTON)){
+      Arms.setPosition(-0.1764);
+      Arms.moveToPos();
+      if(Arms.atPos()){
+
+      }
+    }
+
     System.out.println(Arms.climber.getPosition());
+
+    if(autoClimbTrigger.trigger(OI.button(1, B_BUTTON))){
+       autoClimb = !autoClimb;
+       autoClimbCount = 0;
+    }
+    if(autoClimb) autoClimb();
 
   }
 
   double pos1 = -1;
   double pos2 = -0.05;
   
-  Timer quarter = new Timer(0.25);
+  Timer quarter = new Timer(0.75);
+
+  Trigger toggle = new Trigger();
   void autoClimb(){
     if(Arms.calibrated){
-      // Arms.moveToPos();
       if(autoClimbCount == 0){
+        //moves elevator to middle, bringing robot to mid bar
         Arms.setPosition(pos2);
         Arms.moveToPos();
         if(Arms.atPos()) {
           autoClimbCount = 1;
           Arms.setPosition(pos1);
+          quarter.reset();
+          quarter.start();
         }
-      }else if(autoClimbCount == 1){
+        //robot is on mid bar
+      } else if(autoClimbCount == 1){
+        //start extending elevator up
+        //after a .25 second delay, extend climber hooks
+        Arms.toggleArms(toggle.trigger(quarter.triggered()));
 
+        Arms.setPosition(pos1);
+        Arms.moveToPos();
+        if(Arms.atPos() && quarter.triggered()){
+          //once elevator is fully extended, start another .25 second timer
+          autoClimbCount = 2;
+          quarter.reset();
+          quarter.start();
+          toggle = new Trigger();
+        }
+        //robot is tilted on the mid bar, with arms fully extended on mid bar
+      } else if(autoClimbCount == 2){
+        //retract arms
+        Arms.toggleArms(toggle.trigger(true));
+        if(quarter.triggered()){
+          //after a .25 second delay, continue to next step
+          Arms.setPosition(pos2);
+          autoClimbCount = 3;
+        }
+        //robot is now tilted and hugging the high bar
+      } else if(autoClimbCount == 3){
+        //begin lowering elevator
+        Arms.setPosition(pos2);
+        Arms.moveToPos();
+        if(Arms.atPos()){
+          //once elevator is lowered, the robot will be swinging on the high bar
+          //continue to next step
+          autoClimbCount = 4;
+          Arms.setPosition(pos1);
+          quarter.reset();
+          quarter.start();
+        }
+        //robot is now on high bar
+      } else if(autoClimbCount == 4){
+        //start extending elevator up
+        //after a .25 second delay, extend climber hooks
+        Arms.toggleArms(toggle.trigger(quarter.triggered()));
+        Arms.setPosition(pos1);
+        Arms.moveToPos();
+        if(Arms.atPos() && quarter.triggered()){
+          //once elevator is fully extended, start another .25 second timer
+          autoClimbCount = 5;
+          quarter.reset();
+          quarter.start();
+          toggle = new Trigger();
+        }
+        //robot is tilted on the high bar, with arms fully extended
+      } else if(autoClimbCount == 5){
+        //retract arms
+        Arms.toggleArms(toggle.trigger(true));
+        if(quarter.triggered()){
+          //after a .25 second delay, continue to next step
+          Arms.setPosition(pos2);
+          autoClimbCount = 6;
+          quarter.reset();
+          quarter.start();
+        }
+        //robot is now tilted and hugging the traversal bar
+      } else if(autoClimbCount == 6){
+        //begin lowering elevator
+        Arms.toggleArms(toggle.trigger(quarter.triggered()));
+        if(quarter.triggered()){
+          Arms.setPosition(pos2);
+          Arms.moveToPos();
+          if(Arms.atPos()) autoClimb = false;
+        }
+        //once elevator is lowered, the robot will be swinging on the traversal bar
+        //robot is now on traversal bar
       }
-      
-
       // if(!delay(0.25, () -> Arms.toggleArms())) return;
 
       // if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
