@@ -59,10 +59,12 @@ public class Arms implements RobotMap {
         }
         if(upTrigger){
             // if(calibrated) position = climber.getPosition();
+            Robot.setPos = false;
             climber.set(speed);
             return;
         }
         if(downTrigger){
+            Robot.setPos = false;
             if(climber.getPosition() <= -1.05 && calibrated) {
                 return;
             }
@@ -70,9 +72,14 @@ public class Arms implements RobotMap {
             climber.set(-speed);
             return;
         }
-        double set = 0;
-        //if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
-        climber.set(OI.normalize(set, -speed, speed));
+        if(Robot.setPos) {
+            Arms.setPosition(-0.1764);
+            Arms.moveToPos();
+        } else {
+            double set = 0;
+            //if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
+            climber.set(OI.normalize(set, -speed, speed));
+        }
     }
 
     /** 

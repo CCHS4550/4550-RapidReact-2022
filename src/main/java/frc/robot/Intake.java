@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.helpers.CCSparkMax;
 import frc.parent.RobotMap;
 
@@ -45,6 +46,7 @@ public class Intake implements RobotMap {
             return;
         }
         if(triggerOne){
+            setIn(false);
             sucky.set(speed);
             return;
         }
@@ -61,9 +63,9 @@ public class Intake implements RobotMap {
 
     
 
-    public static void intakeArms(boolean set){
+    public static void setIn(boolean set){
         in = set;
-        position = in ? 0 : -0.95;
+        position = in ? 0 : -1.1;
     }
 
     /** 
@@ -75,22 +77,30 @@ public class Intake implements RobotMap {
         Intake.speed = speed;
     }
 
+    public static void autoSetIntake(boolean set){
+
+        in = set;
+        spd.setP(in ? 0.5 : 0.5);
+        position = in ? 0 : -1.1;
+        while(DriverStation.isAutonomous()){
+            intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
+            intake.setPositionConversionFactor(0.10686979799148262178959147156001);
+            if(intake.getPosition() - position < 0.03) break;
+        }
+    }
+
     /** 
      * Toggles the intake arms. Will only trigger again after trigger is false
      *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
     */
     public static Trigger t = new Trigger();
-    public static PIDController spd = new PIDController(1, 0, 0.01);
-    public static void toggleIntake(boolean trigger, double speed){
-        speed = OI.normalize(speed, -0.3, 0.3);
+    public static PIDController spd = new PIDController(0.5, 0, 0.01);
+    public static void toggleIntake(boolean trigger){
         if(t.trigger(trigger)){
             in = !in;
-            spd.setP(in ? 1 : 0.5);
+            spd.setP(in ? 0.5 : 0.5);
             position = in ? 0 : -1.1;
-            Intake.speed = speed;
         }
-        double set = 0;
-        if(Math.abs(intake.getPosition() - position) > 0.1) set = -Math.abs(intake.getPosition() - position) / (intake.getPosition() - position);
         intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
         intake.setPositionConversionFactor(0.10686979799148262178959147156001);
     }

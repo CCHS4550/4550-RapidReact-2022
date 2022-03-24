@@ -340,6 +340,8 @@ public class Robot extends TimedRobot implements ControlMap {
   DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 0.75);
 
   int autoClimbCount = 0;
+
+  public static boolean setPos = false;
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
@@ -392,7 +394,7 @@ public class Robot extends TimedRobot implements ControlMap {
     double armSpeed = 1;
     if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
     // //dpad up or down to control elevator;;;
-    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
+    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)) || (OI.axis(RT, 1) > 0.5 && Arms.calibrated),
                      OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, A_BUTTON));
     if(OI.button(1, A_BUTTON)){
       calibrate = false;
@@ -414,7 +416,7 @@ public class Robot extends TimedRobot implements ControlMap {
     Arms.toggleArms(OI.button(1, Y_BUTTON));
 
     //Intake Arms Toggle (X)
-    Intake.toggleIntake(OI.button(1, X_BUTTON), 0.5);
+    Intake.toggleIntake(OI.button(1, X_BUTTON));
 
     //Fast Mode Toggle (A)
     Chassis.toggleFastMode(OI.button(0, A_BUTTON), OI.joystickArray[0]);
@@ -422,21 +424,18 @@ public class Robot extends TimedRobot implements ControlMap {
     //Fast Toggle (Y)
     Chassis.toggleFast(OI.button(0, Y_BUTTON));
 
-    if(OI.button(1, L_JOYSTICK_BUTTON)){
-      Arms.setPosition(-0.1764);
-      Arms.moveToPos();
-      if(Arms.atPos()){
-
-      }
-    }
+    if(OI.button(1, L_JOYSTICK_BUTTON)) setPos = true;
 
     System.out.println(Arms.climber.getPosition());
 
     if(autoClimbTrigger.trigger(OI.button(1, B_BUTTON))){
        autoClimb = !autoClimb;
        autoClimbCount = 0;
+       Intake.setIn(true);
     }
     if(autoClimb) autoClimb();
+
+    
 
   }
 

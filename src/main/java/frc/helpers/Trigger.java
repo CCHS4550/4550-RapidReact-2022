@@ -23,4 +23,8 @@ public class Trigger {
     public boolean on(){
         return on;
     }
+
+    public void set(boolean set){
+        on = set;
+    }
 }
