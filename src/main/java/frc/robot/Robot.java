@@ -60,6 +60,7 @@ public class Robot extends TimedRobot implements ControlMap {
   double spdmlt = 1;
 
   public boolean calibrate = false;
+  public static boolean set = false;
 
   private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
@@ -71,7 +72,6 @@ public class Robot extends TimedRobot implements ControlMap {
     for(Delay c : deez){
       if(c.action().equals(action)){
         d = c;
-        break;
       } 
     }
     if(d == null){
@@ -88,7 +88,6 @@ public class Robot extends TimedRobot implements ControlMap {
     for(Delay c : deez){
       if(c.action().equals(action)){
         d = c;
-        break;
       } 
     }
     if(d == null){
@@ -122,7 +121,7 @@ public class Robot extends TimedRobot implements ControlMap {
     
     Arms.nothing();
     Chassis.nothing();
-    // Intake.nothing();
+    Intake.nothing();
     TedBallin.nothing();
     // diagnostics = new DiagnosticsIF[] {
     //   new DiagnosticsNoLayout(motors),
@@ -177,7 +176,6 @@ public class Robot extends TimedRobot implements ControlMap {
    */
   @Override
   public void robotPeriodic() {
-    System.out.println(Arms.limit.get());
     // if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
     //   for(DiagnosticsIF d : diagnostics) {
     //     d.updateStatus();
@@ -211,6 +209,7 @@ public class Robot extends TimedRobot implements ControlMap {
 
   @Override
   public void autonomousInit() {
+    Intake.nothing();
     double tempTimer = System.currentTimeMillis();
     while(calibrate){
       Arms.calibrate();
@@ -307,6 +306,7 @@ public class Robot extends TimedRobot implements ControlMap {
 
   @Override
   public void teleopInit() {
+    Intake.nothing();
     Face.angry();
     //timer.start();
   }
@@ -336,12 +336,16 @@ public class Robot extends TimedRobot implements ControlMap {
   DoubleSlider pos1Test = new DoubleSlider("Pos 1", -0.25, -1, 0);
   DoubleSlider pos2Test = new DoubleSlider("Pos 2", -1, -1, 0);
 
-  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 1);
+  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 0.75);
 
+  int autoClimbCount = 0;
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
+    if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))){
+       autoClimb = !autoClimb;
+       autoClimbCount = 0;
+    }
     if(autoClimb) autoClimb();
     //System.out.println("Switch: " + limit.get());
     // // boolean switchPressed = table.getEntry("switch").getBoolean(false);
@@ -404,10 +408,10 @@ public class Robot extends TimedRobot implements ControlMap {
     TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.5);
 
     //RB for fast shoot, RT for reverse
-    TedBallin.runShooter(OI.button(1, RB_BUTTON), OI.axis(1, RT) >= 0.1, false, -shootSpeed.value(), 4);
+    TedBallin.runShooter(OI.axis(1, RT) >= 0.1, OI.button(1, RB_BUTTON), false, shootSpeed.value(), 4);
 
     //A for in, B for out
-    //Intake.run(OI.button(1, A_BUTTON), OI.button(1, B_BUTTON), false, -1);
+    Intake.run(OI.axis(1, LT) >= 0.1, OI.button(1, LB_BUTTON), false, -1);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));
@@ -421,22 +425,29 @@ public class Robot extends TimedRobot implements ControlMap {
     //Fast Toggle (Y)
     Chassis.toggleFast(OI.button(0, Y_BUTTON));
 
+    System.out.println(Arms.climber.getPosition());
+
   }
 
   double pos1 = -1;
   double pos2 = -0.05;
+  
+  Timer quarter = new Timer(0.25);
   void autoClimb(){
     if(Arms.calibrated){
-      Arms.moveToPos();
-      if(!delay(0, () -> Arms.setPosition(pos1))) return;
+      // Arms.moveToPos();
+      if(autoClimbCount == 0){
+        Arms.setPosition(pos2);
+        Arms.moveToPos();
+        if(Arms.atPos()) {
+          autoClimbCount = 1;
+          Arms.setPosition(pos1);
+        }
+      }else if(autoClimbCount == 1){
 
-      if(!delay(Arms.atPos(), () -> Arms.setPosition(pos2))) return;
-      if(!delay(0.25, () -> Arms.toggleArms())) return;
+      }
+      
 
-      if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
-      if(!delay(0.5, () -> Arms.setPosition(pos1))) return;
-
-      if(!delay(Arms.atPos(), () -> Arms.setPosition(pos2))) return;
       // if(!delay(0.25, () -> Arms.toggleArms())) return;
 
       // if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
@@ -449,6 +460,7 @@ public class Robot extends TimedRobot implements ControlMap {
    */
   @Override
   public void disabledInit() {
+    set = false;
     for(Timer t : Timer.timers){
       t.stop();
       t.reset();
@@ -478,7 +490,6 @@ public class Robot extends TimedRobot implements ControlMap {
     } 
 
     if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
-    System.out.println(autoClimb);
     if(autoClimb) autoClimb();
   }
 

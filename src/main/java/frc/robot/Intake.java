@@ -13,7 +13,12 @@ import frc.helpers.*;
 
 public class Intake implements RobotMap {
     public static void nothing(){
-        intake.reset();
+        if(!Robot.set){
+            intake.reset();
+            Robot.set = true;
+            position = 0;
+            in = true;
+        }
     }
     public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY,
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, true);
@@ -58,7 +63,7 @@ public class Intake implements RobotMap {
 
     public static void intakeArms(boolean set){
         in = set;
-        position = in ? 0 : 1;
+        position = in ? 0 : -0.95;
     }
 
     /** 
@@ -66,7 +71,7 @@ public class Intake implements RobotMap {
     */
     public static void toggleIntake(double speed){
         in = !in;
-        position = in ? 0 : 1;
+        position = in ? 0 : -0.95;
         Intake.speed = speed;
     }
 
@@ -75,17 +80,19 @@ public class Intake implements RobotMap {
      *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
     */
     public static Trigger t = new Trigger();
-    public static PIDController spd = new PIDController(0.75, 0, 0.01);
+    public static PIDController spd = new PIDController(1, 0, 0.01);
     public static void toggleIntake(boolean trigger, double speed){
         speed = OI.normalize(speed, -0.3, 0.3);
         if(t.trigger(trigger)){
             in = !in;
-            position = in ? 0 : 1;
+            spd.setP(in ? 1 : 0.5);
+            position = in ? 0 : -1.1;
             Intake.speed = speed;
         }
         double set = 0;
         if(Math.abs(intake.getPosition() - position) > 0.1) set = -Math.abs(intake.getPosition() - position) / (intake.getPosition() - position);
         intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
         intake.setPositionConversionFactor(0.10686979799148262178959147156001);
+        System.out.println(intake.getPosition());
     }
 }

@@ -124,8 +124,8 @@ public class TedBallin implements RobotMap{
             return;
         }
         if(triggerTwo){
-            setShoot(-speed);
-            velocity = -speed;
+            setShoot(-0.15);
+            velocity = -0.15;
             Face.sad();
             return;
         }
@@ -147,7 +147,7 @@ public class TedBallin implements RobotMap{
             triggerTwo = false;
         }
         if(triggerOne){
-            loader.set(speed);
+            loader.set(0.5 * speed);
             return;
         }
         if(triggerTwo){
