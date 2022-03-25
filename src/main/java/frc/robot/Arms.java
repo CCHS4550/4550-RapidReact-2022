@@ -206,7 +206,7 @@ public class Arms implements RobotMap {
             if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
             climber.set(OI.normalize(set, -1, 1));
         } else if(!limit.get()) {
-            calibrate();
+            climber.set(1);
         }
     }
 

@@ -78,7 +78,6 @@ public class Intake implements RobotMap {
 
     public static void autoSetIntake(boolean set){
         in = set;
-        spd.setP(in ? 0.5 : 0.5);
         position = in ? 0 : -1.125;
         while(DriverStation.isAutonomous()){
             intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
@@ -92,11 +91,10 @@ public class Intake implements RobotMap {
      *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
     */
     public static Trigger t = new Trigger();
-    public static PIDController spd = new PIDController(0.5, 0, 0.01);
+    public static PIDController spd = new PIDController(0.3, 0, 0.01);
     public static void toggleIntake(boolean trigger){
         if(t.trigger(trigger)){
             in = !in;
-            spd.setP(in ? 0.5 : 0.5);
             position = in ? 0 : -1;
         }
         intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));

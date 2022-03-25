@@ -219,15 +219,17 @@ public class Robot extends TimedRobot implements ControlMap {
       }
     }
 
-    Timer.delay(1);
+    Timer.delay(0.5);
     //timer.start();
     Chassis.reset();
     TedBallin.setShoot(0.7);
     Timer.delay(2);
-    TedBallin.loader.set(-1);
-    Timer.delay(2);
+    TedBallin.loader.set(-0.7);
+    Timer.delay(1);
     // TedBallin.loader.set(-.35);
+    //remove when 2 ball auto 
     TedBallin.setShoot(0);
+    TedBallin.loader.set(0);
     // Intake.autoSetIntake(false);
     // Intake.suck(-1);
     Timer.delay(.5);
@@ -353,7 +355,7 @@ public class Robot extends TimedRobot implements ControlMap {
   DoubleSlider pos1Test = new DoubleSlider("Pos 1", -0.25, -1, 0);
   DoubleSlider pos2Test = new DoubleSlider("Pos 2", -1, -1, 0);
 
-  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 0.75);
+  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 0.7);
 
   int autoClimbCount = 0;
 
@@ -465,21 +467,19 @@ public class Robot extends TimedRobot implements ControlMap {
     if(Arms.calibrated){
       if(autoClimbCount == 0){
         //moves elevator to middle, bringing robot to mid bar
-        if(toggle.trigger(true)) Arms.setPosition(pos2);
+        Arms.setPosition(pos2);
         Arms.moveToPos();
         if(Arms.atPos()) {
           autoClimbCount = 1;
           Arms.setPosition(pos1);
           quarter.reset();
           quarter.start();
-          toggle = new Trigger();
         }
         //robot is on mid bar
       } else if(autoClimbCount == 1){
         //start extending elevator up
         //after a .25 second delay, extend climber hooks
         Arms.toggleArms(toggle.trigger(quarter.triggered()));
-
         Arms.moveToPos();
         if(Arms.atPos() && quarter.triggered()){
           //once elevator is fully extended, start another .25 second timer
@@ -514,7 +514,6 @@ public class Robot extends TimedRobot implements ControlMap {
         //start extending elevator up
         //after a .25 second delay, extend climber hooks
         Arms.toggleArms(toggle.trigger(quarter.triggered()));
-        
         Arms.moveToPos();
         if(Arms.atPos() && quarter.triggered()){
           //once elevator is fully extended, start another .25 second timer
@@ -533,6 +532,7 @@ public class Robot extends TimedRobot implements ControlMap {
           autoClimbCount = 6;
           quarter.reset();
           quarter.start();
+          toggle = new Trigger();
         }
         //robot is now tilted and hugging the traversal bar
       } else if(autoClimbCount == 6){
