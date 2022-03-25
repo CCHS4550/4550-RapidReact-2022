@@ -62,7 +62,7 @@ public class Robot extends TimedRobot implements ControlMap {
   public boolean calibrate = true;
   public static boolean set = false;
 
-  private DiagnosticsIF[] diagnostics;
+  //private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
 
@@ -161,8 +161,8 @@ public class Robot extends TimedRobot implements ControlMap {
 
   }
 
-  private long periodicCount;
-  private double updateTime = 2;
+  // private long periodicCount;
+  // private double updateTime = 2;
 
   
 
