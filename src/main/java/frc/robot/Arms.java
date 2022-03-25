@@ -217,8 +217,12 @@ public class Arms implements RobotMap {
     public static void autoSetPos(double set){
         if(!calibrated) return;
         do {
-            setPosition(set);
-            moveToPos();
+            if(set < -50 && !limit.get()){
+                climber.set(.5);
+            } else {
+                setPosition(set);
+                moveToPos();
+            }
         } while(!Arms.atPos() && DriverStation.isAutonomous() && calibrated);
     }
     
