@@ -80,7 +80,7 @@ public class Intake implements RobotMap {
     public static void autoSetIntake(boolean set){
         in = set;
         spd.setP(in ? 0.5 : 0.5);
-        position = in ? 0 : -1.1;
+        position = in ? 0 : -1.125;
         while(DriverStation.isAutonomous()){
             intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
             intake.setPositionConversionFactor(0.10686979799148262178959147156001);

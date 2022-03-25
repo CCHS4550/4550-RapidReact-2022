@@ -226,12 +226,16 @@ public class Robot extends TimedRobot implements ControlMap {
     Timer.delay(2);
     TedBallin.loader.set(-1);
     Timer.delay(2);
-    TedBallin.loader.set(0);
+    TedBallin.loader.set(-.35);
     TedBallin.setShoot(0);
     Intake.autoSetIntake(false);
-    Intake.suck(1);
+    Intake.suck(-1);
+    Timer.delay(.5);
     Chassis.driveDist(-2, 0.1, 0.3, 0.25, false);
+    Chassis.reset();
     Chassis.driveDist(2, 0.1, 0.3, 0.25, false);
+    TedBallin.loader.set(0);
+    Timer.delay(.5);
     TedBallin.setShoot(.75);
     Timer.delay(2);
     TedBallin.loader.set(-1);
@@ -404,7 +408,7 @@ public class Robot extends TimedRobot implements ControlMap {
     double armSpeed = 1;
     if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
     // //dpad up or down to control elevator;;;
-    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)) || (OI.axis(RT, 1) > 0.5 && Arms.calibrated),
+    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)) || (OI.axis(1, RT) > 0.5 && Arms.calibrated),
                      OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, A_BUTTON));
     if(OI.button(1, A_BUTTON)){
       calibrate = false;
@@ -453,7 +457,7 @@ public class Robot extends TimedRobot implements ControlMap {
   double pos2 = 0;
   
   Timer quarter = new Timer(0.2);
-  Timer half = new Timer(0.5);
+  Timer half = new Timer(0.75);
 
 
   Trigger toggle = new Trigger();
