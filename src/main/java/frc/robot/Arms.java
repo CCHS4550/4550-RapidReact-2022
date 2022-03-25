@@ -206,7 +206,7 @@ public class Arms implements RobotMap {
             if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
             climber.set(OI.normalize(set, -1, 1));
         } else if(!limit.get()) {
-            climber.set(.5);
+            calibrate();
         }
     }
 
@@ -217,7 +217,9 @@ public class Arms implements RobotMap {
 
     public static void autoSetPos(double set){
         if(!calibrated) return;
+        setPosition(set);
         do {
+            if(atPos()) return;
             if(set < -50){
                 if(!limit.get()){
                     climber.set(.5);
@@ -225,7 +227,6 @@ public class Arms implements RobotMap {
                     break;
                 }
             } else {
-                setPosition(set);
                 moveToPos();
             }
         } while(!Arms.atPos() && DriverStation.isAutonomous() && calibrated);
