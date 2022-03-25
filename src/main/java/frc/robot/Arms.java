@@ -94,6 +94,7 @@ public class Arms implements RobotMap {
     public static boolean down = false;
     public static boolean up = false;
     public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
+    
     public static void runElevator(boolean upTrigger, boolean downTrigger, boolean hardStop, double speed, Joystick controller, boolean override){
         //if(!calibrated) return;
         // if a trigger is set, set pos to the right encoder to stop the elevator from going
@@ -195,7 +196,7 @@ public class Arms implements RobotMap {
 
     public static void setPosition(double pos){
         if(calibrated)
-        position = pos;
+            position = pos;
     }
 
     public static void moveToPos(){
@@ -217,8 +218,12 @@ public class Arms implements RobotMap {
     public static void autoSetPos(double set){
         if(!calibrated) return;
         do {
-            if(set < -50 && !limit.get()){
-                climber.set(.5);
+            if(set < -50){
+                if(!limit.get()){
+                    climber.set(.5);
+                } else {
+                    break;
+                }
             } else {
                 setPosition(set);
                 moveToPos();

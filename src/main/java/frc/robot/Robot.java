@@ -222,7 +222,7 @@ public class Robot extends TimedRobot implements ControlMap {
     Timer.delay(1);
     //timer.start();
     Chassis.reset();
-    TedBallin.setShoot(0.75);
+    TedBallin.setShoot(0.7);
     Timer.delay(2);
     TedBallin.loader.set(-1);
     Timer.delay(2);
@@ -465,13 +465,14 @@ public class Robot extends TimedRobot implements ControlMap {
     if(Arms.calibrated){
       if(autoClimbCount == 0){
         //moves elevator to middle, bringing robot to mid bar
-        Arms.setPosition(pos2);
+        if(toggle.trigger(true)) Arms.setPosition(pos2);
         Arms.moveToPos();
         if(Arms.atPos()) {
           autoClimbCount = 1;
           Arms.setPosition(pos1);
           quarter.reset();
           quarter.start();
+          toggle = new Trigger();
         }
         //robot is on mid bar
       } else if(autoClimbCount == 1){
@@ -479,7 +480,6 @@ public class Robot extends TimedRobot implements ControlMap {
         //after a .25 second delay, extend climber hooks
         Arms.toggleArms(toggle.trigger(quarter.triggered()));
 
-        Arms.setPosition(pos1);
         Arms.moveToPos();
         if(Arms.atPos() && quarter.triggered()){
           //once elevator is fully extended, start another .25 second timer
@@ -500,7 +500,6 @@ public class Robot extends TimedRobot implements ControlMap {
         //robot is now tilted and hugging the high bar
       } else if(autoClimbCount == 3){
         //begin lowering elevator
-        Arms.setPosition(pos2);
         Arms.moveToPos();
         if(Arms.atPos()){
           //once elevator is lowered, the robot will be swinging on the high bar
@@ -515,7 +514,7 @@ public class Robot extends TimedRobot implements ControlMap {
         //start extending elevator up
         //after a .25 second delay, extend climber hooks
         Arms.toggleArms(toggle.trigger(quarter.triggered()));
-        Arms.setPosition(pos1);
+        
         Arms.moveToPos();
         if(Arms.atPos() && quarter.triggered()){
           //once elevator is fully extended, start another .25 second timer
@@ -539,7 +538,7 @@ public class Robot extends TimedRobot implements ControlMap {
       } else if(autoClimbCount == 6){
         //begin lowering elevator
         if(quarter.triggered()){
-          Arms.setPosition(pos2);
+          if(toggle.trigger(true)) Arms.setPosition(pos2);
           Arms.moveToPos();
           if(Arms.atPos()) autoClimb = false;
         }
