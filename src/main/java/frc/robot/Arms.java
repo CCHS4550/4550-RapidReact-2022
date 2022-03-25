@@ -10,7 +10,7 @@ import frc.helpers.PneumaticsSystem;
 import frc.parent.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -103,6 +103,7 @@ public class Arms implements RobotMap {
             return;
         }
         if(upTrigger){
+            Robot.setPos = false;
             if(limit.get() && !override){
                 calibrated = true;
                 Robot.calibrated.set(true);
@@ -125,6 +126,7 @@ public class Arms implements RobotMap {
             return;
         }
         if(downTrigger){
+            Robot.setPos = false;
             if(climber.getPosition() <= -1.05 && calibrated & !override) {
                 if(!up){
                     timer.reset();
@@ -146,9 +148,14 @@ public class Arms implements RobotMap {
             controller.setRumble(RumbleType.kRightRumble, 0);
             controller.setRumble(RumbleType.kLeftRumble, 0);
         }
-        double set = 0;
-        //if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
-        climber.set(OI.normalize(set, -speed, speed));
+        if(Robot.setPos) {
+            Arms.setPosition(-0.1764);
+            Arms.moveToPos();
+        } else {
+            double set = 0;
+            //if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
+            climber.set(OI.normalize(set, -speed, speed));
+        }
     }
 
     /** 
@@ -193,13 +200,26 @@ public class Arms implements RobotMap {
 
     public static void moveToPos(){
         if(!calibrated) return;
-        double set = 0;
-        if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
-        climber.set(OI.normalize(set, -1, 1));
+        if(position >= -50){
+            double set = 0;
+            if(Math.abs(climber.getPosition() - position) > 0.02 && calibrated) set = -Math.abs(climber.getPosition() - position) / (climber.getPosition() - position);
+            climber.set(OI.normalize(set, -1, 1));
+        } else if(!limit.get()) {
+            climber.set(.5);
+        }
     }
 
     public static boolean atPos(){
-        return !(Math.abs(climber.getPosition() - position) > 0.02 && calibrated);
+        if(position >= -50) return !(Math.abs(climber.getPosition() - position) > 0.02 && calibrated);
+        return limit.get();
+    }
+
+    public static void autoSetPos(double set){
+        if(!calibrated) return;
+        do {
+            setPosition(set);
+            moveToPos();
+        } while(!Arms.atPos() && DriverStation.isAutonomous() && calibrated);
     }
     
 }

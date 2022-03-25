@@ -440,8 +440,6 @@ public class Robot extends TimedRobot implements ControlMap {
 
     if(OI.button(1, L_JOYSTICK_BUTTON)) setPos = true;
 
-    System.out.println(Arms.climber.getPosition());
-
     if(autoClimbTrigger.trigger(OI.button(1, B_BUTTON))){
        autoClimb = !autoClimb;
        autoClimbCount = 0;
@@ -454,7 +452,7 @@ public class Robot extends TimedRobot implements ControlMap {
   }
 
   double pos1 = -1.05;
-  double pos2 = 0;
+  double pos2 = -70;
   
   Timer quarter = new Timer(0.2);
   Timer half = new Timer(0.75);
@@ -559,11 +557,16 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   public void disabledInit() {
     set = false;
+
     for(Timer t : Timer.timers){
       t.stop();
       t.reset();
     }
+
     Arms.calibrated = false;
+    autoClimb = false;
+    autoClimbCount = 0;
+
     OI.joystickArray[0].setRumble(RumbleType.kLeftRumble, 0);
     OI.joystickArray[0].setRumble(RumbleType.kRightRumble, 0);
     OI.joystickArray[1].setRumble(RumbleType.kLeftRumble, 0);

@@ -46,7 +46,6 @@ public class Intake implements RobotMap {
             return;
         }
         if(triggerOne){
-            setIn(false);
             sucky.set(speed);
             return;
         }

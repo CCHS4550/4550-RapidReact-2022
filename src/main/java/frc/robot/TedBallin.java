@@ -132,6 +132,8 @@ public class TedBallin implements RobotMap{
         velocity -= Timer.deltaTime / decel * Math.signum(velocity);
         if(Math.abs(velocity) <= 0.1) velocity = 0;
         setShoot(velocity);
+        
+        if(Chassis.shift.on()) Face.angry(); else Face.neutral();
     }
 
     /** 
