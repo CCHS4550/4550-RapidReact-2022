@@ -121,7 +121,7 @@ public class Robot extends TimedRobot implements ControlMap {
     
     Arms.nothing();
     Chassis.nothing();
-    Intake.nothing();
+    //Intake.nothing();
     TedBallin.nothing();
     // diagnostics = new DiagnosticsIF[] {
     //   new DiagnosticsNoLayout(motors),
@@ -210,7 +210,7 @@ public class Robot extends TimedRobot implements ControlMap {
 
   @Override
   public void autonomousInit() {
-    Intake.nothing();
+    //Intake.nothing();
     double tempTimer = System.currentTimeMillis();
     while(calibrate){
       Arms.calibrate();
@@ -325,7 +325,7 @@ public class Robot extends TimedRobot implements ControlMap {
 
   @Override
   public void teleopInit() {
-    Intake.nothing();
+    //Intake.nothing();
     Face.angry();
     //timer.start();
   }
@@ -355,7 +355,7 @@ public class Robot extends TimedRobot implements ControlMap {
   DoubleSlider pos1Test = new DoubleSlider("Pos 1", -0.25, -1, 0);
   DoubleSlider pos2Test = new DoubleSlider("Pos 2", -1, -1, 0);
 
-  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 0.7);
+  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 0.75);
 
   int autoClimbCount = 0;
 
@@ -428,13 +428,13 @@ public class Robot extends TimedRobot implements ControlMap {
     TedBallin.runShooter(OI.axis(1, RT) >= 0.1, OI.button(1, RB_BUTTON), false, shootSpeed.value(), 4);
 
     //A for in, B for out
-    Intake.run(OI.axis(1, LT) >= 0.1, OI.button(1, LB_BUTTON), false, -1);
+    //Intake.run(OI.axis(1, LT) >= 0.1, OI.button(1, LB_BUTTON), false, -1);
 
     //Climbing Arms Toggle (Y)
     Arms.toggleArms(OI.button(1, Y_BUTTON));
 
     //Intake Arms Toggle (X)
-    Intake.toggleIntake(OI.button(1, X_BUTTON));
+    //Intake.toggleIntake(OI.button(1, X_BUTTON));
 
     //Fast Mode Toggle (A)
     Chassis.toggleFastMode(OI.button(0, A_BUTTON), OI.joystickArray[0]);
@@ -447,18 +447,18 @@ public class Robot extends TimedRobot implements ControlMap {
     if(autoClimbTrigger.trigger(OI.button(1, B_BUTTON))){
        autoClimb = !autoClimb;
        autoClimbCount = 0;
-       Intake.setIn(true);
+       //Intake.setIn(true);
     }
     if(autoClimb) autoClimb();
 
-    
+    System.out.println(Arms.climber.getPosition());
 
   }
 
   double pos1 = -1.05;
   double pos2 = -70;
   
-  Timer quarter = new Timer(0.2);
+  Timer quarter = new Timer(0.15);
   Timer half = new Timer(0.75);
 
 
@@ -530,14 +530,14 @@ public class Robot extends TimedRobot implements ControlMap {
           //after a .25 second delay, continue to next step
           Arms.setPosition(pos2);
           autoClimbCount = 6;
-          quarter.reset();
-          quarter.start();
+          half.reset();
+          half.start();
           toggle = new Trigger();
         }
         //robot is now tilted and hugging the traversal bar
       } else if(autoClimbCount == 6){
         //begin lowering elevator
-        if(quarter.triggered()){
+        if(half.triggered()){
           if(toggle.trigger(true)) Arms.setPosition(pos2);
           Arms.moveToPos();
           if(Arms.atPos()) autoClimb = false;

@@ -167,7 +167,7 @@ public class Arms implements RobotMap {
         armSols.triggerSystem(trigger);
     }
 
-    public static final double ARM_ENCODER_HIGH = 165;
+    public static final double ARM_ENCODER_HIGH = 1;
     //public static DigitalInput limit = new DigitalInput(RobotMap.ELEVATOR_SWITCH);
     public static boolean calibrated = false;
     public static boolean calibrate(){

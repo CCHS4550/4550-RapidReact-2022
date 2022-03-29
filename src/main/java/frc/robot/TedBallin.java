@@ -103,6 +103,7 @@ public class TedBallin implements RobotMap{
         shooter2.set(-set);
     }
     
+
     /** 
         *@param triggerOne what triggers shooting with positive speed (takes precedence over triggerTwo). Suggest passing in a button or axis input
         *@param triggerTwo what triggers shooting with negative speed. Suggest passing in a button or axis input
