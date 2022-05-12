@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.math.controller.PIDController;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -55,6 +57,8 @@ public class Robot extends TimedRobot implements ControlMap {
   NetworkTableEntry switchEntry;
   NetworkTableInstance inst;
   NetworkTable table;
+  private final ShuffleboardTab limelightTab = Shuffleboard.getTab("Sweaty Vision Stuff");
+
 
   public int alliance;
   double spdmlt = 1;
@@ -65,7 +69,7 @@ public class Robot extends TimedRobot implements ControlMap {
   //private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
-
+  //Delay list
   public static ArrayList<Delay> deez = new ArrayList<Delay>();
   public boolean delay(double time, Lambda action){
     Delay d = null;
@@ -189,6 +193,23 @@ public class Robot extends TimedRobot implements ControlMap {
       c.disable();
 
     Timer.tick();
+
+    //gets network table crap
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry tx = table.getEntry("tx");
+    NetworkTableEntry ty = table.getEntry("ty");
+    NetworkTableEntry ta = table.getEntry("ta");
+
+    //spam set variables
+    double x = tx.getDouble(0.0);
+    double y = ty.getDouble(0.0);
+    double area = ta.getDouble(0.0);
+
+    System.out.println("x: " + x);
+    System.out.println("y: " + y);
+    System.out.println("area: " + area);
+
+
 
     //if(calibrate && !calibration.triggered()) Arms.calibrate();
   }
