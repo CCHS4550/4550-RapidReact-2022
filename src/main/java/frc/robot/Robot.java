@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.net.PortForwarder;
 
 // import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 // import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -122,6 +123,13 @@ public class Robot extends TimedRobot implements ControlMap {
     entry = new DoubleEntry("Entry Test", 69);
     swit = new BooleanSwitch("Switch Test", true);
     Chassis.shift.set(true);
+    //lets us see limelight when crap is happening or wired connection
+    PortForwarder.add(5800, "limelight.local", 5800);
+    PortForwarder.add(5801, "limelight.local", 5801);
+    PortForwarder.add(5802, "limelight.local", 5802);
+    PortForwarder.add(5803, "limelight.local", 5803);
+    PortForwarder.add(5804, "limelight.local", 5804);
+    PortForwarder.add(5805, "limelight.local", 5805);
     
     Arms.nothing();
     Chassis.nothing();
@@ -180,6 +188,7 @@ public class Robot extends TimedRobot implements ControlMap {
    */
   @Override
   public void robotPeriodic() {
+    Limelight.look();
     Arms.nothing();
     // if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
     //   for(DiagnosticsIF d : diagnostics) {
@@ -194,20 +203,7 @@ public class Robot extends TimedRobot implements ControlMap {
 
     Timer.tick();
 
-    //gets network table crap
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-
-    //spam set variables
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0);
-
-    System.out.println("x: " + x);
-    System.out.println("y: " + y);
-    System.out.println("area: " + area);
+    
 
 
 
