@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.math.controller.PIDController;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.net.PortForwarder;
 
 // import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 // import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -55,6 +58,8 @@ public class Robot extends TimedRobot implements ControlMap {
   NetworkTableEntry switchEntry;
   NetworkTableInstance inst;
   NetworkTable table;
+  private final ShuffleboardTab limelightTab = Shuffleboard.getTab("Sweaty Vision Stuff");
+
 
   public int alliance;
   double spdmlt = 1;
@@ -84,7 +89,14 @@ public class Robot extends TimedRobot implements ControlMap {
     entry = new DoubleEntry("Entry Test", 69);
     swit = new BooleanSwitch("Switch Test", true);
     Chassis.shift.set(true);
-    
+    //lets us see limelight when crap is happening or wired connection
+    PortForwarder.add(5800, "limelight.local", 5800);
+    PortForwarder.add(5801, "limelight.local", 5801);
+    PortForwarder.add(5802, "limelight.local", 5802);
+    PortForwarder.add(5803, "limelight.local", 5803);
+    PortForwarder.add(5804, "limelight.local", 5804);
+    PortForwarder.add(5805, "limelight.local", 5805);
+
     Arms.nothing();
     Chassis.nothing();
     //Intake.nothing();
@@ -130,7 +142,7 @@ public class Robot extends TimedRobot implements ControlMap {
   // private long periodicCount;
   // private double updateTime = 2;
 
-  
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use
@@ -142,6 +154,7 @@ public class Robot extends TimedRobot implements ControlMap {
    */
   @Override
   public void robotPeriodic() {
+    Limelight.look();
     Arms.nothing();
     // if (periodicCount++ % Timer.secondsToTicks(updateTime) == 0) {
     //   for(DiagnosticsIF d : diagnostics) {
@@ -155,6 +168,10 @@ public class Robot extends TimedRobot implements ControlMap {
       c.disable();
 
     Timer.tick();
+
+
+
+
 
     //if(calibrate && !calibration.triggered()) Arms.calibrate();
   }
@@ -193,7 +210,7 @@ public class Robot extends TimedRobot implements ControlMap {
     // TedBallin.loader.set(-0.7);
     // Timer.delay(1);
     // // TedBallin.loader.set(-.35);
-    // //remove when 2 ball auto 
+    // //remove when 2 ball auto
     // TedBallin.setShoot(0);
     // TedBallin.loader.set(0);
     // // Intake.autoSetIntake(false);
@@ -212,7 +229,7 @@ public class Robot extends TimedRobot implements ControlMap {
     // // Timer.delay(2);
     // // TedBallin.setShoot(0);
     // // TedBallin.loader.set(0);
-    
+
 
 
     // // Timer.delay(1);
@@ -257,7 +274,7 @@ public class Robot extends TimedRobot implements ControlMap {
     pull intake in
     go straight;
     ted ballin the ball in
-    
+
     tate does magic stuff here WOOOO
     */
     // if(!driveStart.started()){
@@ -272,7 +289,7 @@ public class Robot extends TimedRobot implements ControlMap {
     //   TedBallin.loader.set(0);
     // } else return;
     // if(Chassis.driveDistPeriodic(3.5, 0.1, 0.5, 0.1, 0)) return;;
-    
+
     // if(!Chassis.turnToAnglePeriodic(180, 0.1, 0.5, 3, 1)) return;
     // Intake.toggleIntake(true);
     // Intake.suck(1);
@@ -328,7 +345,7 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    
+
     Chassis.toggleFast(OI.button(0, Y_BUTTON));
 
     //driving with accel
@@ -340,7 +357,7 @@ public class Robot extends TimedRobot implements ControlMap {
      }
     double rJoystick = OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL);
     rJoystick *= 0.4;
-    
+
     //setting decel
     decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
 
@@ -370,8 +387,8 @@ public class Robot extends TimedRobot implements ControlMap {
       //Arms.calibrated = false;
       autoClimb = false;
       autoClimbCount = 0;
-      
-    } 
+
+    }
 
     //LB to index, LT to unindex
     TedBallin.runIndexer(OI.button(1, LB_BUTTON), OI.axis(1, LT) >= 0.1, false, 0.5);
@@ -401,14 +418,14 @@ public class Robot extends TimedRobot implements ControlMap {
     //    autoClimbCount = 0;
     //    //Intake.setIn(true);
     // }
-    
+
     //if(autoClimb) autoClimb();
 
   }
 
   double pos1 = -1.05;
   double pos2 = -70;
-  
+
   Timer quarter = new Timer(0.15);
   Timer half = new Timer(0.75);
 
@@ -554,7 +571,7 @@ public class Robot extends TimedRobot implements ControlMap {
     //   calibrate = false;
     //   Arms.calibrated = false;
     //   autoClimb = false;
-    // } 
+    // }
 
     // if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
     // if(autoClimb) autoClimb();
