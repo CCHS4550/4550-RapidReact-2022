@@ -65,40 +65,6 @@ public class Robot extends TimedRobot implements ControlMap {
   //private DiagnosticsIF[] diagnostics;
   public static ArrayList<CCSparkMax> motors = new ArrayList<CCSparkMax>();
 
-
-  public static ArrayList<Delay> deez = new ArrayList<Delay>();
-  public boolean delay(double time, Lambda action){
-    Delay d = null;
-    for(Delay c : deez){
-      if(c.action().equals(action)){
-        d = c;
-      } 
-    }
-    if(d == null){
-      deez.add(new Delay(time, action));
-      return false;
-    }
-    if(d.triggered()) d.run();
-    return d.triggered();
-  }
-
-  public boolean delay(boolean cond, Lambda action){
-    if(!cond) return false;
-    Delay d = null;
-    for(Delay c : deez){
-      if(c.action().equals(action)){
-        d = c;
-      } 
-    }
-    if(d == null){
-      Delay amongus = new Delay(0, action);
-      deez.add(amongus);
-      d = amongus;
-    }
-    if(d.triggered()) d.run();
-    return d.triggered();
-  }
-
   DoubleSlider slider;
   DoubleEntry entry;
   BooleanSwitch swit;
@@ -122,7 +88,7 @@ public class Robot extends TimedRobot implements ControlMap {
     Arms.nothing();
     Chassis.nothing();
     //Intake.nothing();
-    TedBallin.nothing();
+    // TedBallin.nothing();
     // diagnostics = new DiagnosticsIF[] {
     //   new DiagnosticsNoLayout(motors),
     //   new PowerStatus()
@@ -183,9 +149,9 @@ public class Robot extends TimedRobot implements ControlMap {
     //   }
     // }
 
-    if(RobotMap.COMPRESSOR_ENABLE)
+    if(RobotMap.COMPRESSOR_ENABLE){
       c.enableDigital();
-    else
+    } else
       c.disable();
 
     Timer.tick();
@@ -210,64 +176,64 @@ public class Robot extends TimedRobot implements ControlMap {
 
   @Override
   public void autonomousInit() {
-    //Intake.nothing();
-    double tempTimer = System.currentTimeMillis();
-    while(calibrate){
-      Arms.calibrate();
-      if(!DriverStation.isAutonomous() || Arms.calibrate() || System.currentTimeMillis() - tempTimer > 3000){
-        break;
-      }
-    }
+    // //Intake.nothing();
+    // double tempTimer = System.currentTimeMillis();
+    // // while(calibrate){
+    // //   Arms.calibrate();
+    // //   if(!DriverStation.isAutonomous() || Arms.calibrate() || System.currentTimeMillis() - tempTimer > 3000){
+    // //     break;
+    // //   }
+    // // }
 
-    Timer.delay(0.5);
-    //timer.start();
-    Chassis.reset();
-    TedBallin.setShoot(0.7);
-    Timer.delay(2);
-    TedBallin.loader.set(-0.7);
-    Timer.delay(1);
-    // TedBallin.loader.set(-.35);
-    //remove when 2 ball auto 
-    TedBallin.setShoot(0);
-    TedBallin.loader.set(0);
-    // Intake.autoSetIntake(false);
-    // Intake.suck(-1);
-    Timer.delay(.5);
-    // Arms.autoSetPos(-.176);
-    Chassis.driveDist(-2, 0.1, 0.3, 0.25, false);
+    // Timer.delay(0.5);
+    // //timer.start();
     // Chassis.reset();
-    // Chassis.driveDist(2, 0.1, 0.3, 0.25, false);
-    // Arms.autoSetPos(0.01);
-    // TedBallin.loader.set(0);
-    // Timer.delay(.5);
-    // TedBallin.setShoot(.75);
+    // TedBallin.setShoot(0.7);
     // Timer.delay(2);
-    // TedBallin.loader.set(-1);
-    // Timer.delay(2);
+    // TedBallin.loader.set(-0.7);
+    // Timer.delay(1);
+    // // TedBallin.loader.set(-.35);
+    // //remove when 2 ball auto 
     // TedBallin.setShoot(0);
     // TedBallin.loader.set(0);
+    // // Intake.autoSetIntake(false);
+    // // Intake.suck(-1);
+    // Timer.delay(.5);
+    // // Arms.autoSetPos(-.176);
+    // Chassis.driveDist(-2, 0.1, 0.3, 0.25, false);
+    // // Chassis.reset();
+    // // Chassis.driveDist(2, 0.1, 0.3, 0.25, false);
+    // // Arms.autoSetPos(0.01);
+    // // TedBallin.loader.set(0);
+    // // Timer.delay(.5);
+    // // TedBallin.setShoot(.75);
+    // // Timer.delay(2);
+    // // TedBallin.loader.set(-1);
+    // // Timer.delay(2);
+    // // TedBallin.setShoot(0);
+    // // TedBallin.loader.set(0);
     
 
 
-    // Timer.delay(1);
-    // Chassis.driveDist(5, 0.1, 0.3, 0.5, false);
-    // TedBallin.setShoot(0.4);
-    // Timer.delay(1);
-    // TedBallin.loader.set(-1);
+    // // Timer.delay(1);
+    // // Chassis.driveDist(5, 0.1, 0.3, 0.5, false);
+    // // TedBallin.setShoot(0.4);
+    // // Timer.delay(1);
+    // // TedBallin.loader.set(-1);
 
-    // Timer.delay(2);
-    // //timer.start();
-    // Chassis.reset();
-    // TedBallin.setShoot(0.5);
-    // Timer.delay(2);
-    // TedBallin.loader.set(-1);
-    // Timer.delay(1);
-    // Chassis.driveDist(-3.5, 0.1, 0.3, 0.5, true);
-    // TedBallin.setShoot(0);
-    // TedBallin.loader.set(0);
+    // // Timer.delay(2);
+    // // //timer.start();
+    // // Chassis.reset();
+    // // TedBallin.setShoot(0.5);
+    // // Timer.delay(2);
+    // // TedBallin.loader.set(-1);
+    // // Timer.delay(1);
+    // // Chassis.driveDist(-3.5, 0.1, 0.3, 0.5, true);
+    // // TedBallin.setShoot(0);
+    // // TedBallin.loader.set(0);
 
 
-    // shoot.start();
+    // // shoot.start();
   }
   /**
    * This function is called periodically during autonomous.
@@ -326,13 +292,13 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   public void teleopInit() {
     //Intake.nothing();
-    Face.angry();
+    //Face.angry();
     //timer.start();
   }
   /**
    * This function is called periodically during operator control.
    */
-  public double decelTime = .2;
+  public double decelTime = 0.1;
   public double decelTimeFast = .2;
   public double decelTimeSlow = 0;
 
@@ -345,7 +311,6 @@ public class Robot extends TimedRobot implements ControlMap {
   public double lastYaw = 500;
 
   public boolean autoClimb = false;
-  public Trigger autoClimbTrigger = new Trigger();
 
   double kP = 0.5;
   double kI = 0.0;
@@ -355,7 +320,7 @@ public class Robot extends TimedRobot implements ControlMap {
   DoubleSlider pos1Test = new DoubleSlider("Pos 1", -0.25, -1, 0);
   DoubleSlider pos2Test = new DoubleSlider("Pos 2", -1, -1, 0);
 
-  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 0.75);
+  DoubleEntry shootSpeed = new DoubleEntry("Shoot Speed", 0.5);
 
   int autoClimbCount = 0;
 
@@ -363,34 +328,18 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   //@SuppressWarnings("unused")
   public void teleopPeriodic() {
-    //System.out.println("Switch: " + limit.get());
-    // // boolean switchPressed = table.getEntry("switch").getBoolean(false);
-    // // System.out.println(switchPressed);
-    // // if(OI.button(0, ControlMap.Y_BUTTON)){
-    // //   if(aimPressed && lastAim <= 0.05) return;
-    // //   if(Vision.aim() == null){
-    // //     if(!aimPressed) return;
-    // //     Chassis.axisDrive(0, lastAim, 0.25);
-    // //     return;
-    // //   }
-    // //   if(!aimPressed) lastAim = 500;
-    // //   aimPressed = true;
-    // //   if(lastYaw <= Vision.getYaw()) lastAim = Vision.aim();
-    // //   Chassis.axisDrive(0, lastAim, 0.25);
-    // // } else {
-    // //   aimPressed = false;
-    // // }
+    
     Chassis.toggleFast(OI.button(0, Y_BUTTON));
-    // //driving with accel
+
+    //driving with accel
     double joystick = -OI.axis(0, ControlMap.L_JOYSTICK_VERTICAL);
      if(Chassis.fast) {
        joystick *= 0.35;
      } else {
-       joystick *= 0.8;
+       joystick *= 0.5;
      }
     double rJoystick = OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL);
-    // if(Chassis.fast) rJoystick *= .5;
-    rJoystick *= 0.5;
+    rJoystick *= 0.4;
     
     //setting decel
     decelTime = OI.button(0, ControlMap.LB_BUTTON) ? decelTimeFast : decelTimeSlow;
@@ -400,25 +349,28 @@ public class Robot extends TimedRobot implements ControlMap {
       joystick = 0;
       rJoystick = 0;
     }
+
     //accelerate towards joystick
     if(joystick - velocity != 0 && decelTime != 0) velocity += (joystick - velocity) / Math.abs(joystick - velocity) * deltaTime / decelTime;
     if(decelTime == 0) velocity = joystick;
     if(Math.abs(velocity) < 0.05 && Math.abs(joystick) <= 0.05) velocity = 0;
 
-    //velocity = accel.calculate(velocity, joystick);
     Chassis.axisDrive(velocity, rJoystick, 1);
-    //Chassis.arcadeDrive(joystick, OI.axis(0, ControlMap.R_JOYSTICK_HORIZONTAL) * 0.5);
 
     double armSpeed = 1;
     if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
-    // //dpad up or down to control elevator;;;
-    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)) || (OI.axis(1, RT) > 0.5 && Arms.calibrated),
-                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, A_BUTTON));
+
+    //dpad up or down to control elevator;;;
+    // Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)) || (OI.axis(1, RT) > 0.5 && Arms.calibrated),
+    //                   OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, A_BUTTON));
+
     if(OI.button(1, A_BUTTON)){
+
       calibrate = false;
-      Arms.calibrated = false;
+      //Arms.calibrated = false;
       autoClimb = false;
       autoClimbCount = 0;
+      
     } 
 
     //LB to index, LT to unindex
@@ -442,16 +394,15 @@ public class Robot extends TimedRobot implements ControlMap {
     //Fast Toggle (Y)
     Chassis.toggleFast(OI.button(0, Y_BUTTON));
 
-    if(OI.button(1, L_JOYSTICK_BUTTON)) setPos = true;
+    //if(OI.button(1, L_JOYSTICK_BUTTON)) setPos = true;
 
-    if(autoClimbTrigger.trigger(OI.button(1, B_BUTTON))){
-       autoClimb = !autoClimb;
-       autoClimbCount = 0;
-       //Intake.setIn(true);
-    }
-    if(autoClimb) autoClimb();
-
-    System.out.println(Arms.climber.getPosition());
+    // if(autoClimbTrigger.trigger(OI.button(1, B_BUTTON))){
+    //    autoClimb = !autoClimb;
+    //    autoClimbCount = 0;
+    //    //Intake.setIn(true);
+    // }
+    
+    //if(autoClimb) autoClimb();
 
   }
 
@@ -461,96 +412,110 @@ public class Robot extends TimedRobot implements ControlMap {
   Timer quarter = new Timer(0.15);
   Timer half = new Timer(0.75);
 
+  // void autoClimb(){
 
-  Trigger toggle = new Trigger();
-  void autoClimb(){
-    if(Arms.calibrated){
-      if(autoClimbCount == 0){
-        //moves elevator to middle, bringing robot to mid bar
-        Arms.setPosition(pos2);
-        Arms.moveToPos();
-        if(Arms.atPos()) {
-          autoClimbCount = 1;
-          Arms.setPosition(pos1);
-          quarter.reset();
-          quarter.start();
-        }
-        //robot is on mid bar
-      } else if(autoClimbCount == 1){
-        //start extending elevator up
-        //after a .25 second delay, extend climber hooks
-        Arms.toggleArms(toggle.trigger(quarter.triggered()));
-        Arms.moveToPos();
-        if(Arms.atPos() && quarter.triggered()){
-          //once elevator is fully extended, start another .25 second timer
-          autoClimbCount = 2;
-          half.reset();
-          half.start();
-          toggle = new Trigger();
-        }
-        //robot is tilted on the mid bar, with arms fully extended on mid bar
-      } else if(autoClimbCount == 2){
-        //retract arms
-        Arms.toggleArms(toggle.trigger(true));
-        if(half.triggered()){
-          //after a .25 second delay, continue to next step
-          Arms.setPosition(pos2);
-          autoClimbCount = 3;
-        }
-        //robot is now tilted and hugging the high bar
-      } else if(autoClimbCount == 3){
-        //begin lowering elevator
-        Arms.moveToPos();
-        if(Arms.atPos()){
-          //once elevator is lowered, the robot will be swinging on the high bar
-          //continue to next step
-          autoClimbCount = 4;
-          Arms.setPosition(pos1);
-          quarter.reset();
-          quarter.start();
-        }
-        //robot is now on high bar
-      } else if(autoClimbCount == 4){
-        //start extending elevator up
-        //after a .25 second delay, extend climber hooks
-        Arms.toggleArms(toggle.trigger(quarter.triggered()));
-        Arms.moveToPos();
-        if(Arms.atPos() && quarter.triggered()){
-          //once elevator is fully extended, start another .25 second timer
-          autoClimbCount = 5;
-          half.reset();
-          half.start();
-          toggle = new Trigger();
-        }
-        //robot is tilted on the high bar, with arms fully extended
-      } else if(autoClimbCount == 5){
-        //retract arms
-        Arms.toggleArms(toggle.trigger(true));
-        if(half.triggered()){
-          //after a .25 second delay, continue to next step
-          Arms.setPosition(pos2);
-          autoClimbCount = 6;
-          half.reset();
-          half.start();
-          toggle = new Trigger();
-        }
-        //robot is now tilted and hugging the traversal bar
-      } else if(autoClimbCount == 6){
-        //begin lowering elevator
-        if(half.triggered()){
-          if(toggle.trigger(true)) Arms.setPosition(pos2);
-          Arms.moveToPos();
-          if(Arms.atPos()) autoClimb = false;
-        }
-        //once elevator is lowered, the robot will be swinging on the traversal bar
-        //robot is now on traversal bar
-      }
-      // if(!delay(0.25, () -> Arms.toggleArms())) return;
+  //   if(Arms.calibrated){
 
-      // if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
-      // if(!delay(0.5, () -> Arms.setPosition(pos1))) return;
-    }
-  }
+  //     if(autoClimbCount == 0){
+
+  //       //moves elevator to middle, bringing robot to mid bar
+  //       Arms.setPosition(pos2);
+  //       Arms.moveToPos();
+
+  //       if(Arms.atPos()) {
+
+  //         autoClimbCount = 1;
+  //         Arms.setPosition(pos1);
+  //         quarter.reset();
+  //         quarter.start();
+
+  //       }
+  //       //robot is on mid bar
+  //     } else if(autoClimbCount == 1){
+
+  //       //start extending elevator up
+  //       //after a .25 second delay, extend climber hooks
+  //       Arms.toggleArms(toggle.trigger(quarter.triggered()));
+  //       Arms.moveToPos();
+
+  //       if(Arms.atPos() && quarter.triggered()){
+
+  //         //once elevator is fully extended, start another .25 second timer
+  //         autoClimbCount = 2;
+  //         half.reset();
+  //         half.start();
+  //         toggle = new Trigger();
+
+  //       }
+  //       //robot is tilted on the mid bar, with arms fully extended on mid bar
+
+  //     } else if(autoClimbCount == 2){
+
+  //       //retract arms
+  //       Arms.toggleArms(toggle.trigger(true));
+
+  //       if(half.triggered()){
+
+  //         //after a .25 second delay, continue to next step
+  //         Arms.setPosition(pos2);
+  //         autoClimbCount = 3;
+
+  //       }
+  //       //robot is now tilted and hugging the high bar
+
+  //     } else if(autoClimbCount == 3){
+  //       //begin lowering elevator
+  //       Arms.moveToPos();
+  //       if(Arms.atPos()){
+  //         //once elevator is lowered, the robot will be swinging on the high bar
+  //         //continue to next step
+  //         autoClimbCount = 4;
+  //         Arms.setPosition(pos1);
+  //         quarter.reset();
+  //         quarter.start();
+  //       }
+  //       //robot is now on high bar
+  //     } else if(autoClimbCount == 4){
+  //       //start extending elevator up
+  //       //after a .25 second delay, extend climber hooks
+  //       Arms.toggleArms(toggle.trigger(quarter.triggered()));
+  //       Arms.moveToPos();
+  //       if(Arms.atPos() && quarter.triggered()){
+  //         //once elevator is fully extended, start another .25 second timer
+  //         autoClimbCount = 5;
+  //         half.reset();
+  //         half.start();
+  //         toggle = new Trigger();
+  //       }
+  //       //robot is tilted on the high bar, with arms fully extended
+  //     } else if(autoClimbCount == 5){
+  //       //retract arms
+  //       Arms.toggleArms(toggle.trigger(true));
+  //       if(half.triggered()){
+  //         //after a .25 second delay, continue to next step
+  //         Arms.setPosition(pos2);
+  //         autoClimbCount = 6;
+  //         half.reset();
+  //         half.start();
+  //         toggle = new Trigger();
+  //       }
+  //       //robot is now tilted and hugging the traversal bar
+  //     } else if(autoClimbCount == 6){
+  //       //begin lowering elevator
+  //       if(half.triggered()){
+  //         if(toggle.trigger(true)) Arms.setPosition(pos2);
+  //         Arms.moveToPos();
+  //         if(Arms.atPos()) autoClimb = false;
+  //       }
+  //       //once elevator is lowered, the robot will be swinging on the traversal bar
+  //       //robot is now on traversal bar
+  //     }
+  //     // if(!delay(0.25, () -> Arms.toggleArms())) return;
+
+  //     // if(!delay(Arms.atPos(), () -> Arms.toggleArms())) return;
+  //     // if(!delay(0.5, () -> Arms.setPosition(pos1))) return;
+  //   }
+  // }
 
   /**
    * This function is called right after disabling
@@ -564,7 +529,7 @@ public class Robot extends TimedRobot implements ControlMap {
       t.reset();
     }
 
-    Arms.calibrated = false;
+    //Arms.calibrated = false;
     autoClimb = false;
     autoClimbCount = 0;
 
@@ -581,18 +546,18 @@ public class Robot extends TimedRobot implements ControlMap {
   @Override
   public void testPeriodic() {
     double armSpeed = 1;
-    if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
-    // //dpad up or down to control elevator;;;
-    Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
-                     OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, L_JOYSTICK_BUTTON));
-    if(OI.button(1, L_JOYSTICK_BUTTON)){
-      calibrate = false;
-      Arms.calibrated = false;
-      autoClimb = false;
-    } 
+    // if(OI.dPad(1, DPAD_DOWN_RIGHT) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_UP_RIGHT) || OI.dPad(1, DPAD_UP_LEFT)) armSpeed *= 0.5;
+    // // //dpad up or down to control elevator;;;
+    // Arms.runElevator((OI.dPad(1, DPAD_DOWN) || OI.dPad(1, DPAD_DOWN_LEFT) || OI.dPad(1, DPAD_DOWN_RIGHT)),
+    //                  OI.dPad(1, DPAD_UP) || OI.dPad(1, DPAD_UP_LEFT) || OI.dPad(1, DPAD_UP_RIGHT), false, armSpeed, OI.joystickArray[1], OI.button(1, L_JOYSTICK_BUTTON));
+    // if(OI.button(1, L_JOYSTICK_BUTTON)){
+    //   calibrate = false;
+    //   Arms.calibrated = false;
+    //   autoClimb = false;
+    // } 
 
-    if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
-    if(autoClimb) autoClimb();
+    // if(autoClimbTrigger.trigger(OI.button(1, R_JOYSTICK_BUTTON))) autoClimb = !autoClimb;
+    // if(autoClimb) autoClimb();
   }
 
 }
