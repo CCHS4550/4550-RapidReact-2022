@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.deprecated;
 
 // import frc.helpers.AutoTimer;
 import frc.helpers.CCSparkMax;
@@ -6,6 +6,7 @@ import frc.helpers.Timer;
 // import edu.wpi.first.wpilibj.PneumaticsModuleType;
 // import edu.wpi.first.wpilibj.Solenoid;
 import frc.parent.RobotMap;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 //import edu.wpi.first.wpilibj.Timer;
@@ -16,7 +17,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  * @param Flaws - zero
  * @param Potential - also infinity
  */
-public class TedBallin implements RobotMap{
+public class oldTedBallin implements RobotMap{
 
 //template:public static CCSparkMax fLeft = new CCSparkMax("Front Left", "FL", RobotMap.FORWARD_LEFT, MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_LEFT_REVERSE);
 
@@ -59,9 +60,9 @@ public class TedBallin implements RobotMap{
     // }
 
     public static boolean setShoot(double set, int step){
-        if(step != Robot.autoStep) return true;
+        if(step != oldRobot.autoStep) return true;
         setShoot(set);
-        Robot.autoStep++;
+        oldRobot.autoStep++;
         return true;
     }
 

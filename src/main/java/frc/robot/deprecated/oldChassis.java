@@ -1,8 +1,7 @@
-package frc.robot;
+package frc.robot.deprecated;
 
 import frc.helpers.*;
 import frc.parent.*;
-//import frc.raspi.Vision;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -15,7 +14,7 @@ import edu.wpi.first.wpilibj.Joystick;
 // import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
-public class Chassis{
+public class oldChassis{
 
     public static void nothing(){
         double rumble = shift.on() ? .3 : 0;
@@ -241,7 +240,7 @@ public class Chassis{
     @return if this step is completed or not
      */
     public static boolean turnToAnglePeriodic(double goal, double kp, double max, double aError, int step){
-        if(step < Robot.autoStep) return true;
+        if(step < oldRobot.autoStep) return true;
         double angl = gyro.getAngle();
         double error = goal-angl;
         double input = error*kp;
@@ -252,7 +251,7 @@ public class Chassis{
         if(Math.abs(error) <= aError){
             driveSpd(0.0, 0.0);
             System.out.println("YOINK, ya made it");
-            Robot.autoStep++;
+            oldRobot.autoStep++;
             return true;
         }
         return false;
@@ -268,7 +267,7 @@ public class Chassis{
     @return if this step is completed or not
      */
     public static boolean driveDistPeriodic(double goal, double kp, double max, double aError, int step){
-        if(step < Robot.autoStep) return true;
+        if(step < oldRobot.autoStep) return true;
         setFactor(0.048);
         double lPos = getLDist();
         double lError = goal-lPos;
@@ -285,7 +284,7 @@ public class Chassis{
         if(Math.abs(lError) <= aError && Math.abs(rError) <= aError){
             driveSpd(0.0, 0.0);
             System.out.println("YOINK, ya made it");
-            Robot.autoStep++;
+            oldRobot.autoStep++;
             return true;
         }
         return false;

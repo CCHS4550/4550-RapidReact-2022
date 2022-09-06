@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.deprecated;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -18,7 +18,7 @@ import frc.helpers.*;
 
 //add something to check encoder rate of change
 //if it slows down for over 1 second, stop or warn with rumble
-public class Arms implements RobotMap {
+public class oldArms implements RobotMap {
  
     // public static CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, 
     // MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
