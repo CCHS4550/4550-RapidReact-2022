@@ -6,6 +6,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import frc.robot.*;
 //import com.revrobotics.CANSparkMax.ControlType;
+import frc.robot.deprecated.oldRobot;
 
 //Documention: http://www.revrobotics.com/content/sw/max/sw-docs/java/com/revrobotics/CANSparkMax.html#%3Cinit%3E(int,com.revrobotics.CANSparkMaxLowLevel.MotorType)
 
@@ -37,7 +38,7 @@ public class CCSparkMax extends CANSparkMax{
 
         pidController = super.getPIDController();
         if(encoder) this.encoder = super.getEncoder();
-        Robot.motors.add(this);
+        oldRobot.motors.add(this);
     }
 
     public void reset(){
