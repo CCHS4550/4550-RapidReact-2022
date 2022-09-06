@@ -24,7 +24,7 @@ public class RobotContainer {
                 driveTrain.drive(controllers[0], ControlMap.L_JOYSTICK_VERTICAL, ControlMap.R_JOYSTICK_HORIZONTAL), 
             driveTrain)
         );
-    }
+    } 
 
     private void configureButtons(){
         new JoystickButton(controllers[0], ControlMap.A_BUTTON)
