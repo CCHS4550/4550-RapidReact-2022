@@ -14,6 +14,7 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
     private final Arms arms = new Arms();
     private final Chassis driveTrain = new Chassis();
+    private final Intake intake = new Intake();
     private final TedBallin shooter = new TedBallin();
 
     Joystick[] controllers = OI.joystickArray;
@@ -41,7 +42,10 @@ public class RobotContainer {
         );
     } 
 
-    private void configureButtons(){
+    private void configureButtons() {
+        new JoystickButton(controllers[1], ControlMap.Y_BUTTON).whenPressed(() ->{
+            Intake.suck(1);
+        });
         //basic button mapping, joystick button takes a controller (use controllers[index], 0 for drive, 1 for mechanisms)
         //and a button ID, use controlMap for xbox
         //check https://first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/Button.html for full list of
