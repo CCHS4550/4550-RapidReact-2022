@@ -8,18 +8,19 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.helpers.CCSparkMax;
 import frc.parent.RobotMap;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.helpers.*;
 
 
 public class Intake implements RobotMap {
     public static void nothing(){
-        if(!Robot.set){
-            intake.reset();
-            Robot.set = true;
-            position = 0;
-            in = true;
-        }
+        // if(!Robot.set){
+        //     intake.reset();
+        //     Robot.set = true;
+        //     position = 0;
+        //     in = true;
+        // }
     }
     public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY,
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, true);
@@ -76,28 +77,28 @@ public class Intake implements RobotMap {
         Intake.speed = speed;
     }
 
-    public static void autoSetIntake(boolean set){
-        in = set;
-        position = in ? 0 : -1.14;
-        while(DriverStation.isAutonomous()){
-            intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
-            intake.setPositionConversionFactor(0.10686979799148262178959147156001);
-            if(intake.getPosition() - position < 0.03) break;
-        }
-    }
+    // public static void autoSetIntake(boolean set){
+    //     in = set;
+    //     position = in ? 0 : -1.14;
+    //     while(DriverStation.isAutonomous()){
+    //         intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
+    //         intake.setPositionConversionFactor(0.10686979799148262178959147156001);
+    //         if(intake.getPosition() - position < 0.03) break;
+    //     }
+    // }
 
     /** 
      * Toggles the intake arms. Will only trigger again after trigger is false
      *@param trigger what will trigger the toggle. Suggest passing in a button or axis input.
     */
-    public static Trigger t = new Trigger();
-    public static PIDController spd = new PIDController(0.5, 0, 0.01);
-    public static void toggleIntake(boolean trigger){
-        if(t.trigger(trigger)){
-            in = !in;
-            position = in ? 0 : -1.05;
-        }
-        intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
-        intake.setPositionConversionFactor(0.10686979799148262178959147156001);
-    }
+    // public static Trigger t = new Trigger();
+    // public static PIDController spd = new PIDController(0.5, 0, 0.01);
+    // public static void toggleIntake(boolean trigger){
+    //     if(t.trigger(trigger)){
+    //         in = !in;
+    //         position = in ? 0 : -1.05;
+    //     }
+    //     intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -1, 1));
+    //     intake.setPositionConversionFactor(0.10686979799148262178959147156001);
+    // }
 }

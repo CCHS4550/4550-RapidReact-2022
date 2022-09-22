@@ -43,7 +43,7 @@ public class RobotContainer {
     } 
 
     private void configureButtons() {
-        new JoystickButton(controllers[1], ControlMap.Y_BUTTON).whenPressed(() ->{
+        new JoystickButton(controllers[1], ControlMap.B_BUTTON).whenPressed(() ->{
             Intake.suck(1);
         });
         //basic button mapping, joystick button takes a controller (use controllers[index], 0 for drive, 1 for mechanisms)
