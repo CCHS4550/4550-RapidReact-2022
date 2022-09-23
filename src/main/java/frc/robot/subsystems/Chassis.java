@@ -16,16 +16,16 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 public class Chassis extends SubsystemBase{
     private final CCSparkMax fLeft = new CCSparkMax("Front Left", "FL", RobotMap.FORWARD_LEFT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_LEFT_REVERSE, true);
+        MotorType.kBrushless, IdleMode.kCoast, RobotMap.FORWARD_LEFT_REVERSE, true);
 
     private final CCSparkMax fRight = new CCSparkMax("Front Right", "FR", RobotMap.FORWARD_RIGHT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.FORWARD_RIGHT_REVERSE, true);
+        MotorType.kBrushless, IdleMode.kCoast, RobotMap.FORWARD_RIGHT_REVERSE, true);
 
     private final CCSparkMax bLeft = new CCSparkMax("Back Left", "BL",RobotMap.BACK_LEFT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_LEFT_REVERSE, true);
+        MotorType.kBrushless, IdleMode.kCoast, RobotMap.BACK_LEFT_REVERSE, true);
 
     private final CCSparkMax bRight = new CCSparkMax("Back Right", "BR", RobotMap.BACK_RIGHT, 
-        MotorType.kBrushless, IdleMode.kBrake, RobotMap.BACK_RIGHT_REVERSE, true);
+        MotorType.kBrushless, IdleMode.kCoast, RobotMap.BACK_RIGHT_REVERSE, true);
 
     private final PneumaticsSystem shift = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.SHIFT_SOLENOID_ONE, RobotMap.SHIFT_SOLENOID_TWO);
 
