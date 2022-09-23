@@ -8,12 +8,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.helpers.CCSparkMax;
 import frc.parent.RobotMap;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.helpers.*;
 
 
-public class Intake implements RobotMap {
+public class Intake extends SubsystemBase implements RobotMap {
     public static void nothing(){
         // if(!Robot.set){
         //     intake.reset();
@@ -22,16 +23,16 @@ public class Intake implements RobotMap {
         //     in = true;
         // }
     }
-    public static CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY,
+    public  CCSparkMax sucky = new CCSparkMax("sucky", "suck", RobotMap.SUCKY,
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, true);
 
-    public static CCSparkMax intake = new CCSparkMax("intake", "in", RobotMap.INTAKE_IN,
+    public  CCSparkMax intake = new CCSparkMax("intake", "in", RobotMap.INTAKE_IN,
         MotorType.kBrushless, IdleMode.kBrake, RobotMap.SUCKY_REVERSE, true);
 
-    public static double position = 0;
-    public static boolean in = true;
+    public  double position = 0;
+    public  boolean in = true;
 
-    public static double speed = 1;
+    public  double speed = 1;
 
 
     /** 
@@ -41,7 +42,7 @@ public class Intake implements RobotMap {
      *@param hardStop will set speed to 0 (takes precedence over triggers one and two)
      *@param speed the intake speed
     */
-    public static void run(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed){
+    public  void run(boolean triggerOne, boolean triggerTwo, boolean hardStop, double speed){
         if(hardStop){
             sucky.set(0);
             return;
@@ -57,13 +58,13 @@ public class Intake implements RobotMap {
         sucky.set(0);
     }
 
-    public static void suck(double speed){
+    public  void suck(double speed){
         sucky.set(speed);
     }
 
     
 
-    public static void setIn(boolean set){
+    public void setIn(boolean set){
         in = set;
         position = in ? 0 : -1.1;
     }
@@ -71,10 +72,10 @@ public class Intake implements RobotMap {
     /** 
      * Toggles the intake arms.
     */
-    public static void toggleIntake(double speed){
+    public void toggleIntake(double speed){
         in = !in;
         position = in ? 0 : -0.95;
-        Intake.speed = speed;
+        this.speed = speed;
     }
 
     // public static void autoSetIntake(boolean set){

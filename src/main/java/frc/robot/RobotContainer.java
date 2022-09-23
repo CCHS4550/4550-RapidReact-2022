@@ -19,6 +19,7 @@ public class RobotContainer {
 
     Joystick[] controllers = OI.joystickArray;
     Joystick driveJoystick = controllers[0];
+    JoystickButton b = new JoystickButton(driveJoystick, ControlMap.A_BUTTON);
 
     public RobotContainer(){
         //calls the button configs, you don't need to assign buttons or triggers to vars unless you need to refer to them later
@@ -43,14 +44,15 @@ public class RobotContainer {
     } 
 
     private void configureButtons() {
-        new JoystickButton(controllers[1], ControlMap.B_BUTTON).whenPressed(() ->{
-            Intake.suck(1);
-        });
+        new JoystickButton(controllers[1], ControlMap.B_BUTTON).whenPressed(new RunCommand(() -> {
+            intake.suck(1);
+        }, intake));
+        
         //basic button mapping, joystick button takes a controller (use controllers[index], 0 for drive, 1 for mechanisms)
         //and a button ID, use controlMap for xbox
         //check https://first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/Button.html for full list of
         //actions that can be done
-        new JoystickButton(controllers[0], ControlMap.A_BUTTON)
+        new JoystickButton(controllers[1], ControlMap.A_BUTTON)
             .whenPressed(() -> {
                 driveTrain.toggleTorque();
                 System.out.println("test");
