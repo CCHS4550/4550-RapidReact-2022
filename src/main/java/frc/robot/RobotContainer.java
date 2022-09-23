@@ -111,6 +111,7 @@ public class RobotContainer {
         .and(shootBkd.negate())
         .whenActive(() -> shooter.setShoot(0));
 
+        //sets both controllers to have the option to switch driver control to them
         for(Joystick ctrl : controllers){
             JoystickButton lJoy = new JoystickButton(ctrl, ControlMap.L_JOYSTICK_BUTTON);
             new JoystickButton(ctrl, ControlMap.R_JOYSTICK_BUTTON)
@@ -118,7 +119,7 @@ public class RobotContainer {
                 .whenActive(() -> {
                     driveJoystick = ctrl;
                     for(Joystick ctr : controllers){
-                        if(ctr == ctrl) ctrl.setRumble(RumbleType.kLeftRumble, .5); else ctrl.setRumble(RumbleType.kLeftRumble, 0);
+                        if(ctr != ctrl) ctrl.setRumble(RumbleType.kLeftRumble, .5); else ctrl.setRumble(RumbleType.kLeftRumble, 0);
                     }
                 }); 
         }
