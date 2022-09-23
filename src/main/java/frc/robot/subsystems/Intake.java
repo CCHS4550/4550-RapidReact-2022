@@ -35,7 +35,12 @@ public class Intake extends SubsystemBase {
     }
     
     private PIDController spd = new PIDController(0.5, 0, 0.01);
-    public void positionIntake(){
+
+    public void positionIntake() {
         intake.set(OI.normalize(spd.calculate(intake.getPosition(), position), -ips.value(), ips.value()));
+    }
+
+    public void setSuck(double speed) {
+        sucky.set(speed);
     }
 }
