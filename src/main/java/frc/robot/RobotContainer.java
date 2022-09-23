@@ -42,13 +42,35 @@ public class RobotContainer {
         arms.setDefaultCommand(new RunCommand(() -> {
             
         }, arms));
+
+        intake.setDefaultCommand(new RunCommand(() -> {
+            intake.positionIntake();
+        }, intake));
         
     } 
 
     private void configureButtons() {
-        new JoystickButton(controllers[1], ControlMap.B_BUTTON).whenPressed(() ->{
-            Intake.suck(1);
+        Trigger sucOn = new JoystickButton(controllers[1], ControlMap.RB_BUTTON).whenPressed(() ->{
+            intake.setSuck(0.7);
         });
+
+        Trigger sucBack = new Trigger(){
+            public boolean get(){
+                return OI.axis(1, ControlMap.RT) > 0.5;
+            }
+        }.and(sucOn.negate())
+         .whenActive(() -> intake.setSuck(-0.7));
+
+        new Trigger(){
+            public boolean get(){return true;}
+        }.and(sucOn.negate())
+         .and(sucBack.negate())
+         .whenActive(() -> intake.setSuck(0));
+
+
+        new JoystickButton(controllers[1], ControlMap.Y_BUTTON)
+         .whenActive(() -> intake.toggleIntake());
+        
         //basic button mapping, joystick button takes a controller (use controllers[index], 0 for drive, 1 for mechanisms)
         //and a button ID, use controlMap for xbox
         //check https://first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/Button.html for full list of
@@ -56,7 +78,6 @@ public class RobotContainer {
         new JoystickButton(controllers[0], ControlMap.A_BUTTON)
             .whenPressed(() -> {
                 driveTrain.toggleTorque();
-                System.out.println("test");
             });
 
         new JoystickButton(controllers[1], ControlMap.Y_BUTTON)

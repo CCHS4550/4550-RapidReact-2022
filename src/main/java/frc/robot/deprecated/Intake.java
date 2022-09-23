@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.deprecated;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
