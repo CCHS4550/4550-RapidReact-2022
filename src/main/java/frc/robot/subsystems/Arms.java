@@ -11,7 +11,7 @@ import frc.parent.RobotMap;
 
 public class Arms extends SubsystemBase {
     private final PneumaticsSystem solenoids = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE, RobotMap.ARM_SOLENOID_TWO);
-    private final CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
+    //private final CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
 
     public Arms(){
         //initialization (for stuff that has to do with declaration, the init method can handle action-y inits)
