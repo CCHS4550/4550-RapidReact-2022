@@ -65,8 +65,12 @@ public class CCSparkMax extends CANSparkMax{
      * Sets the Position Conversion Factor for the encoder
      * @param factor The ratio of encoder units to desired units (ie. units -> in)
      */
-    public void setPositionConversionFactor(double factor){
+    public void setPositionConversionFactor(double factor) {
         encoder.setPositionConversionFactor(factor);
+    }
+
+    public double getPositionConversionFactor() {
+        return encoder.getPositionConversionFactor();
     }
 
     /**
