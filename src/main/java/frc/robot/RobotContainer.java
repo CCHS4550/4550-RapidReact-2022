@@ -38,7 +38,10 @@ public class RobotContainer {
             }, 
             driveTrain)
         );
-
+        
+        // arms.setDefaultCommand(new RunCommand(() -> {
+        //     arms.setSpeed(0);
+        // }, arms));
 
         intake.setDefaultCommand(new RunCommand(() -> {
             intake.positionIntake();
@@ -80,8 +83,8 @@ public class RobotContainer {
         new JoystickButton(controllers[1], ControlMap.Y_BUTTON)
             .whenPressed(() -> arms.toggleSols());
 
-        new JoystickButton(controllers[1],ControlMap.DPAD_UP).whileHeld(() -> arms.extend()); 
-        new JoystickButton(controllers[1], ControlMap.DPAD_DOWN).whileHeld(() -> arms.retract());
+        new JoystickButton(controllers[1],ControlMap.DPAD_UP).whileHeld(() -> arms.extend()).whenReleased(() -> arms.setSpeed(0)); 
+        new JoystickButton(controllers[1], ControlMap.DPAD_DOWN).whileHeld(() -> arms.retract()).whenReleased(() -> arms.setSpeed(0));
         new JoystickButton(controllers[1], ControlMap.DPAD_LEFT).whenPressed(() -> arms.calibrate());
 
         //somewhat complex series of triggers (for shooting)

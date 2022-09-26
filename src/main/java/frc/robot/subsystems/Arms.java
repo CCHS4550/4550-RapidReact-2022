@@ -55,7 +55,7 @@ public class Arms extends SubsystemBase {
     //make sure climber is at top positon before calling 
     public void calibrate() {
         topEncoder = climber.getPosition();
-        if(!bottom.get()) {
+        if (!bottom.get()) {
             climber.set(-.5); // change to positive if needed for reverse
         } else {
             climber.set(0);
@@ -63,6 +63,14 @@ public class Arms extends SubsystemBase {
             climber.reset();
         }
         // climber.setPosition(bottomEncoder);
-        climber.setPositionConversionFactor(1/(topEncoder-bottomEncoder));
+        climber.setPositionConversionFactor(1 / (topEncoder - bottomEncoder));
+    }
+    
+    public void setSpeed(double speed) {
+        climber.set(speed);
+    }
+
+    public void setPosition(double encoderPos) {
+        climber.setPosition(encoderPos / climber.getPositionConversionFactor());
     }
 }
