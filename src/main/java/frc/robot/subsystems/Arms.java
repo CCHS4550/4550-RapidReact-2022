@@ -11,7 +11,11 @@ import frc.parent.RobotMap;
 
 public class Arms extends SubsystemBase {
     private final PneumaticsSystem solenoids = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE, RobotMap.ARM_SOLENOID_TWO);
-    //private final CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
+    private final CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
+    int bottom_port; //add num
+    int top_port; //add num
+    private final DigitalInput bottom = new DigitalInput(bottom_port);
+    private final DigitalInput top = new DigitalInput(top_port);
 
     public Arms(){
         //initialization (for stuff that has to do with declaration, the init method can handle action-y inits)
@@ -30,4 +34,18 @@ public class Arms extends SubsystemBase {
     }
 
     //need to add back elevator stuff & calibration stuff, will do when elevator is fixed and stuff can be tested
+    public void extend(){
+        if(top.get()){
+            climber.set(0);
+        }else{
+            climber.set(0.2); //can change to negative depending on reverse of motor. 
+        }
+    }
+    public void retract(){
+        if(bottom.get()){
+            climber.set(0);
+        }else{
+            climber.set(-0.2);
+        }
+    }
 }

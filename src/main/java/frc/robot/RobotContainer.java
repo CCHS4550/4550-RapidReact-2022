@@ -68,7 +68,7 @@ public class RobotContainer {
          .whenActive(() -> intake.setSuck(0));
 
 
-        new JoystickButton(controllers[1], ControlMap.Y_BUTTON)
+        new JoystickButton(controllers[1], ControlMap.Y_BUTTON) //Conflicts with arm sols
          .whenActive(() -> intake.toggleIntake());
         
         //basic button mapping, joystick button takes a controller (use controllers[index], 0 for drive, 1 for mechanisms)
@@ -82,6 +82,9 @@ public class RobotContainer {
 
         new JoystickButton(controllers[1], ControlMap.Y_BUTTON)
             .whenPressed(() -> arms.toggleSols());
+
+        new JoyStickButton(controllers[1],ControlMap.DPAD_UP).whenPressed(() -> arms.extend()); 
+        new JoyStickButton(controllers[1],ControlMap.DPAD_DOWN).whenPressed(() -> arms.retract());
 
         //somewhat complex series of triggers (for shooting)
         //first one is basic trigger, must construct a trigger and override the get method with the boolean you want checked
