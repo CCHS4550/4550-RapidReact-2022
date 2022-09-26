@@ -82,7 +82,7 @@ public class RobotContainer {
 
         new JoystickButton(controllers[1],ControlMap.DPAD_UP).whileHeld(() -> arms.extend()); 
         new JoystickButton(controllers[1], ControlMap.DPAD_DOWN).whileHeld(() -> arms.retract());
-        new JoystickButton(controllers[1], ControlMap.DPAD_LEFT).whenPressed(() -> arms.home());
+        new JoystickButton(controllers[1], ControlMap.DPAD_LEFT).whenPressed(() -> arms.calibrate());
 
         //somewhat complex series of triggers (for shooting)
         //first one is basic trigger, must construct a trigger and override the get method with the boolean you want checked

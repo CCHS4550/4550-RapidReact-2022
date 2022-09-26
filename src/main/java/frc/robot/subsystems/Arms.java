@@ -53,7 +53,7 @@ public class Arms extends SubsystemBase {
     }
 
     //make sure climber is at top positon before calling 
-    public void home() {
+    public void calibrate() {
         topEncoder = climber.getPosition();
         if(!bottom.get()) {
             climber.set(-.5); // change to positive if needed for reverse
