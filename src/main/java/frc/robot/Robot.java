@@ -62,6 +62,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     drive.drive(-0.1, 0); //maybe get auto movement points?
     drive.drive(0, 0);
+    Command auto = getAuto();
+    auto.execute();
   }
 
   /** This function is called periodically during autonomous. */
