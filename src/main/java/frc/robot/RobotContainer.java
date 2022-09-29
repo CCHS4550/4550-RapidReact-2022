@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.Timer;
 import frc.helpers.OI;
 import frc.parent.ControlMap;
 import frc.parent.DDRMap;
@@ -128,5 +129,38 @@ public class RobotContainer {
                 }); 
         }
 
+    }
+
+    private Command getAuto(){
+        Command auto = new Command(){
+            @override
+            public void execute(){
+                shooter.setShoot(0.8);
+                Timer.delay(1);
+                shooter.setLoader(0.8);
+                intake.toggleIntake();
+                shooter.setShoot(0);
+                shooter.setLoader(0)
+                intake.setSuck(0.7);
+                // Drive back
+                intake.setSuck(0);
+                // Move forward
+                shooter.setShoot(0.8);
+                Timer.delay(1);
+                shooter.setLoader(0.8);
+                intake.setSuck(0.7);
+
+
+                // shooter up to speed, use shuffle board
+                // delay 1
+                // run loader
+                // drop intake and run
+                // move back an amount
+                // turn intake off
+                // move forward and turn on shooter
+                // delay 1
+                // run loader + intake
+            }
+        }
     }
 }
