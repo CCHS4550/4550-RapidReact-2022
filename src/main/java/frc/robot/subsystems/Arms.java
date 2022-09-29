@@ -27,12 +27,15 @@ public class Arms extends SubsystemBase {
     private PIDController climberPid = new PIDController(0.5, 0, 0.05);
     private double encoderPos;
     private boolean positioning = true;
+    private Joystick[] controllers = OI.joystickArray;
+
 
 
     public Arms(){
         //initialization (for stuff that has to do with declaration, the init method can handle action-y inits)
+        climber.setPositionConversionFactor(RobotMap.CLIMBER_POSITION_CONVERSION_FACTOR_FUCK_YOU_VICTOR);
     }
-
+ 
     public void periodic(){
         //stuff that should run every frame, action stuff should be put in other methods
     }
@@ -58,27 +61,16 @@ public class Arms extends SubsystemBase {
         }
     }
 
-    //make sure climber is at top positon before calling 
     public void calibrate() {
-        topEncoder = climber.getPosition();
         if (!bottom.get()) {
             climber.set(-.5); // change to positive if needed for reverse
         } else {
             climber.set(0);
-            bottomEncoder = climber.getPosition();
             climber.reset();
             encoderPos = 0;
         }
-        // climber.setPosition(bottomEncoder);
-        climber.setPositionConversionFactor(1 / (topEncoder - bottomEncoder));
-        System.out.println(climber.getPositionConversionFactor());
     }
     
-    // public void setSpeed(double speed) {
-    //     positioning = false;
-    //     climber.set(speed);
-    // }
-
     public void goToPosition() {
         if (positioning)
             climber.set(OI.normalize(climberPid.calculate(climber.getPosition(), encoderPos), -1, 1));

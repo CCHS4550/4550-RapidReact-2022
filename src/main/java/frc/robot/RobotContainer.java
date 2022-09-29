@@ -85,8 +85,6 @@ public class RobotContainer {
         new JoystickButton(controllers[1], ControlMap.Y_BUTTON)
             .whenPressed(() -> arms.toggleSols());
 
-        // DELETE THIS LATER ONLY FOR ONE TIME CALIBRATION
-        new JoystickButton(controllers[1], ControlMap.B_BUTTON).whenPressed(() -> arms.calibrate());
 
         Trigger elevatorUp = new Trigger(){
             public boolean get(){

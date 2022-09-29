@@ -61,4 +61,6 @@ public interface RobotMap {
 
     //DIO Switches and stuff
     public static final int ELEVATOR_SWITCH = 0;
+
+    public static final double CLIMBER_POSITION_CONVERSION_FACTOR_FUCK_YOU_VICTOR = 0.10686979799148262178959147156001;
 }
