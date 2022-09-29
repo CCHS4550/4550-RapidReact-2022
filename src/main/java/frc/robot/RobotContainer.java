@@ -18,6 +18,8 @@ public class RobotContainer {
     private final Intake intake = new Intake();
     private final TedBallin shooter = new TedBallin();
 
+    private double armSpeed; //get from shuffle board
+
     Joystick[] controllers = OI.joystickArray;
     Joystick driveJoystick = controllers[0];
 
@@ -39,9 +41,9 @@ public class RobotContainer {
             driveTrain)
         );
         
-        // arms.setDefaultCommand(new RunCommand(() -> {
-        //     arms.setSpeed(0);
-        // }, arms));
+        arms.setDefaultCommand(new RunCommand(() -> {
+            arms.goToPosition();
+        }, arms));
 
         intake.setDefaultCommand(new RunCommand(() -> {
             intake.positionIntake();
@@ -83,9 +85,29 @@ public class RobotContainer {
         new JoystickButton(controllers[1], ControlMap.Y_BUTTON)
             .whenPressed(() -> arms.toggleSols());
 
-        new JoystickButton(controllers[1],ControlMap.DPAD_UP).whileHeld(() -> arms.extend()).whenReleased(() -> arms.setSpeed(0)); 
-        new JoystickButton(controllers[1], ControlMap.DPAD_DOWN).whileHeld(() -> arms.retract()).whenReleased(() -> arms.setSpeed(0));
-        new JoystickButton(controllers[1], ControlMap.DPAD_LEFT).whenPressed(() -> arms.calibrate());
+        // DELETE THIS LATER ONLY FOR ONE TIME CALIBRATION
+        new JoystickButton(controllers[1], ControlMap.B_BUTTON).whenPressed(() -> arms.calibrate());
+
+        Trigger elevatorUp = new Trigger(){
+            public boolean get(){
+                return OI.dPad(1, ControlMap.DPAD_UP);
+            }
+        }.whenActive(() -> arms.setSpeed(armSpeed));
+
+        Trigger elevatorDown = new Trigger(){
+            public boolean get(){
+                return OI.dPad(1, ControlMap.DPAD_DOWN);
+            }
+        }.and(elevatorUp.negate()).whenActive(() -> arms.setSpeed(-armSpeed));
+
+        new Trigger(){
+            public boolean get(){
+                return true;
+            }
+            //activates when neither going up nor down with arms
+        }.and(elevatorDown.negate())
+        .and(elevatorUp.negate())
+        .whenActive(() -> arms.setSpeed(0));
 
         //somewhat complex series of triggers (for shooting)
         //first one is basic trigger, must construct a trigger and override the get method with the boolean you want checked

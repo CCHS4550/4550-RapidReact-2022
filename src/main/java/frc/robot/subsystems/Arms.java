@@ -9,15 +9,25 @@ import frc.helpers.CCSparkMax;
 import frc.helpers.OI;
 import frc.helpers.PneumaticsSystem;
 import frc.parent.RobotMap;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 
 public class Arms extends SubsystemBase {
     private final PneumaticsSystem solenoids = new PneumaticsSystem(PneumaticsModuleType.CTREPCM, RobotMap.ARM_SOLENOID_ONE, RobotMap.ARM_SOLENOID_TWO);
-    private final CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, MotorType.kBrushless, IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true);
+    private final CCSparkMax climber = new CCSparkMax("Climber", "C", RobotMap.CLIMBER, MotorType.kBrushless,
+            IdleMode.kBrake, RobotMap.CLIMBER_LEFT_REVERSE, true) {
+        public void set(double speed) {
+            
+        }
+    };
     int bottom_port; //add num
     private final DigitalInput bottom = new DigitalInput(bottom_port);
     double topEncoder, bottomEncoder;
+    private PIDController climberPid = new PIDController(0.5, 0, 0.05);
+    private double encoderPos;
+    private boolean positioning = true;
+
 
     public Arms(){
         //initialization (for stuff that has to do with declaration, the init method can handle action-y inits)
@@ -35,20 +45,16 @@ public class Arms extends SubsystemBase {
         solenoids.toggle();
     }
 
-    //need to add back elevator stuff & calibration stuff, will do when elevator is fixed and stuff can be tested
-    public void extend() {
-        if(OI.normalize(climber.getPosition() * climber.getPositionConversionFactor(), 0, 1) >= 1){
-            climber.set(0);
-        }else{
-            climber.set(0.2); //can change to negative depending on reverse of motor. 
-        }
-    }
 
-    public void retract() {
-        if (OI.normalize(climber.getPosition() * climber.getPositionConversionFactor(), 0, 1) <= 0) {
+    public void setSpeed(double speed) {
+        if (bottom.get() && speed < 0) {
+            climber.set(0);
+            climber.reset();
+            encoderPos = 0;
+        }else if(OI.normalize(climber.getPosition() * climber.getPositionConversionFactor(), 0, 1) >= 1 && speed > 0){
             climber.set(0);
         } else {
-            climber.set(-0.2);
+            climber.set(speed);
         }
     }
 
@@ -61,16 +67,33 @@ public class Arms extends SubsystemBase {
             climber.set(0);
             bottomEncoder = climber.getPosition();
             climber.reset();
+            encoderPos = 0;
         }
         // climber.setPosition(bottomEncoder);
         climber.setPositionConversionFactor(1 / (topEncoder - bottomEncoder));
+        System.out.println(climber.getPositionConversionFactor());
     }
     
-    public void setSpeed(double speed) {
-        climber.set(speed);
+    // public void setSpeed(double speed) {
+    //     positioning = false;
+    //     climber.set(speed);
+    // }
+
+    public void goToPosition() {
+        if (positioning)
+            climber.set(OI.normalize(climberPid.calculate(climber.getPosition(), encoderPos), -1, 1));
     }
 
-    public void setPosition(double encoderPos) {
-        climber.setPosition(encoderPos / climber.getPositionConversionFactor());
+    public void setPos() {
+        encoderPos = climber.getPosition();
+    }
+
+    public void setPos(double pos) {
+        encoderPos = pos;
+    }
+
+    public void changePos(double val) {
+        positioning = true;
+        encoderPos += val;
     }
 }
