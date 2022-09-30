@@ -2,8 +2,11 @@ package frc.robot;
 
 import java.util.ResourceBundle.Control;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -18,7 +21,11 @@ public class RobotContainer {
     private final Intake intake = new Intake();
     private final TedBallin shooter = new TedBallin();
 
-    private double armSpeed; //get from shuffle board
+    private ShuffleboardTab tab = Shuffleboard.getTab("Climb Speed");
+    private NetworkTableEntry climbSpeed = tab.add("Climb Speed", 1).getEntry();
+    // private double armSpeed = maxSpeed.getDouble(1.0); //default speed, can change
+
+    
 
     Joystick[] controllers = OI.joystickArray;
     Joystick driveJoystick = controllers[0];
@@ -90,13 +97,14 @@ public class RobotContainer {
             public boolean get(){
                 return OI.dPad(1, ControlMap.DPAD_UP);
             }
-        }.whenActive(() -> arms.setSpeed(armSpeed));
+        }.whenActive(() -> arms.setSpeed(climbSpeed.getDouble(1)));
+        //Still need to open shuffle board and test to make sure it takes the double eveytime we change it
 
-        Trigger elevatorDown = new Trigger(){
+        Trigger elevatorDown = new Trigger(){ //gets the dpad for down and sets speed to negative arm speed.s
             public boolean get(){
                 return OI.dPad(1, ControlMap.DPAD_DOWN);
             }
-        }.and(elevatorUp.negate()).whenActive(() -> arms.setSpeed(-armSpeed));
+        }.and(elevatorUp.negate()).whenActive(() -> arms.setSpeed(-climbSpeed.getDouble(1)));
 
         new Trigger(){
             public boolean get(){

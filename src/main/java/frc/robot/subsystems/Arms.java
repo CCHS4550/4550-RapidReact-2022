@@ -11,6 +11,7 @@ import frc.helpers.PneumaticsSystem;
 import frc.parent.RobotMap;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 
 
 public class Arms extends SubsystemBase {
@@ -61,7 +62,7 @@ public class Arms extends SubsystemBase {
         }
     }
 
-    public void calibrate() {
+    public void bottomOut() {
         if (!bottom.get()) {
             climber.set(-.5); // change to positive if needed for reverse
         } else {
