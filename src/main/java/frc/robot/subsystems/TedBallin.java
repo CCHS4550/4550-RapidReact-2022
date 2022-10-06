@@ -12,7 +12,7 @@ public class TedBallin extends SubsystemBase{
     private final CCSparkMax shooter = new CCSparkMax("Shooter", "S", RobotMap.SHOOTER,
         MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, true);
 
-    private final DoubleEntry power = new DoubleEntry("Shooter Power", 0.75);
+        private final DoubleEntry power = new DoubleEntry("Shooter Power", 0.75);
 
     // private final CCSparkMax shooter2 = new CCSparkMax("Shooter2", "S2", RobotMap.SHOOTER2,
     //     MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_REVERSE, true);
@@ -23,6 +23,7 @@ public class TedBallin extends SubsystemBase{
     public void setShoot(double speed){
         shooter.set(speed);
     }
+
 
     public void setLoader(double speed){
         loader.set(speed);

@@ -34,31 +34,30 @@ public class RobotContainer {
                 double power = 0.85;
                 double vert = driveJoystick.getRawAxis(ControlMap.L_JOYSTICK_VERTICAL) * power;
                 double turn = driveJoystick.getRawAxis(ControlMap.R_JOYSTICK_HORIZONTAL) * power;
-                driveTrain.drive(turn, -vert);
+                driveTrain.drive(turn, vert);
             }, 
             driveTrain)
         );
 
         arms.setDefaultCommand(new RunCommand(() -> {
-            
+            arms.calibrate();
         }, arms));
 
         intake.setDefaultCommand(new RunCommand(() -> {
-            intake.positionIntake();
+            double pow = (Math.abs(OI.axis(1, ControlMap.L_JOYSTICK_VERTICAL)) > 0.5 ? OI.axis(1, ControlMap.L_JOYSTICK_VERTICAL) : 0) * 0.75;
+            intake.setIntPower(-pow);
         }, intake));
         
     } 
 
     private void configureButtons() {
-        Trigger sucOn = new JoystickButton(controllers[1], ControlMap.RB_BUTTON).whenPressed(() ->{
+        Trigger sucOn = new JoystickButton(controllers[1], ControlMap.A_BUTTON).whenPressed(() ->{
             intake.setSuck(0.7);
+            System.out.println("aaaaaaaaaaaaaaaaaa");
         });
 
-        Trigger sucBack = new Trigger(){
-            public boolean get(){
-                return OI.axis(1, ControlMap.RT) > 0.5;
-            }
-        }.and(sucOn.negate())
+        Trigger sucBack = new JoystickButton(controllers[1], ControlMap.B_BUTTON)
+         .and(sucOn.negate())
          .whenActive(() -> intake.setSuck(-0.7));
 
         new Trigger(){
@@ -66,10 +65,6 @@ public class RobotContainer {
         }.and(sucOn.negate())
          .and(sucBack.negate())
          .whenActive(() -> intake.setSuck(0));
-
-
-        new JoystickButton(controllers[1], ControlMap.Y_BUTTON)
-         .whenActive(() -> intake.toggleIntake());
         
         //basic button mapping, joystick button takes a controller (use controllers[index], 0 for drive, 1 for mechanisms)
         //and a button ID, use controlMap for xbox
@@ -111,6 +106,31 @@ public class RobotContainer {
         .and(shootBkd.negate())
         .whenActive(() -> shooter.setShoot(0));
 
+        Trigger loadFwd = new Trigger(){
+            public boolean get(){
+                return OI.axis(1, ControlMap.LT) > 0.5;
+            }
+        }.whenActive(() -> shooter.setLoader(shooter.pow().value()));
+
+        //second one is a reverse of the first one, starts with a joystick button for simple checking, but b/c and returns a trigger
+        //whole thing counts as a trigger
+        Trigger loadBkd = new JoystickButton(controllers[1], ControlMap.LB_BUTTON)
+            //& check to make sure this will only go if fwd not being pressed
+            //still uses whenActive
+            .and(loadFwd.negate())
+            .whenActive(() -> {
+                shooter.setLoader(-0.25);
+            });
+        //3rd trigger to stop shooter, get func returns true b/c idk how they work and I want it to go without relying on any inputs
+        new Trigger(){
+            public boolean get(){
+                return true;
+            }
+            //but also, must only activate when neither shooting fwd nor bkd
+        }.and(loadFwd.negate())
+        .and(loadBkd.negate())
+        .whenActive(() -> shooter.setLoader(0));
+
         //sets both controllers to have the option to switch driver control to them
         for(Joystick ctrl : controllers){
             JoystickButton lJoy = new JoystickButton(ctrl, ControlMap.L_JOYSTICK_BUTTON);
@@ -124,5 +144,30 @@ public class RobotContainer {
                 }); 
         }
 
+        Trigger elevatorUp = new Trigger(){
+            public boolean get(){
+                return OI.dPad(1, ControlMap.DPAD_UP);
+            }
+        }.whileActiveContinuous(() -> {
+            arms.setSpeed(-0.5);
+        });
+        Trigger elevatorDown = new Trigger(){
+            public boolean get(){
+                return OI.dPad(1, ControlMap.DPAD_DOWN);
+            }
+        }.and(elevatorUp.negate())
+         .whileActiveContinuous(() -> {
+             arms.setSpeed(0.5);
+         });
+        new Trigger(){
+            public boolean get() {return true;}
+        }.and(elevatorUp.negate())
+         .and(elevatorDown.negate())
+         .whenActive(() -> arms.setSpeed(0));
+
+    }
+
+    void test(){
+        
     }
 }
