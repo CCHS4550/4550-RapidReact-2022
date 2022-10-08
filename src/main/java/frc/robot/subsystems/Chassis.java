@@ -45,7 +45,12 @@ public class Chassis extends SubsystemBase{
     private final DifferentialDrive driver = new DifferentialDrive(left, right);
 
     public Chassis() {
-        //probably need to do more initialization stuff, to be figured out with testing
+        //0.048 slow, 0.109 fast
+        double factor = 0.048;
+        fLeft.setPositionConversionFactor(factor);
+        fRight.setPositionConversionFactor(factor);
+        bLeft.setPositionConversionFactor(factor);
+        bRight.setPositionConversionFactor(factor);
     }
     
     public void drive(double fwd, double bkd){
