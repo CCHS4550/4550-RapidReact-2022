@@ -86,7 +86,7 @@ public class Chassis extends SubsystemBase{
 
     public static Command driveDist(double dist, Chassis driver){
         driver.reset();
-        PIDController pid = new PIDController(0.5, 0, 0);
+        PIDController pid = new PIDController(0.25, 0, 0);
         return new RunCommand(() -> driver.drive(OI.normalize(pid.calculate(driver.getEncoders()[0], dist), -1, 1), 0), driver){
             @Override
             public boolean isFinished(){
