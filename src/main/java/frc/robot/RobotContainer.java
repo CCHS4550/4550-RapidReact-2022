@@ -3,15 +3,18 @@ package frc.robot;
 import java.util.ResourceBundle.Control;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.helpers.OI;
 import frc.parent.ControlMap;
 import frc.parent.DDRMap;
 import frc.robot.subsystems.*;
-//import frc.robot.AutoBallin;
 
 public class RobotContainer {
     private final Arms arms = new Arms();
@@ -35,7 +38,7 @@ public class RobotContainer {
                 double power = 0.85;
                 double vert = driveJoystick.getRawAxis(ControlMap.L_JOYSTICK_VERTICAL) * power;
                 double turn = driveJoystick.getRawAxis(ControlMap.R_JOYSTICK_HORIZONTAL) * power;
-                driveTrain.drive(turn, vert);
+                driveTrain.drive(vert, turn);
             }, 
             driveTrain)
         );
@@ -53,12 +56,13 @@ public class RobotContainer {
 
     private void configureButtons() {
         Trigger sucOn = new JoystickButton(controllers[1], ControlMap.A_BUTTON).whenPressed(() ->{
-            intake.setSuck(-0.7);
+            intake.setSuck(0.7);
+            System.out.println("aaaaaaaaaaaaaaaaaa");
         });
 
         Trigger sucBack = new JoystickButton(controllers[1], ControlMap.B_BUTTON)
          .and(sucOn.negate())
-         .whenActive(() -> intake.setSuck(0.7));
+         .whenActive(() -> intake.setSuck(-0.7));
 
         new Trigger(){
             public boolean get(){return true;}
@@ -110,7 +114,7 @@ public class RobotContainer {
             public boolean get(){
                 return OI.axis(1, ControlMap.LT) > 0.5;
             }
-        }.whenActive(() -> shooter.setLoader(-0.7));
+        }.whenActive(() -> shooter.setLoader(shooter.pow().value()));
 
         //second one is a reverse of the first one, starts with a joystick button for simple checking, but b/c and returns a trigger
         //whole thing counts as a trigger
@@ -119,7 +123,7 @@ public class RobotContainer {
             //still uses whenActive
             .and(loadFwd.negate())
             .whenActive(() -> {
-                shooter.setLoader(.7);
+                shooter.setLoader(-0.25);
             });
         //3rd trigger to stop shooter, get func returns true b/c idk how they work and I want it to go without relying on any inputs
         new Trigger(){
@@ -149,7 +153,7 @@ public class RobotContainer {
                 return OI.dPad(1, ControlMap.DPAD_UP);
             }
         }.whileActiveContinuous(() -> {
-            arms.setSpeed(-0.5);
+            arms.setSpeed(-.81);
         });
         Trigger elevatorDown = new Trigger(){
             public boolean get(){
@@ -157,7 +161,7 @@ public class RobotContainer {
             }
         }.and(elevatorUp.negate())
          .whileActiveContinuous(() -> {
-             arms.setSpeed(0.5);
+             arms.setSpeed(.8);
          });
         new Trigger(){
             public boolean get() {return true;}
@@ -167,8 +171,10 @@ public class RobotContainer {
 
     }
 
-    // private SequentialCommandGroup getAuto(){
-    //     AutoBallin auto = new AutoBallin(driveTrain, arms, intake, shooter);
-    //     return auto;
-    // }
+    void test(){
+        
+    }
+    public Command getAutoCommand(){
+        return Chassis.driveDist(-3, driveTrain);
+    }
 }
