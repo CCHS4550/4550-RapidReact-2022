@@ -57,7 +57,6 @@ public class RobotContainer {
     private void configureButtons() {
         Trigger sucOn = new JoystickButton(controllers[1], ControlMap.A_BUTTON).whenPressed(() ->{
             intake.setSuck(0.7);
-            System.out.println("aaaaaaaaaaaaaaaaaa");
         });
 
         Trigger sucBack = new JoystickButton(controllers[1], ControlMap.B_BUTTON)
@@ -175,6 +174,6 @@ public class RobotContainer {
         
     }
     public Command getAutoCommand(){
-        return Chassis.driveDist(-3, driveTrain);
+        return new AutoBallin(driveTrain, arms, intake, shooter);
     }
 }

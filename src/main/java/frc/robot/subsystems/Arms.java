@@ -50,7 +50,6 @@ public class Arms extends SubsystemBase {
     public void periodic(){
         //stuff that should run every frame, action stuff should be put in other methods
         limitDisp.set(limit.get());
-        System.out.println(climber.getPosition());
     }
 
     public void setSols(boolean on){

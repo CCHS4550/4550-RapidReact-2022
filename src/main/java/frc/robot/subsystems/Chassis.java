@@ -90,8 +90,12 @@ public class Chassis extends SubsystemBase{
         return new RunCommand(() -> driver.drive(OI.normalize(pid.calculate(driver.getEncoders()[0], dist), -1, 1), 0), driver){
             @Override
             public boolean isFinished(){
-                if(Math.abs(driver.getEncoders()[0] - dist) < 0.5) pid.close();
-                return Math.abs(driver.getEncoders()[0] - dist) < 0.5;
+                System.out.println(driver.getEncoders()[0] - dist);
+                if(Math.abs(driver.getEncoders()[1] - dist) < 0.25){
+                    pid.close();
+                    driver.drive(0, 0);
+                }
+                return Math.abs(driver.getEncoders()[0] - dist) < 0.25;
             }
         };
     }
