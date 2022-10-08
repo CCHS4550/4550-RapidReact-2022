@@ -11,7 +11,7 @@ import frc.helpers.OI;
 import frc.parent.ControlMap;
 import frc.parent.DDRMap;
 import frc.robot.subsystems.*;
-import frc.robot.AutoBallin;
+//import frc.robot.AutoBallin;
 
 public class RobotContainer {
     private final Arms arms = new Arms();
@@ -53,13 +53,12 @@ public class RobotContainer {
 
     private void configureButtons() {
         Trigger sucOn = new JoystickButton(controllers[1], ControlMap.A_BUTTON).whenPressed(() ->{
-            intake.setSuck(0.7);
-            System.out.println("aaaaaaaaaaaaaaaaaa");
+            intake.setSuck(-0.7);
         });
 
         Trigger sucBack = new JoystickButton(controllers[1], ControlMap.B_BUTTON)
          .and(sucOn.negate())
-         .whenActive(() -> intake.setSuck(-0.7));
+         .whenActive(() -> intake.setSuck(0.7));
 
         new Trigger(){
             public boolean get(){return true;}
@@ -111,7 +110,7 @@ public class RobotContainer {
             public boolean get(){
                 return OI.axis(1, ControlMap.LT) > 0.5;
             }
-        }.whenActive(() -> shooter.setLoader(shooter.pow().value()));
+        }.whenActive(() -> shooter.setLoader(-0.7));
 
         //second one is a reverse of the first one, starts with a joystick button for simple checking, but b/c and returns a trigger
         //whole thing counts as a trigger
@@ -120,7 +119,7 @@ public class RobotContainer {
             //still uses whenActive
             .and(loadFwd.negate())
             .whenActive(() -> {
-                shooter.setLoader(-0.25);
+                shooter.setLoader(.7);
             });
         //3rd trigger to stop shooter, get func returns true b/c idk how they work and I want it to go without relying on any inputs
         new Trigger(){
@@ -168,8 +167,8 @@ public class RobotContainer {
 
     }
 
-    private SequentialCommandGroup getAuto(){
-        AutoBallin auto = new AutoBallin(driveTrain, arms, intake, shooter);
-        return auto;
-    }
+    // private SequentialCommandGroup getAuto(){
+    //     AutoBallin auto = new AutoBallin(driveTrain, arms, intake, shooter);
+    //     return auto;
+    // }
 }

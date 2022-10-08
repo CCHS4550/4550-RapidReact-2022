@@ -89,7 +89,7 @@ public class Robot extends TimedRobot {
   
   
   public void testPeriodic() {
-    container.test();
+    //container.test();
   }
 
   /** This function is called once when the robot is first started up. */
