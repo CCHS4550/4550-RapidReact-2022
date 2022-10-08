@@ -175,6 +175,6 @@ public class RobotContainer {
         
     }
     public Command getAutoCommand(){
-        return new AutoBallin(driveTrain, arms, intake, shooter);
+        return Chassis.driveDist(-3, driveTrain);
     }
 }

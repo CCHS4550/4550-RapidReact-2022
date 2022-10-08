@@ -16,6 +16,7 @@ import frc.helpers.PneumaticsSystem;
 import frc.parent.RobotMap;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.*;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -81,19 +82,11 @@ public class Chassis extends SubsystemBase{
     public static Command driveDist(double dist, Chassis driver){
         driver.reset();
         PIDController pid = new PIDController(0.5, 0, 0);
-        return new Command(){
-            public void execute(){
-                driver.drive(OI.normalize(pid.calculate(driver.getEncoders()[0], dist), -1, 1), 0);
-            }
-
-            public boolean isFinished(){
-                pid.close();
-                return Math.abs(driver.getEncoders()[0] - dist) < 0.5;
-            }
-
+        return new RunCommand(() -> driver.drive(OI.normalize(pid.calculate(driver.getEncoders()[0], dist), -1, 1), 0), driver){
             @Override
-            public Set<Subsystem> getRequirements() {
-                return null;
+            public boolean isFinished(){
+                if(Math.abs(driver.getEncoders()[0] - dist) < 0.5) pid.close();
+                return Math.abs(driver.getEncoders()[0] - dist) < 0.5;
             }
         };
     }
